@@ -45,6 +45,11 @@
                 <input type="text" name="phone" class="w-full p-3 rounded-lg border mt-1" placeholder="Masukan No telepon">
             </div>
 
+            <div class="mb-4">
+                <label>Alamat</label>
+                <input type="text" name="alamat" class="w-full p-3 rounded-lg border mt-1" placeholder="Masukan Alamat">
+            </div>
+
             <!-- Password -->
             <div class="mb-4">
                 <label>Password</label>

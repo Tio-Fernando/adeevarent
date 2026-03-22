@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pelanggan;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -34,18 +36,38 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'min:8', Rules\Password::defaults()],
+            'phone' => ['required','string','max:15'],
+            'alamat' => ['required','string','max:255'],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+ 
+            DB::beginTransaction();
+            try {
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'phone' => $request->phone,
+                    'status' => true,
+                    'level' => 'Pelanggan'
+                ]);
 
-        event(new Registered($user));
+                Pelanggan::create([
+                    'id_user' => $user->id, 
+                    'nama_pelanggan' => $request->name,
+                    'alamat' => $request->alamat,
+                    'no_hp' => $request->phone
+                ]);
 
-        // Auth::login($user);
+                DB::commit();
 
-        return redirect()->route('login');
+                event(new Registered($user));
+
+                return redirect()->route('login');
+
+            } catch (\Exception $e) {
+                DB::rollback();
+                throw $e;
+}
     }
 }

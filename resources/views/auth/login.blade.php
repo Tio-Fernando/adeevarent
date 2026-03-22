@@ -46,9 +46,15 @@
             <button class="w-full text-white py-3 rounded-lg hover:bg-orange-600 transition" style="background-color: #FF9E0C;">
                 Sign in
             </button>
-
+         
         </form>  
 
+           @if($errors->any())
+                <div class="text-red-500 mt-3">
+                    {{ $errors->first() }}
+                </div>
+            
+            @endif
         <p class="text-sm mt-4 text-center">
             Don’t have an account?
             <a href="{{ route('register') }}" class="text-orange-500">
