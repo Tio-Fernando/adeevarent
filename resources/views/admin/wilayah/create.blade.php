@@ -2,34 +2,34 @@
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Tambah Kategori') }}
+            {{ __('Tambah wilayah') }}
         </h2>
     </x-slot>
 
     <div class="flex justify-center items-center mt-10">
         <div class="bg-white rounded-xl w-[400px]  h-96 p-6 border border-gray-200 shadow-sm">
 
-            <h2 class="text-2xl font-bold mb-8">Tambah Kategori</h2>
+            <h2 class="text-2xl font-bold mb-8">Tambah wilayah</h2>
             <!-- Form -->
-            <form action="{{ route('kategori.store') }}" method="POST">
+            <form action="{{ route('wilayah.store') }}" method="POST">
                 @csrf
 
            
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Nama Kategori
+                     Lokasi
                     </label>
 
                     <input 
                         type="text" 
-                        name="nama_kategori"
+                        name="lokasi"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
-                        placeholder="Masukkan nama kategori"
-                        value="{{ old('nama_kategori') }}"
+                        placeholder="Masukkan lokasi"
+                        value="{{ old('lokasi') }}"
                     >
 
                  
-                    @error('nama_kategori')
+                    @error('lokasi')
                         <p class="text-red-500 text-sm mt-1">
                             {{ $message }}
                         </p>

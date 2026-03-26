@@ -1,20 +1,21 @@
 <?php
 
 namespace App\Http\Controllers;
-use SweetAlert2\Laravel\Swal;
-use App\Models\Category;
-use Exception;
-use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+use App\Models\Cabang;
+use Illuminate\Http\Request;
+use SweetAlert2\Laravel\Swal;
+
+class CabangController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $kategori = Category::latest()->get();
-        return view('admin.kategori.index',compact('kategori'));
+        $cabang = Cabang::latest()->get();
+
+        return view('admin.wilayah.index',compact('cabang'));
     }
 
     /**
@@ -22,7 +23,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.kategori.create');
+        return view('admin.wilayah.create');
     }
 
     /**
@@ -30,21 +31,21 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_kategori' => 'required|string|max:10'
+          $request->validate([
+            'lokasi' => 'required|string|max:20'
         ]);
 
-        Category::create([
-            'nama_kategori' => $request->nama_kategori
+        Cabang::create([
+            'lokasi' => $request->lokasi
         ]);
 
         Swal::success([
             'title' => 'Berhasil',
-            'text' => 'Kategori berhasil ditambahkan',
+            'text' => 'Cabang berhasil ditambahkan',
             'confirmButtonText' => 'OK',
         ]);
 
-        return redirect()->route('kategori.index')->with('success','data berhasil ditambahkan');
+        return redirect()->route('wilayah.index')->with('success','data berhasil ditambahkan');
     }
 
     /**
@@ -60,8 +61,9 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $kategori = Category::findOrFail($id);
-        return view('admin.kategori.edit',compact('kategori'));
+        $cabang = Cabang::findOrFail($id);
+
+        return view('admin.wilayah.edit',compact('cabang'));
     }
 
     /**
@@ -70,34 +72,33 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
          $request->validate([
-            'nama_kategori' => 'required|string|max:10'
+            'lokasi' => 'required|string|max:20'
         ]);
 
-        $kategori = Category::findOrFail($id);
+        $cabang = Cabang::findOrFail($id);
 
-        $kategori->update([
-            'nama_kategori' => $request->nama_kategori
+        $cabang->update([
+            'lokasi' => $request->lokasi
         ]);
 
-        
         Swal::success([
             'title' => 'Berhasil',
-            'text' => 'Kategori berhasil diupdate',
+            'text' => 'Cabang berhasil diupdate',
             'confirmButtonText' => 'OK',
         ]);
 
-        return redirect()->route('kategori.index')->with('success','data berhasil diupdate');
+        return redirect()->route('wilayah.index')->with('success','data berhasil diubah');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-            public function destroy(string $id)
-            {
-                $kategori = Category::findOrFail($id);
+    public function destroy(string $id)
+    {
+        $cabang = Cabang::findOrFail($id);
 
-                try {
-                    $kategori->delete();
+             try {
+                    $cabang->delete();
 
                     Swal::success([
                         'title' => 'Berhasil!',
@@ -111,6 +112,6 @@ class CategoryController extends Controller
                     ]);
                 }
 
-                return redirect()->route('kategori.index');
+                return redirect()->route('wilayah.index');
             }
 }

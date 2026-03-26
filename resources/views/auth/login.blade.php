@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="flex min-h-screen">
+<body class="flex flex-col min-h-screen md:flex-row">
 
 <!-- LEFT FORM -->
-<div class="w-1/2 flex items-center justify-center bg-gray-100">
-    <div class="w-[400px]">
+<div class="w-full md:w-1/2 flex items-center justify-center bg-gray-100 py-12 px-4">
+    <div class="w-full max-w-sm">
 
         <h1 class="text-3xl font-bold mb-2 text-center">WELCOME BACK</h1>
         <p class="text-gray-500 mb-6 text-center">Welcome back! Please enter your details.</p>
@@ -56,7 +57,7 @@
             
             @endif
         <p class="text-sm mt-4 text-center">
-            Don’t have an account?
+            Don't have an account?
             <a href="{{ route('register') }}" class="text-orange-500">
                 Sign up for free!
             </a>
@@ -66,7 +67,7 @@
 </div>
 
 <!-- RIGHT SIDE -->
-<div class="w-1/2 flex items-center justify-center text-white p-10" style="background-color: #FF9E0C;">
+<div class="w-full hidden md:w-1/2 md:flex items-center justify-center text-white p-10" style="background-color: #FF9E0C;">
     <div>
         <h1 class="text-4xl font-bold mb-4">
             Selamat Datang Kembali Bos
