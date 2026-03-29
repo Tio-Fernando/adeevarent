@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Category;
 use App\Models\Kendaraan;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use SweetAlert2\Laravel\Swal;
 
@@ -15,18 +16,25 @@ class KendaraanController extends Controller
      */
     public function index()
     {
-        $kendaraan = Kendaraan::with(['category','cabang'])->latest()->get();
-        return view('admin.kendaraan.index',compact('kendaraan'));
+        $kendaraans = Kendaraan::with(['category','cabang'])->latest()->get();
+        return view('admin.kendaraan.index',compact('kendaraans'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+  
     public function create()
     {
-        $kategory = Category::all();
-        $cabang = Cabang::all();
-        return view('admin.kendaraan.create',compact('cabang','kategory'));
+        $categories = Category::all();
+        $cabangs = Cabang::all();
+        return view('admin.kendaraan.create',compact('cabangs','categories'));
+    }
+
+    public function edit(string $nopol)
+    {
+        $kendaraan = Kendaraan::findOrFail($nopol);
+        $categories = Category::all();
+        $cabangs = Cabang::all();
+
+        return view('admin.kendaraan.edit', compact('kendaraan', 'categories', 'cabangs'));
     }
 
     /**
@@ -34,63 +42,84 @@ class KendaraanController extends Controller
      */
     public function store(Request $request)
     {
-         $request->validate([
-            'nopol' => 'required|unique:kendaraan,nopol',
-            'category_id' => 'required',
-            'cabang_id' => 'required',
-            'nama_kendaraan' => 'required',
-            'transmisi' => 'required',
-            'harga' => 'required|numeric',
-            'deskripsi' => 'required|string',
-            'warna' => 'required',
-            'kondisi' => 'required',
-            'bbm' => 'required',
-            'tahun' => 'required|numeric',
-            'dir' => 'required',
+        $request->validate([
+            'nopol'          => 'required|string|max:20|unique:kendaraan,nopol',
+            'category_id'    => 'required|exists:category,id',
+            'cabang_id'      => 'required|exists:cabang,id',
+            'nama_kendaraan' => 'required|string|max:20',
+            'transmisi'      => 'required|in:Matic,Manual',
+            'harga'          => 'required|integer|min:0',
+            'deskripsi'      => 'required|string',
+            'warna'          => 'required|in:Merah,Hitam,Putih',
+            'kondisi'        => 'required|in:rusak,free',
+            'bbm'            => 'required|in:solar,pertalite,pertamax',
+            'tahun'          => 'required|integer|',
+            'dir'            => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'status'         => 'required|in:booking,free',
         ]);
 
-        Kendaraan::create($request->all());
+        $data = $request->except('dir');
 
-        Swal::success([
-            'title' => 'Berhasil!',
-            'text' => 'Data kendaraan berhasil ditambahkan'
+        if ($request->hasFile('dir')) {
+            $data['dir'] = $request->file('dir')->store('kendaraan', 'public');
+        }
+
+        Kendaraan::create($data);
+            Swal::success([
+            'title' => 'Berhasil',
+            'text' => 'Kategori berhasil diupdate',
+            'confirmButtonText' => 'OK',
         ]);
-
-        return redirect()->route('kendaraan.index');
+        return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil ditambahkan.');
     }
-
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $nopol)
     {
-        //
+        $kendaraan = Kendaraan::with(['category', 'cabang'])->findOrFail($nopol);
+        return view('admin.kendaraan.detail', compact('kendaraan'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $nopol)
     {
-        $kendaraan = Kendaraan::findOrFail($id);
+       $kendaraan = Kendaraan::findOrFail($nopol);
 
-        $request->validate([
-            'category_id' => 'required',
-            'cabang_id' => 'required',
-            'nama_kendaraan' => 'required',
-            'transmisi' => 'required',
-            'harga' => 'required|numeric',
-            'warna' => 'required',
-            'kondisi' => 'required',
-            'bbm' => 'required',
-            'tahun' => 'required|numeric',
+       $request->validate([
+            'nopol'          => 'required|string|max:20|unique:kendaraan,nopol,' . $nopol . ',nopol',
+            'category_id'    => 'required|exists:category,id',
+            'cabang_id'      => 'required|exists:cabang,id',
+            'nama_kendaraan' => 'required|string|max:20',
+            'transmisi'      => 'required|in:Matic,Manual',
+            'harga'          => 'required|integer|min:0',
+            'deskripsi'      => 'required|string',
+            'warna'          => 'required|in:Merah,Hitam,Putih',
+            'kondisi'        => 'required|in:rusak,free',
+            'bbm'            => 'required|in:solar,pertalite,pertamax',
+            'tahun'          => 'required|integer|digits:4',
+            'dir'            => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'status'         => 'required|in:booking,free',
         ]);
 
-        $kendaraan->update($request->all());
+        $data = $request->except('dir');
 
-        Swal::success([
-            'title' => 'Berhasil!',
-            'text' => 'Data kendaraan berhasil diupdate'
+        if($request->hasFile('dir')){
+            if($kendaraan->dir && Storage::disk('public')->exists($kendaraan->dir)){
+                Storage::disk('public')->delete($kendaraan->dir);
+            }
+            $data['dir'] = $request->file('dir')->store('kendaraan','public');
+        }
+    
+        $kendaraan->update($data);
+        $kendaraan->refresh();
+    
+         Swal::success([
+            'title' => 'Berhasil',
+            'text' => 'Data mobil ' . $kendaraan->nama_kendaraan . ' berhasil diperbarui!',
+            'confirmButtonText' => 'OK',
         ]);
 
         return redirect()->route('kendaraan.index');
@@ -104,8 +133,25 @@ class KendaraanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $nopol)
     {
-        //
+        $kendaraan = Kendaraan::findOrFail($nopol);
+        
+         try {
+                    $kendaraan->delete();
+
+                    Swal::success([
+                        'title' => 'Berhasil!',
+                        'text' => 'Data berhasil dihapus',
+                    ]);
+
+                } catch (\Exception $e) {
+                    Swal::error([
+                        'title' => 'Gagal!',
+                        'text' => 'Data masih digunakan',
+                    ]);
+                }
+
+        return redirect()->route('kendaraan.index');
     }
 }

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->enum('kondisi',['rusak','free']);
             $table->enum('bbm',['solar','pertalite','pertamax']);
             $table->integer('tahun');
-            $table->string('dir',25);
+            $table->string('dir',255);
             $table->enum('status',['booking','free']);
             $table->timestamps();
         });

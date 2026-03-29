@@ -2,28 +2,27 @@
 
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 
 Route::middleware(['auth','role:Administrator'])->group(function(){
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-
+    Route::resource('kendaraan',KendaraanController::class);
     Route::resource('kategori', CategoryController::class);
     Route::resource('wilayah',CabangController::class);
 });
 
 Route::middleware(['auth','role:Pelanggan'])->group(function(){
-    Route::get('/beranda', function () {
-        return view('home');
-    })->middleware(['auth', 'verified'])->name('home');
+  
 });
 
 

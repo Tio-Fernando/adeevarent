@@ -14,15 +14,29 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+
+        if (Auth::check()) {
+
+            $user = Auth::user();
+
+            if ($user->level === 'SuperAdmin') {
+                return redirect()->route('dashboard.super');
+            } elseif ($user->level === 'Administrator') {
+                return redirect()->route('dashboard');
+            } else {
+                return redirect()->route('home');
+            }
+        }
+
         return view('auth.login');
     }
 
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request)
+    public function store(LoginRequest $request): RedirectResponse
     {
     
         $request->authenticate();
@@ -31,13 +45,12 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
 
         if($user->level === 'SuperAdmin'){
-            return redirect()->route('dashboard.super');
-        }elseif ($user->level == 'Administrator') {
-             return redirect()->route('dashboard');
+            return redirect()->intended(route('dashboard.super'));
+        }elseif ($user->level === 'Administrator') {
+             return redirect()->intended(route('dashboard'));
         } else {
-            return redirect()->route('home');
+            return redirect()->intended(route('home'));
         }
-
 
     }
 

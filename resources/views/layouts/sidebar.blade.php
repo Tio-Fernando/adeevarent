@@ -10,9 +10,13 @@
                 {{ request()->routeIs('dashboard') ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
                     <span class="font-medium text-sm">Dashboard</span>
                 </a>
-            <a href="#" class="flex items-center px-4 py-3  text-gray-600 rounded-lg shadow-sm">
-                <span class="font-medium text-sm">Kendaraan</span>
-            </a>
+           
+                <a href="{{ route('kendaraan.index') }}"
+                class="flex items-center px-4 py-3 rounded-lg transition-colors
+                {{ request()->routeIs('kendaraan.index') ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
+                    <span class="font-medium text-sm">Kendaraan</span>
+                </a>
+           
              <a href="{{ route('wilayah.index') }}"
                 class="flex items-center px-4 py-3 rounded-lg transition-colors
                 {{ request()->routeIs('wilayah.index') ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
@@ -29,11 +33,7 @@
             <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors">
                 <span class="font-medium text-sm">Laporan</span>
             </a>
-            <div class="pt-4 mt-2 border-t border-gray-100">
-                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors">
-                    <span class="font-medium text-sm">Product Stock</span>
-                </a>
-            </div>
+       
         </nav>
     </div>
 
