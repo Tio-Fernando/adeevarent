@@ -35,6 +35,7 @@ Route::middleware(['auth','role:SuperAdmin'])->group(function(){
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/user',[ProfileController::class,'editUser'])->name('profile.user');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

@@ -4,14 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Adeva Rent - Car Rental</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 <style>
-  body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  body { font-family: 'Inter', sans-serif; }
 
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+  }
 
   .tire-track {
     background-image: repeating-linear-gradient(
@@ -23,7 +26,6 @@
     );
   }
 
-  /* Card hover lift */
   .car-card:hover { transform: translateY(-4px); transition: transform .25s ease; }
   .car-card { transition: transform .25s ease; }
 </style>
@@ -34,12 +36,10 @@
 <nav class="bg-white shadow-sm sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
 
-    <!-- Logo -->
     <a href="#" class="flex items-center gap-2">
       <img src="{{ asset('img/Logo.png') }}" alt="">
     </a>
 
-    <!-- Menu -->
     <ul class="hidden md:flex gap-8 text-sm font-medium text-gray-700">
       <li><a href="#" class="text-primary font-bold">Home</a></li>
       <li><a href="#" class="hover:text-primary transition">Profile</a></li>
@@ -49,20 +49,55 @@
       <li><a href="#" class="hover:text-primary transition">Hubungi Kami</a></li>
     </ul>
 
-  <div class="flex items-center gap-3">
-  
-    @auth
-      <!-- Tombol Logout -->
-      <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit"
-          class="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition shadow-md">
-          Logout
-        </button>
-      </form>
+    @auth    
+    <div class="relative" x-data="{ open: false }" @click.away="open = false">
+           <div @click="open = !open" class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition">
+               <img class="w-10 h-10 rounded-full border-2 border-orange-100" 
+                    src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=FF9E0C&color=fff" 
+                    alt="{{ Auth::user()->name }}">
+               
+               <div class="hidden sm:block">
+                   <p class="text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</p>
+                   <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
+               </div>
+               
+               <svg class="w-4 h-4 text-gray-500 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+               </svg>
+           </div>
+   
+           <div x-show="open" 
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="transform opacity-0 scale-95"
+                x-transition:enter-end="transform opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="transform opacity-100 scale-100"
+                x-transition:leave-end="transform opacity-0 scale-95"
+                class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-30 overflow-hidden" 
+                style="display: none;">
+               
+               <div class="px-4 py-3 border-b border-gray-50 md:hidden">
+                   <p class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</p>
+               </div>
+   
+               <a href="{{ route('profile.user') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
+                   <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                   My Profile
+               </a>
+   
+               <hr class="border-gray-50">
+   
+               <form method="POST" action="{{ route('logout') }}">
+                   @csrf
+                   <button type="submit" class="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition">
+                       <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                       Logout
+                   </button>
+               </form> 
+           </div>
+       </div>
     @endauth
-  
-  
+
     @guest
       
       <a href="{{ route('login') }}"
@@ -70,8 +105,6 @@
         Login
       </a>
     @endguest
-  
-  </div>
   </div>
 </nav>
 
@@ -79,10 +112,8 @@
 <section class="max-w-7xl mx-auto px-6 mt-8">
   <div class="relative bg-primary rounded-3xl overflow-hidden min-h-[420px] flex items-stretch">
 
-    <!-- Diagonal lighter panel -->
     <div class="absolute right-[-40px] top-0 w-[55%] h-full bg-primary opacity-60 -skew-x-6 rounded-r-3xl z-0"></div>
 
-    <!-- Watermark triangle "A" -->
     <div class="absolute right-6 top-1/2 -translate-y-1/2 z-[1] opacity-15 pointer-events-none">
       <svg width="280" height="280" viewBox="0 0 200 200">
         <polygon points="100,5 195,195 5,195" fill="none" stroke="white" stroke-width="18"/>
@@ -91,7 +122,6 @@
       </svg>
     </div>
 
-    <!-- Tire tracks bottom-left -->
     <div class="absolute left-0 bottom-0 z-[1] opacity-20 pointer-events-none">
       <svg width="170" height="190" viewBox="0 0 160 180">
         <g transform="rotate(-30 80 90)" fill="#7c4500">
@@ -111,7 +141,6 @@
       </svg>
     </div>
 
-    <!-- LEFT TEXT -->
     <div class="relative z-10 flex flex-col justify-center px-12 py-14 max-w-[460px]">
       <h1 class="text-4xl md:text-5xl font-extrabold text-white leading-tight">
         Experience the road<br>like never before
@@ -124,7 +153,6 @@
       </a>
     </div>
 
-    <!-- RIGHT CAR IMAGE -->
     <div class="absolute right-0 top-0 w-[55%] h-full z-10 flex items-center justify-center pr-8">
       <img src="{{ asset('img/mobil.png') }}" alt="Car"
            class="w-full max-w-[500px] object-contain drop-shadow-2xl">
