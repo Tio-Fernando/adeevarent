@@ -3,14 +3,12 @@
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\landingController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
+Route::get('/', [landingController::class, 'index'])->name('home');
 
 Route::middleware(['auth','role:Administrator'])->group(function(){
     Route::get('/dashboard', function () {
@@ -22,7 +20,7 @@ Route::middleware(['auth','role:Administrator'])->group(function(){
 });
 
 Route::middleware(['auth','role:Pelanggan'])->group(function(){
-  
+
 });
 
 

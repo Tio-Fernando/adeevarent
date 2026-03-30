@@ -154,7 +154,7 @@
     </div>
 
     <div class="absolute right-0 top-0 w-[55%] h-full z-10 flex items-center justify-center pr-8">
-      <img src="{{ asset('img/mobil.png') }}" alt="Car"
+      <img src="{{ asset('img/mobil2.png') }}" alt="Car"
            class="w-full max-w-[500px] object-contain drop-shadow-2xl">
     </div>
 
@@ -162,9 +162,7 @@
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     MENGAPA MEMILIH KAMI
-══════════════════════════════════════════ -->
+
 <section class="max-w-7xl mx-auto px-6 mt-12 text-center">
   <h2 class="text-2xl font-extrabold text-gray-900">Mengapa Memilih Kami</h2>
   <p class="mt-2 text-gray-400 text-sm max-w-md mx-auto">Kami memberikan layanan terbaik dengan berbagai keunggulan untuk pengalaman rental yang sempurna.</p>
@@ -205,9 +203,7 @@
 </section>
 
 
-<!-- ══════════════════════════════════════════
-     ABOUT / BRAND BANNER
-══════════════════════════════════════════ -->
+
 <section class="max-w-7xl mx-auto px-6 mt-12">
   <div class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[240px]">
 
@@ -219,7 +215,7 @@
           <polygon points="100,5 195,195 5,195" fill="none" stroke="white" stroke-width="18"/>
         </svg>
       </div>
-      <img src="{{ asset('img/mobil.png') }}" alt="Adeva Rent Car"
+      <img src="{{ asset('img/mobil2.png') }}" alt="Adeva Rent Car"
            class="relative z-10 w-[90%] object-contain drop-shadow-xl">
     </div>
 
@@ -240,10 +236,6 @@
   </div>
 </section>
 
-
-<!-- ══════════════════════════════════════════
-     PILIH ARMADA
-══════════════════════════════════════════ -->
 <section class="max-w-7xl mx-auto px-6 mt-14">
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl font-extrabold text-gray-900">PILIH ARMADA ANDA<br>SEKARANG</h2>
@@ -255,62 +247,67 @@
     @php
 $cars = [
   ['name' => 'Innova Reborn', 'price' => 'Rp 350.000', 'type' => 'SUV', 'seat' => 7, 'fuel' => 'Solar', 'trans' => 'Matic'],
-  ['name' => 'Innova Reborn', 'price' => 'Rp 350.000', 'type' => 'SUV', 'seat' => 7, 'fuel' => 'Solar', 'trans' => 'Matic'],
-  ['name' => 'Fortuner', 'price' => 'Rp 500.000', 'type' => 'SUV', 'seat' => 7, 'fuel' => 'Solar', 'trans' => 'Matic'],
-  ['name' => 'Fortuner', 'price' => 'Rp 500.000', 'type' => 'SUV', 'seat' => 7, 'fuel' => 'Solar', 'trans' => 'Matic'],
-  ['name' => 'Fortuner', 'price' => 'Rp 500.000', 'type' => 'SUV', 'seat' => 7, 'fuel' => 'Solar', 'trans' => 'Matic'],
-  ['name' => 'Fortuner', 'price' => 'Rp 500.000', 'type' => 'SUV', 'seat' => 7, 'fuel' => 'Solar', 'trans' => 'Matic'],
 ];
     @endphp
-
-    @foreach($cars as $car)
-    <div class="car-card bg-white rounded-2xl shadow-sm hover:shadow-md p-5 flex flex-col">
-      <!-- Car image placeholder -->
-      <div class="bg-gray-100 rounded-xl h-36 flex items-center justify-center mb-4 overflow-hidden">
-        <img src="{{ asset('img/mobil.png') }}" alt="{{ $car['name'] }}"
-             class="h-full object-contain">
-      </div>
-
-      <div class="flex items-start justify-between">
-        <div>
-          <h3 class="font-bold text-gray-900 text-sm">{{ $car['name'] }}</h3>
-          <span class="text-primary font-extrabold text-base">{{ $car['price'] }}</span>
-          <span class="text-gray-400 text-xs">/hari</span>
-        </div>
-      </div>
-
-      <!-- Specs row -->
-      <div class="flex items-center gap-3 mt-3 text-xs text-gray-500">
-        <span class="flex items-center gap-1">
-          <svg class="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
-          {{ $car['seat'] }} Kursi
-        </span>
-        <span class="flex items-center gap-1">
-          <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          {{ $car['fuel'] }}
-        </span>
-        <span class="flex items-center gap-1">
-          <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          {{ $car['trans'] }}
-        </span>
-      </div>
-
-      <a href="#" class="mt-4 w-full text-center bg-primary hover:bg-primary text-white text-sm font-bold py-2.5 rounded-xl transition">
-        Book Now
-      </a>
+@foreach($kendaraans as $car)
+<div class="bg-white rounded-3xl shadow-sm border border-gray-50 p-6 flex flex-col w-full max-w-sm">
+    <div class="mb-4 overflow-hidden rounded-lg">
+        <img src="{{ asset('storage/'.$car->dir) }}" alt="{{ $car->nama_kendaraaan }}"
+             class="w-full h-48 object-contain rounded-lg ">
     </div>
-    @endforeach
+
+    <div class="flex justify-between items-start mb-1">
+        <div>
+            <h3 class="font-bold text-2xl text-gray-900 leading-tight">{{ $car->nama_kendaraan }}</h3>
+            <p class="text-gray-400 text-sm">{{ $car->category->nama_kategori }}</p> 
+        </div>
+        <div class="text-right">
+            <p class="text-orange-500 font-bold text-xl">Rp.{{ number_format($car->harga, 0, ',', '.') }}</p>
+            <p class="text-gray-400 text-xs">per day</p>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-between mt-6 mb-6">
+        <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+            </svg>
+            <span class="text-gray-500 text-sm font-medium">{{ $car->transmisi }}</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 16V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2zM13 14H7m0-4h6m6 10v-3"></path>
+            </svg>
+            <span class="text-gray-500 text-sm font-medium">{{ $car->bbm }}</span>
+        </div>
+
+        {{-- <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v3m4.243.757l-2.121 2.121M21 12h-3m-6 9v-3m-8.243-4.757l2.121-2.121M3 12h3m0 6.757l2.121-2.121m7.778 0l2.121 2.121"></path>
+            </svg>
+            <span class="text-gray-500 text-sm font-medium">Air Conditioner</span>
+        </div> --}}
+    </div>
+
+    <a href="#" class="w-full text-center bg-primary hover:bg-accent text-white font-bold py-4 rounded-2xl transition shadow-lg shadow-orange-200">
+        View Details
+    </a>
+</div>
+@endforeach
 
   </div>
 </section>
-
+   {{-- <span class="flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 text-primary" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
+          {{ $car['seat'] }} Kursi
+        </span> --}}
 
 <!-- ══════════════════════════════════════════
      FACTS IN NUMBERS
 ══════════════════════════════════════════ -->
 <section class="max-w-7xl mx-auto px-6 mt-14">
   <div class="bg-primary rounded-3xl px-10 py-12 relative overflow-hidden">
-    <!-- Background watermark -->
     <div class="absolute right-10 top-1/2 -translate-y-1/2 opacity-10 pointer-events-none">
       <svg width="300" height="300" viewBox="0 0 200 200">
         <polygon points="100,5 195,195 5,195" fill="none" stroke="white" stroke-width="18"/>
@@ -338,14 +335,9 @@ $facts = [
   </div>
 </section>
 
-
-<!-- ══════════════════════════════════════════
-     CTA BANNER
-══════════════════════════════════════════ -->
 <section class="max-w-7xl mx-auto px-6 mt-8">
   <div class="bg-primary rounded-3xl px-12 py-14 flex flex-col md:flex-row items-center justify-between relative overflow-hidden">
 
-    <!-- Decorative car silhouette right -->
     <div class="absolute right-0 bottom-0 opacity-15 pointer-events-none">
       <svg width="300" height="160" viewBox="0 0 300 160" fill="white">
         <ellipse cx="150" cy="140" rx="140" ry="20"/>
@@ -377,10 +369,6 @@ $facts = [
   </div>
 </section>
 
-
-<!-- ══════════════════════════════════════════
-     FOOTER
-══════════════════════════════════════════ -->
 <footer class="bg-gray-900 text-gray-400 mt-14 pt-14 pb-8">
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
@@ -413,7 +401,6 @@ $facts = [
           <li><a href="#" class="hover:text-primary transition">Sewa Mingguan</a></li>
           <li><a href="#" class="hover:text-primary transition">Sewa Bulanan</a></li>
           <li><a href="#" class="hover:text-primary transition">Antar Jemput</a></li>
-          <li><a href="#" class="hover:text-primary transition">Tour & Travel</a></li>
         </ul>
       </div>
 
@@ -431,24 +418,7 @@ $facts = [
 
       <!-- Download App -->
       <div>
-        <h4 class="text-white font-bold text-sm mb-4">Download App</h4>
-        <p class="text-xs leading-relaxed mb-4">Dapatkan kemudahan pemesanan melalui aplikasi kami.</p>
-        <div class="space-y-2">
-          <a href="#" class="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 px-4 py-2.5 rounded-xl transition">
-            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.42.07 2.38.8 3.19.85 1.22-.25 2.38-1 3.69-.87 1.58.19 2.77.9 3.52 2.25-3.23 1.96-2.43 6.18.6 7.32-.58 1.68-1.36 3.34-3 3.33zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-            <div>
-              <div class="text-gray-400 text-[10px]">Download on the</div>
-              <div class="text-white font-bold text-xs">App Store</div>
-            </div>
-          </a>
-          <a href="#" class="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 px-4 py-2.5 rounded-xl transition">
-            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M3.18 23.76c.3.16.65.18.97.06l12.4-7.17-2.77-2.77-10.6 9.88zm-1.15-21.2a1.5 1.5 0 00-.03.37v18.14c0 .14.01.27.04.4l10.88-10.06L2.03 2.56zm19.07 8.94l-2.48-1.44-3.13 2.9 3.13 2.9 2.5-1.45a1.5 1.5 0 000-2.91zm-18.03-9.5l10.6 9.87 2.77-2.77L3.97.94a1.1 1.1 0 00-.9.06z"/></svg>
-            <div>
-              <div class="text-gray-400 text-[10px]">Get it on</div>
-              <div class="text-white font-bold text-xs">Google Play</div>
-            </div>
-          </a>
-        </div>
+     hai
       </div>
 
     </div>

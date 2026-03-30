@@ -41,11 +41,5 @@
         <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors">
             <span class="font-medium text-sm">Settings</span>
         </a>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="flex items-center px-4 py-2 text-gray-600 hover:text-red-500 transition-colors">
-                <span class="font-medium text-sm">Logout</span>
-            </a>
-        </form>
     </div>
 </aside>

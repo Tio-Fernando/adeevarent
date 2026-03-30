@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+     
     }
 
     /**
@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Logika untuk mengatur arah tendangan Middleware Guest
+
         RedirectIfAuthenticated::redirectUsing(function () {
             $user = Auth::user();
 
@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
                 return route('dashboard');
             }
 
-            // Jika dia user biasa/Pelanggan, arahkan ke home
+      
             return route('home');
         });
     }

@@ -83,6 +83,6 @@
                 
             </div>
         </div>
-     
+     @include('sweetalert2::index')
     </body>
 </html>
