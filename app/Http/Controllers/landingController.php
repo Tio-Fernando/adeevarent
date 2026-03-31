@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kendaraan;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class landingController extends Controller
@@ -12,7 +13,7 @@ class landingController extends Controller
      */
     public function index()
     {
-        $kendaraans = Kendaraan::with(['category','cabang'])->latest()->paginate(6);
+        $kendaraans = Kendaraan::with(['category','cabang'])->latest()->take(6)->get();
         return view('welcome',compact('kendaraans'));
     }
 
@@ -22,6 +23,22 @@ class landingController extends Controller
     public function create()
     {
         //
+    }
+
+    public function armada(Request $request)
+    {
+        $query = Kendaraan::with(['category', 'cabang']);
+
+        if ($request->has('category')) {
+            $query->whereHas('category', function($q) use ($request){
+                $q->where('nama_kategori', $request->category);
+            });
+        }
+
+        $kendaraans = $query->latest()->paginate(9);
+        $categories = Category::all();
+
+        return view('armada', compact('kendaraans', 'categories'));
     }
 
     /**
@@ -37,7 +54,8 @@ class landingController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $mobil = Kendaraan::with(['category', 'cabang'])->findOrFail($id);
+        return view('armada_detail', compact('mobil'));
     }
 
     /**

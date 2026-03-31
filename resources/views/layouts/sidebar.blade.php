@@ -27,12 +27,19 @@
                 {{ request()->routeIs('kategori.index') ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
                     <span class="font-medium text-sm">Kategori Mobil</span>
                 </a>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors">
-                <span class="font-medium text-sm">Booking</span>
-            </a>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors">
-                <span class="font-medium text-sm">Laporan</span>
-            </a>
+          <a href="{{ route('booking.index') }}"
+                class="flex items-center px-4 py-3 rounded-lg transition-colors
+                {{ request()->routeIs('booking.index') ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
+                    <span class="font-medium text-sm">Booking</span>
+                </a>
+         
+          <a href="{{ route('laporan.index') }}"
+                class="flex items-center px-4 py-3 rounded-lg transition-colors
+                {{ request()->routeIs('laporan.index') ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}">
+                    <span class="font-medium text-sm">Laporan</span>
+                </a>
+      
+         
        
         </nav>
     </div>
