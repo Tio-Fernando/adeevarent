@@ -1,120 +1,12 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Adeva Rent - Car Rental</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-<style>
-  body { font-family: 'Inter', sans-serif; }
+<x-user>
+  <section class="max-w-7xl mx-auto px-6 mt-8">
+  <div class="relative bg-primary rounded-3xl overflow-hidden flex items-stretch">
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
-  }
-
-  .tire-track {
-    background-image: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 6px,
-      rgba(0,0,0,0.08) 6px,
-      rgba(0,0,0,0.08) 10px
-    );
-  }
-
-  .car-card:hover { transform: translateY(-4px); transition: transform .25s ease; }
-  .car-card { transition: transform .25s ease; }
-</style>
-</head>
-<body class="bg-gray-50 text-gray-800">
-
-
-<nav class="bg-white shadow-sm sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
-
-    <a href="#" class="flex items-center gap-2">
-      <img src="{{ asset('img/Logo.png') }}" alt="">
-    </a>
-
-    <ul class="hidden md:flex gap-8 text-sm font-medium text-gray-700">
-      <li><a href="#" class="text-primary font-bold">Home</a></li>
-      <li><a href="#" class="hover:text-primary transition">Profile</a></li>
-      <li><a href="#" class="hover:text-primary transition">Armada</a></li>
-      <li><a href="#" class="hover:text-primary transition">Fasilitas</a></li>
-      <li><a href="#" class="hover:text-primary transition">Galery</a></li>
-      <li><a href="#" class="hover:text-primary transition">Hubungi Kami</a></li>
-    </ul>
-
-    @auth    
-    <div class="relative" x-data="{ open: false }" @click.away="open = false">
-           <div @click="open = !open" class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition">
-               <img class="w-10 h-10 rounded-full border-2 border-orange-100" 
-                    src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=FF9E0C&color=fff" 
-                    alt="{{ Auth::user()->name }}">
-               
-               <div class="hidden sm:block">
-                   <p class="text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</p>
-                   <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
-               </div>
-               
-               <svg class="w-4 h-4 text-gray-500 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-               </svg>
-           </div>
-   
-           <div x-show="open" 
-                x-transition:enter="transition ease-out duration-100"
-                x-transition:enter-start="transform opacity-0 scale-95"
-                x-transition:enter-end="transform opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-75"
-                x-transition:leave-start="transform opacity-100 scale-100"
-                x-transition:leave-end="transform opacity-0 scale-95"
-                class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-30 overflow-hidden" 
-                style="display: none;">
-               
-               <div class="px-4 py-3 border-b border-gray-50 md:hidden">
-                   <p class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</p>
-               </div>
-   
-               <a href="{{ route('profile.user') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
-                   <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                   My Profile
-               </a>
-   
-               <hr class="border-gray-50">
-   
-               <form method="POST" action="{{ route('logout') }}">
-                   @csrf
-                   <button type="submit" class="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition">
-                       <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                       Logout
-                   </button>
-               </form> 
-           </div>
-       </div>
-    @endauth
-
-    @guest
-      
-      <a href="{{ route('login') }}"
-        class="bg-primary hover:bg-accent text-white text-sm font-bold px-5 py-2.5 rounded-lg transition shadow-md">
-        Login
-      </a>
-    @endguest
-  </div>
-</nav>
-
-
-<section class="max-w-7xl mx-auto px-6 mt-8">
-  <div class="relative bg-primary rounded-3xl overflow-hidden min-h-[420px] flex items-stretch">
-
+    {{-- Skew background --}}
     <div class="absolute right-[-40px] top-0 w-[55%] h-full bg-primary opacity-60 -skew-x-6 rounded-r-3xl z-0"></div>
 
-    <div class="absolute right-6 top-1/2 -translate-y-1/2 z-[1] opacity-15 pointer-events-none">
+    {{-- Triangle decoration --}}
+    <div class="hidden sm:block absolute right-6 top-1/2 -translate-y-1/2 z-[1] opacity-15 pointer-events-none">
       <svg width="280" height="280" viewBox="0 0 200 200">
         <polygon points="100,5 195,195 5,195" fill="none" stroke="white" stroke-width="18"/>
         <polygon points="100,40 170,175 30,175" fill="none" stroke="white" stroke-width="9"/>
@@ -141,24 +33,28 @@
       </svg>
     </div>
 
-    <div class="relative z-10 flex flex-col justify-center px-12 py-14 max-w-[460px]">
-      <h1 class="text-4xl md:text-5xl font-extrabold text-white leading-tight">
-        Experience the road<br>like never before
-      </h1>
-      <p class="mt-4 text-white/75 text-sm leading-relaxed max-w-xs">
-        Aliquam adipiscing velit semper morbi. Purus non eu cursus porttitor tristique et gravida. Quis nunc interdum gravida ullamcorper.
-      </p>
-      <a href="#" class="mt-6 w-fit bg-white text-primary text-sm font-bold px-7 py-3 rounded-full shadow-lg hover:bg-gray-50 transition">
-        View all cars
-      </a>
+    <div class="relative z-10 w-full grid grid-cols-1 sm:grid-cols-2">
+
+      <div class="flex flex-col justify-center px-8 sm:px-12 py-10 sm:py-14 text-center sm:text-left">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
+          Experience the road<br>like never before
+        </h1>
+        <p class="mt-3 sm:mt-4 text-white/75 text-sm leading-relaxed max-w-sm mx-auto sm:mx-0">
+          Aliquam adipiscing velit semper morbi. Purus non eu cursus porttitor tristique et gravida. Quis nunc interdum gravida ullamcorper.
+        </p>
+        <a href="#" class="mt-5 sm:mt-6 w-fit mx-auto sm:mx-0 bg-white text-primary text-sm font-bold px-7 py-3 rounded-full shadow-lg hover:bg-gray-50 transition">
+          View all cars
+        </a>
+      </div>
+
+      <div class="flex items-end sm:items-center justify-center px-6 pb-0 sm:py-14 sm:pr-8">
+        <img src="{{ asset('img/mobil2.png') }}" alt="Car"
+             class="w-full max-w-[300px] sm:max-w-[500px] object-contain drop-shadow-2xl">
+      </div>
+
     </div>
 
-    <div class="absolute right-0 top-0 w-[55%] h-full z-10 flex items-center justify-center pr-8">
-      <img src="{{ asset('img/mobil2.png') }}" alt="Car"
-           class="w-full max-w-[500px] object-contain drop-shadow-2xl">
-    </div>
-
-  </div>
+</div>
 </section>
 
 
@@ -167,37 +63,49 @@
   <h2 class="text-2xl font-extrabold text-gray-900">Mengapa Memilih Kami</h2>
   <p class="mt-2 text-gray-400 text-sm max-w-md mx-auto">Kami memberikan layanan terbaik dengan berbagai keunggulan untuk pengalaman rental yang sempurna.</p>
 
-  <div class="grid grid-cols-3 gap-5 mt-8">
-    <div class="bg-white rounded-2xl p-6 text-left shadow-sm hover:shadow-md transition">
-      <div class="w-10 h-10 bg-white/30 rounded-xl flex items-center justify-center mb-4">
-        <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-        </svg>
-        <div>
+    <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-8">
+    
+      <div class="bg-white border border-1 hover:border-primary border-gray-200 rounded-2xl p-6 text-left shadow-sm hover:shadow-md transition">
+         <div class="flex items-center justify-center">
+ <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+          </svg>
+          <div>
+          </div>
         </div>
       </div>
-      <h3 class="text-black font-bold text-sm">Harga Terjangkau</h3>
-      <p class="text-black/75 text-xs mt-1 leading-relaxed">Layanan premium dengan harga yang kompetitif dan transparan</p>
+      
+        <h3 class=" text-center font-bold text-sm text-primary">Harga Terjangkau</h3>
+      <p class="text-black/75 text-xs mt-1 text-center leading-relaxed">Layanan premium dengan harga yang kompetitif dan transparan</p>
     </div>
-    <!-- Card 2 -->
-    <div class="bg-white rounded-2xl p-6 text-left shadow-sm hover:shadow-md transition">
-      <div class="w-10 h-10 bg-white/30 rounded-xl flex items-center justify-center mb-4">
-        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-        </svg>
-      </div>
-      <h3 class="text-white font-bold text-sm">Support 24/7</h3>
-      <p class="text-white/75 text-xs mt-1 leading-relaxed">Tim kami siap membantu Anda kapan saja dan di mana saja</p>
+  
+      <div class="bg-white border border-1 hover:border-primary border-gray-200 rounded-2xl p-6 text-left shadow-sm hover:shadow-md transition">
+       <div class="flex items-center justify-center">
+         <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+       </div>
+       <div class="text-center">
+         <h3 class="text-primary font-bold text-sm">Support 24/7</h3>
+         <p class="text-black/75 text-xs mt-1 leading-relaxed">Tim kami siap membantu Anda kapan saja dan di mana saja</p>
+        </div>
     </div>
-    <!-- Card 3 -->
-    <div class="bg-white rounded-2xl p-6 text-left shadow-sm hover:shadow-md transition">
-      <div class="w-10 h-10 bg-white/30 rounded-xl flex items-center justify-center mb-4">
-        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-        </svg>
+   
+    <div class="bg-white border border-1 hover:border-primary border-gray-200 rounded-2xl p-6 text-left shadow-sm hover:shadow-md transition">
+      <div class="flex items-center justify-center">
+        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+          </svg>
+        </div>
       </div>
-      <h3 class="text-white font-bold text-sm">Armada Lengkap</h3>
-      <p class="text-white/75 text-xs mt-1 leading-relaxed">Berbagai pilihan kendaraan untuk semua kebutuhan perjalanan Anda</p>
+      <div class="text-center">
+        <h3 class="text-primary font-bold text-sm">Armada Lengkap</h3>
+        <p class="text-black/75 text-xs mt-1 leading-relaxed">Berbagai pilihan kendaraan untuk semua kebutuhan perjalanan Anda</p>
+      </div>
     </div>
   </div>
 </section>
@@ -207,7 +115,7 @@
 <section class="max-w-7xl mx-auto px-6 mt-12">
   <div class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[240px]">
 
-    <!-- Left: Car image on primary-->
+
     <div class="md:w-2/5 bg-primary relative flex items-end justify-center pt-6 overflow-hidden">
       <!-- Watermark -->
       <div class="absolute inset-0 flex items-center justify-center opacity-15">
@@ -239,7 +147,7 @@
 <section class="max-w-7xl mx-auto px-6 mt-14">
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl font-extrabold text-gray-900">PILIH ARMADA ANDA<br>SEKARANG</h2>
-    <a href="#" class="text-primary text-sm font-semibold hover:underline">View All →</a>
+    <a href="{{ route('armada') }}" class="text-primary text-sm font-semibold hover:underline">View All →</a>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -303,35 +211,93 @@ $cars = [
           {{ $car['seat'] }} Kursi
         </span> --}}
 
-<!-- ══════════════════════════════════════════
-     FACTS IN NUMBERS
-══════════════════════════════════════════ -->
+
 <section class="max-w-7xl mx-auto px-6 mt-14">
   <div class="bg-primary rounded-3xl px-10 py-12 relative overflow-hidden">
-    <div class="absolute right-10 top-1/2 -translate-y-1/2 opacity-10 pointer-events-none">
-      <svg width="300" height="300" viewBox="0 0 200 200">
-        <polygon points="100,5 195,195 5,195" fill="none" stroke="white" stroke-width="18"/>
+
+    {{-- Tire track decoration kiri --}}
+    <div class="absolute left-0 top-0 h-full opacity-15 pointer-events-none">
+      <svg width="120" height="100%" viewBox="0 0 120 400" preserveAspectRatio="none">
+        <g fill="#7c4500">
+          <rect x="10" y="0" width="14" height="6" rx="2"/><rect x="10" y="18" width="14" height="6" rx="2"/>
+          <rect x="10" y="36" width="14" height="6" rx="2"/><rect x="10" y="54" width="14" height="6" rx="2"/>
+          <rect x="10" y="72" width="14" height="6" rx="2"/><rect x="10" y="90" width="14" height="6" rx="2"/>
+          <rect x="10" y="108" width="14" height="6" rx="2"/><rect x="10" y="126" width="14" height="6" rx="2"/>
+          <rect x="10" y="144" width="14" height="6" rx="2"/><rect x="10" y="162" width="14" height="6" rx="2"/>
+          <rect x="10" y="180" width="14" height="6" rx="2"/><rect x="10" y="198" width="14" height="6" rx="2"/>
+          <rect x="10" y="216" width="14" height="6" rx="2"/><rect x="10" y="234" width="14" height="6" rx="2"/>
+          <rect x="10" y="252" width="14" height="6" rx="2"/><rect x="10" y="270" width="14" height="6" rx="2"/>
+          <rect x="10" y="288" width="14" height="6" rx="2"/><rect x="10" y="306" width="14" height="6" rx="2"/>
+          <rect x="10" y="324" width="14" height="6" rx="2"/><rect x="10" y="342" width="14" height="6" rx="2"/>
+          <rect x="40" y="0" width="14" height="6" rx="2"/><rect x="40" y="18" width="14" height="6" rx="2"/>
+          <rect x="40" y="36" width="14" height="6" rx="2"/><rect x="40" y="54" width="14" height="6" rx="2"/>
+          <rect x="40" y="72" width="14" height="6" rx="2"/><rect x="40" y="90" width="14" height="6" rx="2"/>
+          <rect x="40" y="108" width="14" height="6" rx="2"/><rect x="40" y="126" width="14" height="6" rx="2"/>
+          <rect x="40" y="144" width="14" height="6" rx="2"/><rect x="40" y="162" width="14" height="6" rx="2"/>
+          <rect x="40" y="180" width="14" height="6" rx="2"/><rect x="40" y="198" width="14" height="6" rx="2"/>
+          <rect x="40" y="216" width="14" height="6" rx="2"/><rect x="40" y="234" width="14" height="6" rx="2"/>
+          <rect x="40" y="252" width="14" height="6" rx="2"/><rect x="40" y="270" width="14" height="6" rx="2"/>
+          <rect x="40" y="288" width="14" height="6" rx="2"/><rect x="40" y="306" width="14" height="6" rx="2"/>
+          <rect x="40" y="324" width="14" height="6" rx="2"/><rect x="40" y="342" width="14" height="6" rx="2"/>
+        </g>
       </svg>
     </div>
 
-    <h2 class="text-white text-2xl font-extrabold text-center mb-10">Facts in Numbers</h2>
+    {{-- Gambar mobil di tengah sebagai background --}}
+    <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+      <img src="{{ asset('img/mobil2.png') }}" alt="" class="w-[60%] max-w-[500px] object-contain">
+    </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
+    <div class="relative z-10 text-center mb-10">
+      <h2 class="text-white text-3xl sm:text-4xl font-extrabold">Facts In Numbers</h2>
+      <p class="text-white/70 text-sm mt-3 max-w-md mx-auto leading-relaxed">
+        Amet cras hac orci lacus. Faucibus ipsum arcu lectus nibh sapien bibendum ullamcorper in. Diam tincidunt tincidunt erat at semper fermentum.
+      </p>
+    </div>
+
+    {{-- Cards --}}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
       @php
-$facts = [
-  ['num' => '50+', 'label' => 'Armada Tersedia'],
-  ['num' => '30+', 'label' => 'Destinasi'],
-  ['num' => '2K+', 'label' => 'Pelanggan Puas'],
-  ['num' => '20+', 'label' => 'Penghargaan'],
-];
+        $facts = [
+          [
+            'num'   => '50+',
+            'label' => 'Armada Tersedia',
+            'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 17H3a2 2 0 01-2-2V7a2 2 0 012-2h11l5 5v5a2 2 0 01-2 2h-2M9 17a2 2 0 100 4 2 2 0 000-4zm8 0a2 2 0 100 4 2 2 0 000-4z"/>',
+          ],
+          [
+            'num'   => '2K+',
+            'label' => 'Pelanggan Puas',
+            'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/>',
+          ],
+          [
+            'num'   => '30+',
+            'label' => 'Destinasi',
+            'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4"/>',
+          ],
+          [
+            'num'   => '20+',
+            'label' => 'Penghargaan',
+            'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>',
+          ],
+        ];
       @endphp
+
       @foreach($facts as $fact)
-      <div class="bg-primary/60 rounded-2xl p-5 text-center">
-        <div class="text-white text-3xl font-black">{{ $fact['num'] }}</div>
-        <div class="text-white/80 text-xs mt-1 font-medium">{{ $fact['label'] }}</div>
+      <div class="bg-white rounded-2xl px-5 py-4 flex flex-col md:flex-row items-center gap-4 shadow-md">
+      
+        <div class="shrink-0 w-11 h-11 rounded-full bg-primary/15 flex items-center justify-center">
+          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {!! $fact['icon'] !!}
+          </svg>
+        </div>
+        <div>
+          <div class="text-gray-900 text-2xl font-black leading-tight">{{ $fact['num'] }}</div>
+          <div class="text-gray-500 text-xs font-medium">{{ $fact['label'] }}</div>
+        </div>
       </div>
       @endforeach
     </div>
+
   </div>
 </section>
 
@@ -369,7 +335,5 @@ $facts = [
   </div>
 </section>
 
-<x-footer/>
 
-</body>
-</html>
+</x-user>

@@ -12,4 +12,5 @@ class Category extends Model
     public function kendaraan(){
         return $this->hasMany(Kendaraan::class);
     }
+    
 }

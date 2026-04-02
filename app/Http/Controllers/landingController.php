@@ -41,6 +41,16 @@ class landingController extends Controller
         return view('armada', compact('kendaraans', 'categories'));
     }
 
+    public function fasilitas()
+    {
+        return view('fasilitas');
+    }
+
+    public function gallery()
+    {
+        return view('gallery');
+    }
+
     /**
      * Store a newly created resource in storage.
      */

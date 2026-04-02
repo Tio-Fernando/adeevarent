@@ -78,7 +78,7 @@ class CategoryController extends Controller
         $kategori->update([
             'nama_kategori' => $request->nama_kategori
         ]);
-
+        
         
         Swal::success([
             'title' => 'Berhasil',

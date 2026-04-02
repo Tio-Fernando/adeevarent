@@ -12,12 +12,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [landingController::class, 'index'])->name('home');
 
+Route::get('/armada',[landingController::class,'armada'])->name('armada');
+Route::get('/fasilitas',[landingController::class,'fasilitas'])->name('fasilitas');
+Route::get('/gallery',[landingController::class,'gallery'])->name('gallery');
+
+Route::resource('laporan',LaporanController::class);
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
 Route::middleware(['auth','role:Administrator'])->group(function(){
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-    
-    Route::resource('laporan',LaporanController::class);
     Route::resource('kendaraan',KendaraanController::class);
     Route::resource('kategori', CategoryController::class);
     Route::resource('wilayah',CabangController::class);
