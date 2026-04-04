@@ -39,3 +39,11 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/profile-perusahaan', function () {
+    return view('profileCompany');
+})->name('profile.perusahaan');
+
+Route::get('/galery', function () {
+    return view('galery');
+})->name('galery');
