@@ -41,6 +41,13 @@ class landingController extends Controller
         return view('armada', compact('kendaraans', 'categories'));
     }
 
+
+    public function detail(Request $request,$nopol){
+        $kendaraan = Kendaraan::with(['cabang','category'])->findOrFail($nopol);
+
+        return view('detail',compact('kendaraan'));
+    }
+
     public function fasilitas()
     {
         return view('fasilitas');

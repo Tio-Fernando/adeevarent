@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
             $user = Auth::user();
 
             if ($user->level === 'SuperAdmin') {
-                return redirect()->route('dashboard.super');
+                return redirect()->route('superadmin.dashboard');
             } elseif ($user->level === 'Administrator') {
                 return redirect()->route('dashboard');
             } else {
@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
 
         if($user->level === 'SuperAdmin'){
-            return redirect()->intended(route('dashboard.super'));
+            return redirect()->intended(route('superadmin.dashboard'));
         }elseif ($user->level === 'Administrator') {
              return redirect()->intended(route('dashboard'));
         } else {

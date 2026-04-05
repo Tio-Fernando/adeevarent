@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\CategoryController;
@@ -17,25 +18,28 @@ Route::get('/fasilitas',[landingController::class,'fasilitas'])->name('fasilitas
 Route::get('/gallery',[landingController::class,'gallery'])->name('gallery');
 
 Route::resource('laporan',LaporanController::class);
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+
 Route::middleware(['auth','role:Administrator'])->group(function(){
     Route::resource('kendaraan',KendaraanController::class);
     Route::resource('kategori', CategoryController::class);
+    Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
     Route::resource('wilayah',CabangController::class);
-    Route::resource('booking',BookingController::class);
-});
-
+    Route::get('/booking',[BookingController::class,'index'])->name('booking.index');
+    });
 Route::middleware(['auth','role:Pelanggan'])->group(function(){
-
+Route::post('/proses-booking/{nopol}', [BookingController::class, 'store'])->name('booking.store');
+Route::get('/armada/{nopol}',[landingController::class,'detail'])->name('detail');
+Route::get('/pembayaran/{id}', [BookingController::class, 'payment'])->name('payment');
+Route::post('/charge-payment/{id}', [BookingController::class, 'chargePayment'])->name('charge.payment');
 });
-
 
 Route::middleware(['auth','role:SuperAdmin'])->group(function(){
     Route::get('/superAdmin', function () {
         return view('superAdmin');
-    })->name('dashboard.super');
+    })->name('superadmin.dashboard');
+    Route::resource('admin',AdminController::class);
 });
 
 

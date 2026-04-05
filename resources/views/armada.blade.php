@@ -57,9 +57,10 @@
                             </div>
                             <div class="flex items-center gap-2"><i class="fas fa-cogs text-gray-400"></i> CVT</div>
                         </div>
-                        <button
-                            class="w-full bg-primary text-white py-2.5 rounded-xl font-semibold hover:bg-accent transition-colors">View
-                            Details</button>
+                    <a href="{{ Auth::check() ? route('detail',$mobil->nopol) : route('login') }}"
+                    class="px-4 bg-primary text-white py-2.5 rounded-xl font-semibold hover:bg-accent transition-colors">
+                    View Details
+                    </a>
                     </div>
                 </div>
 

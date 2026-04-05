@@ -15,7 +15,7 @@
     <body class="font-sans antialiased bg-gray-50 text-gray-900">
         <div class="flex h-screen overflow-hidden">
             
-            @include('layouts.sidebar')
+            @include('components.sidebar-superadmin')
 
             <div class="flex-1 flex flex-col overflow-hidden">
                 

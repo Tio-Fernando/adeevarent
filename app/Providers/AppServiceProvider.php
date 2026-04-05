@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
             $user = Auth::user();
 
             if ($user->level === 'SuperAdmin') {
-                return route('dashboard.super');
+                return route('superadmin.dashboard');
             } elseif ($user->level === 'Administrator') {
                 return route('dashboard');
             }
