@@ -24,6 +24,11 @@
       rgba(0,0,0,0.08) 6px,
       rgba(0,0,0,0.08) 10px
     );
+    select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
   }
 
   .car-card:hover { transform: translateY(-4px); transition: transform .25s ease; }

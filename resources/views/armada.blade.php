@@ -1,12 +1,43 @@
 <x-user>
-    {{-- Karena di layout app.blade.php sudah ada header dan sidebar,
-    kita tidak perlu memasukkan navbar public lagi di sini. --}}
+  
 
-    <div class="py-8" x-data="{ activeCategory: 'all'}">
+ <div class="py-8" x-data="{ 
+    activeCategory: 'all', 
+    activeCabang: '{{ request('lokasi', 'all') }}' 
+}">
         <div class="text-center mb-12">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Cari Mobil Terbaik untuk Perjalanan Nyaman</h1>
         </div>
 
+        <div class="flex justify-center mb-4 ">
+        <form action="{{ route('armada') }}" method="GET" class="flex items-center bg-white p-1.5 rounded-full shadow-lg border border-gray-100 max-w-2xl mx-auto w-full">
+    
+    <!-- Bagian Select (Kiri) -->
+    <div class="relative flex-grow">
+        <select name="lokasi" class="w-full bg-transparent border-none text-gray-500 font-medium focus:ring-0 appearance-none pl-6 pr-10 py-3 cursor-pointer outline-none">
+            
+            <option value="">Semua Lokasi</option>
+        
+            @foreach($cabangs as $cab)
+                <option value="{{ $cab->lokasi }}" {{ request('lokasi') == $cab->lokasi ? 'selected' : '' }}>
+                    {{ $cab->lokasi }}
+                </option>
+            @endforeach
+            
+        </select>
+        
+        <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-gray-400">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </div>
+    </div>
+    <button type="submit" class="bg-primary hover:bg-orange-600 text-white font-bold py-3 px-8 sm:px-10 rounded-full transition-colors flex-shrink-0 shadow-md">
+        Cari
+    </button>
+
+</form>
+        </div>
         <div class="flex flex-wrap justify-center gap-4 mb-12">
             <button 
                 @click="activeCategory = 'all'"
@@ -24,14 +55,15 @@
             
         </div>
 
+
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                 {{-- Contoh Looping Data dari Database nantinya: --}}
                 @foreach($kendaraans as $mobil)
-
                 <div
-                    x-show="activeCategory === 'all' || activeCategory === '{{ $mobil->category->nama_kategori }}'"
+                 x-show="(activeCategory === 'all' || activeCategory === '{{ $mobil->category->nama_kategori }}') 
+            && (activeCabang === 'all' || activeCabang === '{{ $mobil->cabang->lokasi }}')"
                     x-transition:enter="transition ease-out duration-300"
                     x-transition:enter-start="opacity-0 scale-90"
                     x-transition:enter-end="opacity-100 scale-100"
@@ -55,12 +87,23 @@
                             </div>
                             <div class="flex items-center gap-2"><i class="fas fa-calendar-alt text-gray-400"></i> {{ $mobil->tahun }}
                             </div>
+                            <div class="flex items-center gap-1 mt-2 text-xs text-gray-500">
+        <i class="fas fa-map-marker-alt text-orange-500"></i>
+        <span>{{ $mobil->cabang->lokasi }}</span>
+    </div>
                             <div class="flex items-center gap-2"><i class="fas fa-cogs text-gray-400"></i> CVT</div>
                         </div>
-                    <a href="{{ Auth::check() ? route('detail',$mobil->nopol) : route('login') }}"
-                    class="px-4 bg-primary text-white py-2.5 rounded-xl font-semibold hover:bg-accent transition-colors">
-                    View Details
-                    </a>
+                        <div class="flex justify-between">
+                            <a href="{{ Auth::check() ? route('detail',$mobil->nopol) : route('login') }}"
+                            class="px-4 bg-primary text-white py-2.5 rounded-xl font-semibold hover:bg-accent transition-colors">
+                            View Details
+                            </a>
+                                @if($mobil->status == 'free')
+                        <span class="bg-green-200 text-green-700 text-xs font-bold px-3 py-3 rounded-md uppercase">FREE</span>
+                    @else
+                        <span class="bg-red-200 text-red-700 text-xs font-bold px-3 py-3 rounded-md uppercase">{{ $mobil->status }}</span>
+                    @endif
+                        </div>
                     </div>
                 </div>
 

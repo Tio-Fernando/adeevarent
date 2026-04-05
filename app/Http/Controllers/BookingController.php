@@ -109,7 +109,7 @@ class BookingController extends Controller
         'snap_token'        => $snapToken,
         'jumlah_bayar'      => $dpWajib,
          'payment_type'      => 'midtrans',
-        'status_pembayaran' => 'dp',
+        'status_pembayaran' => 'pending',
     ]);
 
     return redirect()->route('payment', $booking->id);
@@ -169,5 +169,43 @@ public function chargePayment(Request $request, $id)
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+
+    public function midtransCallback(Request $request)
+    {
+        $serverKey = config('services.midtrans.serverKey');
+       
+        $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+        
+        if ($hashed == $request->signature_key) {
+            $payment = Payment::where('order_id', $request->order_id)->first();
+            
+            if ($payment) {
+                $sewa = Sewa::find($payment->sewa_id);
+                $kendaraan = Kendaraan::where('nopol', $sewa->nopol)->first();
+
+                if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
+                    $payment->update(['status_pembayaran' => 'Lunas']);
+                    $sewa->update(['status' => 'Dibayar']); 
+                    
+                    // BARU KITA KUNCI MOBILNYA DI SINI!
+                    if ($kendaraan && $kendaraan->status !== 'booked') {
+                        $kendaraan->update(['status' => 'booked']);
+                    }
+                } 
+                
+                // JIKA PEMBAYARAN GAGAL / KEDALUWARSA / DIBATALKAN
+                else if ($request->transaction_status == 'cancel' || $request->transaction_status == 'deny' || $request->transaction_status == 'expire') {
+                    $payment->update(['status_pembayaran' => 'Gagal']);
+                    $sewa->update(['status' => 'Dibatalkan']);
+                    
+                    // Tidak perlu mengubah status kendaraan ke free
+                    // Karena dari awal memang belum kita ubah ke booked
+                }
+            }
+        }
+        
+        return response()->json(['message' => 'Callback received']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cabang;
 use App\Models\Kendaraan;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -34,11 +35,17 @@ class landingController extends Controller
                 $q->where('nama_kategori', $request->category);
             });
         }
+        if ($request->filled('lokasi')) {
+       $query->whereHas('cabang', function($q) use ($request){
+                $q->where('lokasi', $request->lokasi);
+            });
+    }
 
         $kendaraans = $query->latest()->paginate(9);
+        $cabangs = Cabang::all();
         $categories = Category::all();
 
-        return view('armada', compact('kendaraans', 'categories'));
+        return view('armada', compact('kendaraans', 'categories', 'cabangs'));
     }
 
 
