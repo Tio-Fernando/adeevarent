@@ -67,26 +67,38 @@
             @csrf
             <input type="hidden" name="nopol" value="{{ $kendaraan->nopol }}">
             <input type="hidden" id="harga_sewa" value="{{ $kendaraan->harga }}">
-
-            {{-- Rental Duration --}}
-            <div class="mb-8">
-                <h3 class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-3">Rental Duration</h3>
-                <div class="bg-white rounded-2xl flex flex-col md:flex-row border border-gray-200 overflow-hidden">
-                    <div class="flex-1 p-5 border-b md:border-b-0 md:border-r border-gray-200">
-                        <label class="text-xs text-gray-500 mb-1 block font-semibold">Pick-up Date</label>
-                        <input type="date" name="tgl_sewa" id="tanggal_sewa"
-                               class="w-full bg-transparent border-none p-0 text-base font-bold text-gray-900 focus:ring-0 cursor-pointer"
-                               required onchange="hitungTotal()">
-                    </div>
-                    <div class="flex-1 p-5">
-                        <label class="text-xs text-gray-500 mb-1 block font-semibold">Return Date</label>
-                        <input type="date" name="jadwal_kembali" id="tanggal_kembali"
-                               class="w-full bg-transparent border-none p-0 text-base font-bold text-gray-900 focus:ring-0 cursor-pointer"
-                               required onchange="hitungTotal()">
-                    </div>
-                </div>
-            </div>
-
+            <input type="hidden" name="latitude" id="lat">
+    <input type="hidden" name="longitude" id="lng">
+        {{-- Rental Duration --}}
+<div class="mb-8">
+    <h3 class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-3">Rental Duration</h3>
+    <div class="bg-white rounded-2xl flex flex-col md:flex-row border border-gray-200 overflow-hidden">
+        {{-- Tanggal Pick-up --}}
+        <div class="flex-1 p-5 border-b md:border-b-0 md:border-r border-gray-200">
+            <label class="text-xs text-gray-500 mb-1 block font-semibold">Pick-up Date & Time</label>
+            <input type="datetime-local" name="tgl_sewa" id="tanggal_sewa"
+                   class="w-full bg-transparent border-none p-0 text-base font-bold text-gray-900 focus:ring-0 cursor-pointer"
+                   required onchange="hitungTotal()">
+        </div>
+        {{-- Dropdown Durasi --}}
+        <div class="flex-1 p-5">
+            <label class="text-xs text-gray-500 mb-1 block font-semibold">Duration</label>
+            <select id="durasi_hari" name="durasi" 
+                    class="w-full bg-transparent border-none p-0 text-base font-bold text-gray-900 focus:ring-0 cursor-pointer"
+                    onchange="hitungTotal()">
+                @for ($i = 1; $i <= 30; $i++)
+                    <option value="{{ $i }}">{{ $i }} Hari</option>
+                @endfor
+            </select>
+        </div>
+    </div>
+    {{-- Hidden Input untuk jadwal_kembali agar backend tidak error --}}
+    <input type="hidden" name="jadwal_kembali" id="tanggal_kembali">
+    
+    <p class="text-[10px] text-gray-400 mt-2 px-2">
+        *Mobil dikembalikan pada jam yang sama di hari terakhir sewa (Sistem 24 Jam).
+    </p>
+</div>
             {{-- Opsi Layanan --}}
             <div class="mb-8 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                 <h3 class="text-lg font-bold text-gray-900 mb-4">Opsi Layanan & Pengambilan</h3>
@@ -127,18 +139,27 @@
                                 <input type="radio" name="opsi_pengantaran" value="diantar"
                                        class="w-4 h-4 text-orange-500 focus:ring-orange-400"
                                        onchange="toggleAlamat()">
-                                <span class="ml-3 text-sm text-gray-700 font-medium">Diantar ke Lokasi (+ Rp 50.000)</span>
+                                <span class="ml-3 text-sm text-gray-700 font-medium">Diantar ke Lokasi</span>
                             </label>
                         </div>
                     </div>
                 </div>
 
-                <div id="boxAlamat" class="mt-4 hidden transition-all duration-300">
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Detail Alamat Penjemputan / Pengantaran</label>
-                    <textarea name="lokasi_jemput" rows="2"
-                              class="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
-                              placeholder="Contoh: Jl. Merdeka No 10, RT 01/RW 02..."></textarea>
-                </div>
+               <div id="boxAlamat" class="mt-4 hidden transition-all duration-300">
+    <label class="block text-sm font-bold text-gray-700 mb-2">Detail Alamat Pengantaran</label>
+    
+    <button type="button" onclick="getCurrentLocation()" 
+            class="mb-3 flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-accent transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        Deteksi Lokasi GPS Saya
+    </button>
+
+    <div id="map" style="height: 300px; border-radius: 12px; border: 2px solid #e5e7eb; z-index: 1 !important;"></div>
+    <p class="text-xs text-gray-500 mt-2">*Pastikan GPS aktif dan beri izin akses lokasi jika muncul notifikasi.</p>
+</div>
             </div>
 
             {{-- Payment Summary --}}
@@ -149,13 +170,9 @@
                         <p class="text-sm text-gray-600">Harga Sewa <span id="text_durasi">(0 hari)</span></p>
                         <p class="text-sm font-bold text-gray-800" id="summary_sewa">Rp. 0</p>
                     </div>
-                    <div class="flex justify-between items-center mb-3">
+                    <div class="flex justify-between items-center mb-5">
                         <p class="text-sm text-gray-600">Biaya Supir</p>
                         <p class="text-sm font-bold text-gray-800" id="summary_supir">Rp. 0</p>
-                    </div>
-                    <div class="flex justify-between items-center mb-5">
-                        <p class="text-sm text-gray-600">Biaya Antar</p>
-                        <p class="text-sm font-bold text-gray-800" id="summary_antar">Rp. 0</p>
                     </div>
                     <div class="border-t border-gray-300 pt-5 flex justify-between items-end">
                         <div>
@@ -173,53 +190,171 @@
                 </div>
             </div>
 
-            <button type="submit"
-                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-4 rounded-xl transition duration-200 shadow-md">
-                Lanjut Booking
+            @php $canBook = strtolower($kendaraan->status) === 'free'; @endphp
+        <button type="submit"
+                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-4 rounded-xl transition duration-200 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                    {{ $canBook ? '' : 'disabled' }}>
+                {{ $canBook ? 'Lanjut Booking' : 'Kendaraan Tidak Tersedia' }}
             </button>
+            @unless($canBook)
+                <p class="text-sm text-red-600 mt-3 font-semibold">Kendaraan tidak bisa dipesan karena status {{ strtoupper($kendaraan->status) }}.</p>
+            @endunless
         </form>
     </div>
 
-    <script>
-        const formatRupiah = (angka) => {
-            return 'Rp. ' + new Intl.NumberFormat('id-ID').format(angka);
-        }
+ <script>
 
-        function toggleAlamat() {
-            const opsi = document.querySelector('input[name="opsi_pengantaran"]:checked').value;
-            document.getElementById('boxAlamat').classList.toggle('hidden', opsi !== 'diantar');
-            hitungTotal();
-        }
 
-        function hitungTotal() {
-            const valMulai     = document.getElementById('tanggal_sewa').value;
-            const valKembali   = document.getElementById('tanggal_kembali').value;
-            const hargaPerHari = parseInt(document.getElementById('harga_sewa').value) || 0;
 
-            let durasi = 0;
-            if (valMulai && valKembali) {
-                const tglMulai   = new Date(valMulai);
-                const tglKembali = new Date(valKembali);
-                durasi = Math.ceil((tglKembali - tglMulai) / (1000 * 60 * 60 * 24)) + 1;
-                if (durasi < 1) durasi = 0;
+    var map, marker;
+
+    function getCurrentLocation() {
+    if (navigator.geolocation) {
+        // Notifikasi loading (opsional)
+        const btn = event.currentTarget;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "Mencari Lokasi";
+        btn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+             
+                document.getElementById('lat').value = lat;
+                document.getElementById('lng').value = lng;
+
+                // 2. Update Peta & Marker
+                const newPos = [lat, lng];
+                map.setView(newPos, 18); // Zoom sangat dekat (akurat)
+
+                if (marker) {
+                    marker.setLatLng(newPos);
+                } else {
+                    marker = L.marker(newPos).addTo(map);
+                }
+
+                marker.bindPopup("Lokasi Kamu Terdeteksi!").openPopup();
+                
+       
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            },
+            (error) => {
+                alert("Gagal mengambil lokasi: " + error.message);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            },
+            {
+             enableHighAccuracy: true,
+            timeout: 15000,           // Beri waktu 15 detik untuk nyari satelit
+            maximumAge: 0
             }
+        );
+    } else {
+        alert("Browser kamu tidak mendukung GPS.");
+    }
+}
 
-            const jenisSewa = document.querySelector('input[name="jenis_sewa"]:checked').value;
-            const opsiAntar = document.querySelector('input[name="opsi_pengantaran"]:checked').value;
+    function toggleAlamat() {
+        const opsi = document.querySelector('input[name="opsi_pengantaran"]:checked').value;
+        const boxAlamat = document.getElementById('boxAlamat');
+        const mapDiv = document.getElementById('map');
 
-            const totalSewa  = durasi * hargaPerHari;
-            const totalSupir = (jenisSewa === 'sopir')   ? (150000 * durasi) : 0;
-            const totalAntar = (opsiAntar === 'diantar') ? 50000 : 0;
-            const grandTotal = totalSewa + totalSupir + totalAntar;
-            const dpWajib    = grandTotal * 0.5;
+        if (opsi === 'diantar') {
+            boxAlamat.classList.remove('hidden');
+            mapDiv.style.display = 'block'; 
+                        
+          
+            if (!map) {
+             
+                map = L.map('map').setView([-7.6298, 111.5239], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
 
-            document.getElementById('text_durasi').innerText  = `(${durasi} hari)`;
-            document.getElementById('summary_sewa').innerText  = formatRupiah(totalSewa);
-            document.getElementById('summary_supir').innerText = formatRupiah(totalSupir);
-            document.getElementById('summary_antar').innerText = formatRupiah(totalAntar);
-            document.getElementById('summary_total').innerText = formatRupiah(grandTotal);
-            document.getElementById('summary_dp').innerText    = `Wajib DP 50%: ${formatRupiah(dpWajib)}`;
+                map.on('click', function(e) {
+                    if (marker) { map.removeLayer(marker); }
+                    marker = L.marker(e.latlng).addTo(map);
+                    
+                    // Masukkan koordinat ke input hidden
+                    document.getElementById('lat').value = e.latlng.lat;
+                    document.getElementById('lng').value = e.latlng.lng;
+                });
+                
+                // Fix bug peta abu-abu saat pertama muncul
+                setTimeout(() => { map.invalidateSize(); }, 200);
+            }
+        } else {
+            boxAlamat.classList.add('hidden');
+            mapDiv.style.display = 'none';
+            document.getElementById('lat').value = '';
+            document.getElementById('lng').value = '';
         }
-    </script>
+        hitungTotal();
+    }
 
+    // Fungsi Format Rupiah
+    const formatRupiah = (angka) => {
+        return 'Rp. ' + new Intl.NumberFormat('id-ID').format(angka);
+    }
+
+function hitungTotal() {
+    const valMulai = document.getElementById('tanggal_sewa').value;
+    const durasiHari = parseInt(document.getElementById('durasi_hari').value) || 1;
+    const hargaPerHari = parseInt(document.getElementById('harga_sewa').value) || 0;
+
+    if (valMulai) {
+        const tglMulai = new Date(valMulai);
+        
+        // --- LOGIKA OTOMATIS TANGGAL KEMBALI ---
+        const tglKembali = new Date(tglMulai);
+        tglKembali.setDate(tglMulai.getDate() + durasiHari);
+
+        const year = tglKembali.getFullYear();
+        const month = String(tglKembali.getMonth() + 1).padStart(2, '0');
+        const day = String(tglKembali.getDate()).padStart(2, '0');
+        const hours = String(tglKembali.getHours()).padStart(2, '0');
+        const minutes = String(tglKembali.getMinutes()).padStart(2, '0');
+        
+        const formatKembali = `${year}-${month}-${day}T${hours}:${minutes}`;
+        document.getElementById('tanggal_kembali').value = formatKembali;
+
+
+        const jenisSewa = document.querySelector('input[name="jenis_sewa"]:checked').value;
+
+        const totalSewa  = durasiHari * hargaPerHari;
+        const totalSupir = (jenisSewa === 'sopir') ? (150000 * durasiHari) : 0;
+        const totalAntar = 0;
+        
+        const grandTotal = totalSewa + totalSupir;
+        const dpWajib    = grandTotal * 0.5;
+        const sisaBayar  = grandTotal - dpWajib;
+
+        // --- UPDATE UI ---
+        document.getElementById('text_durasi').innerText  = `(${durasiHari} hari)`;
+        document.getElementById('summary_sewa').innerText  = formatRupiah(totalSewa);
+        document.getElementById('summary_supir').innerText = formatRupiah(totalSupir);
+        if (document.getElementById('summary_antar')) {
+            document.getElementById('summary_antar').innerText = formatRupiah(totalAntar);
+        }
+        
+        document.getElementById('summary_total').innerText = formatRupiah(grandTotal);
+        document.getElementById('summary_dp').innerText    = `Wajib DP 50%: ${formatRupiah(dpWajib)}`;
+        
+        if(document.getElementById('summary_sisa')) {
+            document.getElementById('summary_sisa').innerText = `Sisa Pelunasan: ${formatRupiah(sisaBayar)}`;
+        }
+    }
+}
+
+// Inisialisasi settingan waktu saat halaman dibuka
+document.addEventListener('DOMContentLoaded', function() {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+       hitungTotal();
+    document.getElementById('tanggal_sewa').min = now.toISOString().slice(0, 16);
+});
+</script>
 </x-user>

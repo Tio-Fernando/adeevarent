@@ -70,8 +70,8 @@
                 <div class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100/50">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-sm font-medium text-gray-400 mb-1">Total Pending</p>
-                            <h3 class="text-3xl font-extrabold text-gray-800">2040</h3>
+                            <p class="text-sm font-medium text-gray-400 mb-1">Total Kendaraan Free</p>
+                            <h3 class="text-3xl font-extrabold text-gray-800">{{ $freeKendaraan }}/{{ $totalKendaraan }}</h3>
                         </div>
                         <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-400 text-xl">
                             <img src="{{ asset('img/pending.png') }}" alt="">
@@ -79,15 +79,14 @@
                     </div>
                     <div class="mt-4 flex items-center text-sm">
                         <span class="text-emerald-500 font-semibold flex items-center gap-1">
-                            <i class="fas fa-arrow-trend-up"></i> 1.8%
+                            <i class="fas fa-arrow-trend-up"></i> {{ $totalKendaraan > 0 ? round(($freeKendaraan / $totalKendaraan) * 100, 1) : 0 }}%
                         </span>
-                        <span class="text-gray-400 ml-2">Up from yesterday</span>
+                        <span class="text-gray-400 ml-2">Kendaraan tersedia</span>
                     </div>
                 </div>
 
             </div>
 
-            {{-- 2. Chart Area --}}
             <div class="bg-white p-8 rounded-[1.5rem] shadow-sm border border-gray-100/50 mb-8">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-bold text-gray-800">Detail Selesai</h3>

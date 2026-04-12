@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        {{-- INFO GRID --}}
+      
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             
             <div class="border-b border-gray-100 pb-2">
@@ -39,6 +39,11 @@
             <div class="border-b border-gray-100 pb-2">
                 <label class="block text-xs text-gray-400 uppercase font-bold mb-1">Harga Sewa / Hari</label>
                 <p class="text-lg font-semibold text-orange-500">Rp {{ number_format($kendaraan->harga, 0, ',', '.') }}</p>
+            </div>
+            
+            <div class="border-b border-gray-100 pb-2">
+                <label class="block text-xs text-gray-400 uppercase font-bold mb-1">Denda Keterlambatan / Hari</label>
+                <p class="text-lg font-semibold text-red-500">Rp {{ number_format($kendaraan->denda_terlambat, 0, ',', '.') }}</p>
             </div>
             
             <div class="border-b border-gray-100 pb-2">

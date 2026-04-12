@@ -5,7 +5,7 @@
             
             {{-- Judul --}}
             <div class="text-center mb-16">
-                <h1 class="text-4xl md:text-5xl  font-extrabold text-gray-900">Galery</h1>
+                <h1 class="text-4xl md:text-5xl  font-extrabold text-gray-900">Gallery</h1>
             </div>
 
             {{-- Grid Galeri --}}

@@ -62,7 +62,7 @@
              x-transition:leave-end="transform opacity-0 scale-95"
              class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-30 overflow-hidden" 
              style="display: none;">
-            
+    
             <div class="px-4 py-3 border-b border-gray-50 md:hidden">
                 <p class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</p>
             </div>
@@ -71,7 +71,7 @@
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 My Profile
             </a>
-
+            
             <hr class="border-gray-50">
 
             <form method="POST" action="{{ route('logout') }}">

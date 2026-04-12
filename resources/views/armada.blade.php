@@ -6,7 +6,7 @@
     activeCabang: '{{ request('lokasi', 'all') }}' 
 }">
         <div class="text-center mb-12">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Cari Mobil Terbaik untuk Perjalanan Nyaman</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Find the Best Car for a Comfortable Trip</h1>
         </div>
 
         <div class="flex justify-center mb-4 ">
@@ -16,7 +16,7 @@
     <div class="relative flex-grow">
         <select name="lokasi" class="w-full bg-transparent border-none text-gray-500 font-medium focus:ring-0 appearance-none pl-6 pr-10 py-3 cursor-pointer outline-none">
             
-            <option value="">Semua Lokasi</option>
+            <option value="">All locations</option>
         
             @foreach($cabangs as $cab)
                 <option value="{{ $cab->lokasi }}" {{ request('lokasi') == $cab->lokasi ? 'selected' : '' }}>
@@ -27,13 +27,10 @@
         </select>
         
         <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-gray-400">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
         </div>
     </div>
     <button type="submit" class="bg-primary hover:bg-orange-600 text-white font-bold py-3 px-8 sm:px-10 rounded-full transition-colors flex-shrink-0 shadow-md">
-        Cari
+       Search
     </button>
 
 </form>
@@ -96,7 +93,7 @@
                         <div class="flex justify-between">
                             <a href="{{ Auth::check() ? route('detail',$mobil->nopol) : route('login') }}"
                             class="px-4 bg-primary text-white py-2.5 rounded-xl font-semibold hover:bg-accent transition-colors">
-                            View Details
+                            Booking 
                             </a>
                                 @if($mobil->status == 'free')
                         <span class="bg-green-200 text-green-700 text-xs font-bold px-3 py-3 rounded-md uppercase">FREE</span>

@@ -65,6 +65,11 @@
                 </div>
 
                 <div>
+                    <label class="block text-xs text-gray-500 mb-1">Denda Keterlambatan (Rp/hari)</label>
+                    <input type="number" name="denda_terlambat" value="{{ old('denda_terlambat', $kendaraan->denda_terlambat) }}" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-300 outline-none">
+                </div>
+
+                <div>
                     <label class="block text-xs text-gray-500 mb-1">Warna</label>
                     <select name="warna" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-300 outline-none bg-white">
                         <option value="Merah" {{ old('warna', $kendaraan->warna) == 'Merah' ? 'selected' : '' }}>Merah</option>
@@ -77,7 +82,7 @@
                     <label class="block text-xs text-gray-500 mb-1">Kondisi</label>
                     <select name="kondisi" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-300 outline-none bg-white">
                         <option value="rusak" {{ old('kondisi', $kendaraan->kondisi) == 'rusak' ? 'selected' : '' }}>Rusak</option>
-                        <option value="free" {{ old('kondisi', $kendaraan->kondisi) == 'free' ? 'selected' : '' }}>Free</option>
+                        <option value="free" {{ old('kondisi', $kendaraan->kondisi) == 'baik' ? 'selected' : '' }}>Baik</option>
                     </select>
                 </div>
 
@@ -112,14 +117,6 @@
                                 {{ $cabang->lokasi }}
                             </option>
                         @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Status</label>
-                    <select name="status" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-300 outline-none bg-white">
-                        <option value="free" {{ $kendaraan->status == 'free' ? 'selected' : '' }}>Free</option>
-                        <option value="booking" {{ $kendaraan->status == 'booking' ? 'selected' : '' }}>Booking</option>
                     </select>
                 </div>
 

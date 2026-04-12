@@ -76,6 +76,14 @@
                            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300">
                 </div>
 
+                {{-- Denda Keterlambatan --}}
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">Denda Keterlambatan (Rp/hari)</label>
+                    <input type="number" name="denda_terlambat" value="{{ old('denda_terlambat') }}"
+                           placeholder="Contoh: 50000"
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300">
+                </div>
+
                 {{-- Warna --}}
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">Warna</label>
@@ -88,13 +96,12 @@
                 </div>
                 </div>
 
-                {{-- Kondisi --}}
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">Kondisi</label>
                          <select name="kondisi" id="kondisi" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white">
                              <option value="" disabled selected>Selected Option</option>
                             <option value="rusak">Rusak</option>
-                            <option value="free">Free</option>
+                            <option value="baik">Baik</option>
                          </select>
                 </div>
 
@@ -140,16 +147,6 @@
                                 {{ $cabang->lokasi }}
                             </option>
                         @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs text-gray-500 mb-1">Status</label>
-                    <select name="status"
-                            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white">
-                        <option value="" disabled selected>Selected Option</option>
-                        <option value="booking" {{ old('status') == 'booking' ? 'selected' : '' }}>Booking</option>
-                        <option value="free" {{ old('status') == 'free' ? 'selected' : '' }}>Free</option>
                     </select>
                 </div>
 

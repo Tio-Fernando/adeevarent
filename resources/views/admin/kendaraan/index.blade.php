@@ -30,13 +30,23 @@
                         {{ Str::limit($item->deskripsi, 100) }}
                     </p>
                     
-                    <div class="mt-auto">
-                        <a href="{{ route('kendaraan.show', $item->nopol) }}" class="inline-flex items-center text-body bg-neutral-secondary-medium border border-default-medium hover:bg-neutral-tertiary-medium px-4 py-2.5 rounded-base text-sm font-medium">
+                    <div class="mt-auto flex gap-3">
+                        <a href="{{ route('kendaraan.show', $item->nopol) }}" class="flex-1 inline-flex items-center justify-center text-body bg-neutral-secondary-medium border border-default-medium hover:bg-neutral-tertiary-medium px-4 py-2.5 rounded-base text-sm font-medium">
                             Detail Mobil
                             <svg class="w-4 h-4 ms-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>
                             </svg>
                         </a>
+               
+                        <form id="delete-form-{{ $item->nopol }}" action="{{ route('kendaraan.destroy', $item->nopol) }}" method="POST" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" onclick="confirmDelete('{{ $item->nopol }}', '{{ $item->nama_kendaraan }}')" class="inline-flex items-center text-white bg-red-500 border border-red-600 hover:bg-red-600 px-4 py-2.5 rounded-base text-sm font-medium transition">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </form>
                     </div>
                 </div>
             @empty
@@ -46,4 +56,23 @@
             @endforelse
         </div>
     </div>
+
+    <script>
+        function confirmDelete(nopol, namaKendaraan) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: `Mobil "${namaKendaraan}" akan dihapus secara permanen`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`delete-form-${nopol}`).submit();
+                }
+            });
+        }
+    </script>
 </x-app-layout>

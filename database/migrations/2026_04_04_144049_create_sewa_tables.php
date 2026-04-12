@@ -25,7 +25,7 @@ return new class extends Migration
             $table->tinyInteger('durasi');
             $table->integer('harga_sewa');
             $table->integer('sub_total');
-            $table->integer('denda');
+            $table->integer('denda')->default(0);
             $table->integer('harga_total');
             $table->enum('status',['Booking','lunas','selesai']);
             $table->integer('biaya_supir');

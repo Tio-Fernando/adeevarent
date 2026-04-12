@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Sewa;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,9 +21,36 @@ class ProfileController extends Controller
             'user' => $request->user(),
         ]);
     }
-    public function editUser(Request $request): View
+    
+    /**
+     * Show the user profile page.
+     */
+  public function editUser(Request $request): View
+{
+    $user = Auth::user();
+    $pelanggan = $user->pelanggan;
+
+    $riwayat = [];
+    if ($pelanggan) {
+        $riwayat = Sewa::with(['kendaraan', 'pelanggan', 'payments'])
+            ->where('pelanggan_id', $pelanggan->id)
+            ->latest()
+            ->get();
+    }
+
+    // Masukkan semua variabel ke dalam view
+    return view('userProfile', [
+        'user' => $user,
+        'riwayat' => $riwayat,
+    ]);
+}
+
+    /**
+     * Show the edit user profile form.
+     */
+    public function editUserForm(Request $request): View
     {
-        return view('userProfile', [
+        return view('editUserProfile', [
             'user' => $request->user(),
         ]);
     }
@@ -41,6 +69,41 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+
+    public function updateUser(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+        $validated = $request->validated();
+
+        $user->fill([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+        ]);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
+
+        // Update atau create pelanggan record
+        $pelanggan = $user->pelanggan;
+        if ($pelanggan) {
+            $pelanggan->update([
+                'nama_pelanggan' => $validated['name'],
+                'alamat' => $validated['address'] ?? $pelanggan->alamat,
+            ]);
+        } else {
+            $user->pelanggan()->create([
+                'nama_pelanggan' => $validated['name'],
+                'alamat' => $validated['address'] ?? '',
+            ]);
+        }
+
+        return Redirect::route('profile.user')->with('status', 'profile-updated');
     }
 
     /**

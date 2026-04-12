@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Kendaraan;
 use App\Models\Category;
+use App\Models\Sewa;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class landingController extends Controller
@@ -65,12 +67,20 @@ class landingController extends Controller
         return view('gallery');
     }
 
+    public function hubungi(){
+        return view('hubungiKami');
+    }
+
+    public function profile(){
+        return view('profileCompany');
+    }
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
+
+    public function laporanSuper(){
+        return view('owner.laporan');
     }
 
     /**
@@ -85,24 +95,9 @@ class landingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
+
+    public function riwayat(){
+      
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

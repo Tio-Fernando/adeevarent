@@ -38,15 +38,17 @@
                 {{ request()->routeIs('laporan.index') ? 'bg-primary text-white shadow-sm' : 'text-white hover:text-primary' }}">
                     <span class="font-medium text-sm">Laporan</span>
                 </a>
+
+          <a href="{{ route('admin.pengguna.index') }}"
+                class="flex items-center px-4 py-3 rounded-lg transition-colors
+                {{ request()->routeIs('admin.pengguna.index') ? 'bg-primary text-white shadow-sm' : 'text-white hover:text-primary' }}">
+                    <span class="font-medium text-sm">Pengguna</span>
+                </a>
       
          
        
         </nav>
     </div>
 
-    <div class="p-4 border-gray-100 space-y-2">
-        <a href="#" class="flex items-center px-4 py-2 text-white hover:text-primary transition-colors">
-            <span class="font-medium text-sm">Settings</span>
-        </a>
-    </div>
+
 </aside>

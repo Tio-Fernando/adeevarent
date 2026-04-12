@@ -51,14 +51,15 @@ class KendaraanController extends Controller
             'harga'          => 'required|integer|min:0',
             'deskripsi'      => 'required|string',
             'warna'          => 'required|in:Merah,Hitam,Putih',
-            'kondisi'        => 'required|in:rusak,free',
+            'kondisi'        => 'required|in:rusak,baik',
             'bbm'            => 'required|in:solar,pertalite,pertamax',
             'tahun'          => 'required|integer|',
+            'denda_terlambat' => 'required|integer|min:0',
             'dir'            => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'status'         => 'required|in:booking,free',
         ]);
 
         $data = $request->except('dir');
+        $data['status'] = 'free'; 
 
         if ($request->hasFile('dir')) {
             $data['dir'] = $request->file('dir')->store('kendaraan', 'public');
@@ -97,11 +98,11 @@ class KendaraanController extends Controller
             'harga'          => 'required|integer|min:0',
             'deskripsi'      => 'required|string',
             'warna'          => 'required|in:Merah,Hitam,Putih',
-            'kondisi'        => 'required|in:rusak,free',
+            'kondisi'        => 'required|in:rusak,baik',
             'bbm'            => 'required|in:solar,pertalite,pertamax',
             'tahun'          => 'required|integer|digits:4',
+            'denda_terlambat' => 'required|integer|min:0',
             'dir'            => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'status'         => 'required|in:booking,free',
         ]);
 
         $data = $request->except('dir');

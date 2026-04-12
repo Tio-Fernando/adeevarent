@@ -17,10 +17,10 @@
                 <span class="font-medium text-sm">Admin</span>
             </a>
 
-            <a href=""
+            <a href="{{ route('laporan.super') }}"
                 class="flex items-center px-4 py-3 rounded-lg transition-colors
-                {{ request()->routeIs('laporan.index') ? 'bg-primary text-white shadow-sm' : 'text-white hover:text-primary' }}">
-                <span class="font-medium text-sm">Laporan</span>
+                {{ request()->routeIs('laporan.super') ? 'bg-primary text-white shadow-sm' : 'text-white hover:text-primary' }}">
+                <span class="font-medium text-sm">Report</span>
             </a>
 
 
@@ -28,9 +28,5 @@
         </nav>
     </div>
 
-    <div class="p-4 border-gray-100 space-y-2">
-        <a href="#" class="flex items-center px-4 py-2 text-white hover:text-primary transition-colors">
-            <span class="font-medium text-sm">Settings</span>
-        </a>
-    </div>
+
 </aside>

@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 <style>
   body { font-family: 'Inter', sans-serif; }
@@ -15,6 +17,24 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', sans-serif;
   }
+  #map { 
+        z-index: 1 !important; 
+    }
+
+    /* 2. Paksa semua elemen kontrol, marker, dan popup Leaflet ikut turun */
+    .leaflet-pane, 
+    .leaflet-top, 
+    .leaflet-bottom,
+    .leaflet-proxy,
+    .leaflet-marker-icon,
+    .leaflet-popup {
+        z-index: 1 !important;
+    }
+
+    /* 3. Pastikan bayangan marker tidak mengacau */
+    .leaflet-marker-shadow {
+        z-index: 0 !important;
+    }
 
   .tire-track {
     background-image: repeating-linear-gradient(
@@ -50,26 +70,30 @@
             Home
         </a>
       </li>
-      <li><a href="#" class="hover:text-white transition">Profile</a></li>
+      <li>
+        <a href="{{ route('profileCompany') }}" class="transition {{ request()->routeIs('profileCompany') ? 'text-primary font-bold' : 'hover:text-white' }}">Profile</a>
+      </li>
       <li>
         <a href="{{ route('armada') }}"
            class="transition {{ request()->routeIs('armada') ? 'text-primary font-bold' : 'hover:text-white' }}">
-            Armada
+            Vehicles
         </a>
       </li>
       <li>
         <a href="{{ route('fasilitas') }}"
            class="transition {{ request()->routeIs('fasilitas') ? 'text-primary font-bold' : 'hover:text-white' }}">
-           Fasilitas
+           Services
         </a>
       </li>
       <li>
         <a href="{{ route('gallery') }}"
            class="transition {{ request()->routeIs('gallery') ? 'text-primary font-bold' : 'hover:text-white' }}">
-           Galery
+           Gallery
         </a>
       </li>
-      <li><a href="#" class="hover:text-white transition">Hubungi Kami</a></li>
+        <li>
+        <a href="{{ route('hubungi') }}" class="transition {{ request()->routeIs('hubungi') ? 'text-primary font-bold' : 'hover:text-white' }}">Contact Us</a>
+      </li>
     </ul>
 
     <div class="flex items-center gap-2 sm:gap-4">
@@ -159,7 +183,7 @@
       <li><a href="{{ route('armada') }}" class="block py-2 transition {{ request()->routeIs('armada') ? 'text-primary font-bold' : 'hover:text-white' }}">Armada</a></li>
       <li><a href="{{ route('fasilitas') }}" class="block py-2 transition {{ request()->routeIs('fasilitas') ? 'text-primary font-bold' : 'hover:text-white' }}">Fasilitas</a></li>
       <li><a href="{{ route('gallery') }}" class="block py-2 transition {{ request()->routeIs('gallery') ? 'text-primary font-bold' : 'hover:text-white' }}">Galery</a></li>
-      <li><a href="#" class="block py-2 hover:text-white transition">Hubungi Kami</a></li>
+      <li><a href="#" class="block py-2 hover:text-white transition">Contact Us</a></li>
        @guest
     <li class="pt-2 border-t border-white/10">
       <a href="{{ route('login') }}"

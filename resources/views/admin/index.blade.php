@@ -3,7 +3,6 @@
     
     <div class="p-6">
     
-        {{-- HEADER --}}
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-xl font-medium text-gray-800">Data Admin</h1>
             <a href="{{ route('admin.create') }}"
@@ -12,7 +11,6 @@
             </a>
         </div>
     
-        {{-- FLASH MESSAGE --}}
         @if (session('success'))
             <div
                 class="mb-4 flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-lg">
@@ -65,7 +63,7 @@
                         @forelse ($admins as $index => $admin)
                             <tr class="border-b border-gray-50 hover:bg-orange-50/30 transition">
                                 <td class="py-3 px-4 text-gray-400 text-xs">
-                                    {{-- {{ $admins->firstItem() + $index }} --}}
+                                    {{$index+1}}
                                 </td>
                                 <td class="py-3 px-4">
                                     <div class="flex items-center gap-2">
@@ -101,29 +99,28 @@
                                 <td class="py-3 px-4">
                                     <div class="flex items-center gap-1.5">
                                         {{-- Edit --}}
-                                        {{-- <a href="{{ route('admin.data-admin.edit', $admin) }}"
+                                        <a href="{{ route('admin.edit',$admin->id) }}"
                                             class="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-100 transition">
                                             Edit
-                                        </a> --}}
+                                        </a> 
 
                                         {{-- Toggle Status --}}
-                                        {{-- <form method="POST" action="">
+                                        <form method="POST" action="">
                                             @csrf @method('PATCH')
                                             <button type="submit"
                                                 class="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-blue-500 hover:bg-blue-50 transition">
                                                 {{ $admin->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}
                                             </button>
-                                        </form> --}}
+                                        </form> 
 
                                         {{-- Hapus --}}
-                                        {{-- <form method="POST" action=""
-                                            onsubmit="return confirm('Yakin ingin menghapus pengguna {{ $admin->nama }}?')">
-                                            @csrf @method('DELETE')
+                                        <form method="POST" action="{{ route('admin.destroy',$admin->id) }}"
+                                    >    
                                             <button type="submit"
                                                 class="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-red-400 hover:bg-red-50 transition">
                                                 Hapus
                                             </button>
-                                        </form> --}}
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

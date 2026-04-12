@@ -1,6 +1,6 @@
 <footer class="bg-gray-900 text-gray-400 mt-14 pt-14 pb-8">
   <div class="max-w-7xl mx-auto px-6">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 
       <!-- Brand -->
       <div>
@@ -24,7 +24,7 @@
 
       <!-- Layanan -->
       <div>
-        <h4 class="text-white font-bold text-sm mb-4">Layanan Kami</h4>
+        <h4 class="text-white font-bold text-sm mb-4">Our Services</h4>
         <ul class="space-y-2 text-xs">
           <li><a href="#" class="hover:text-primary transition">Sewa Harian</a></li>
           <li><a href="#" class="hover:text-primary transition">Sewa Mingguan</a></li>
@@ -39,16 +39,14 @@
         <ul class="space-y-2 text-xs">
           <li><a href="#" class="hover:text-primary transition">Home</a></li>
           <li><a href="#" class="hover:text-primary transition">Profile</a></li>
-          <li><a href="#" class="hover:text-primary transition">Armada</a></li>
-          <li><a href="#" class="hover:text-primary transition">Fasilitas</a></li>
-          <li><a href="#" class="hover:text-primary transition">Galery</a></li>
+          <li><a href="#" class="hover:text-primary transition">Vehicles</a></li>
+          <li><a href="#" class="hover:text-primary transition">Services</a></li>
+          <li><a href="#" class="hover:text-primary transition">Gallery</a></li>
         </ul>
       </div>
 
       <!-- Download App -->
-      <div>
-     hai
-      </div>
+      
 
     </div>
 

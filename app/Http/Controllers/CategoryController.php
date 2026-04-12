@@ -104,7 +104,7 @@ class CategoryController extends Controller
                         'text' => 'Data berhasil dihapus',
                     ]);
 
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Swal::error([
                         'title' => 'Gagal!',
                         'text' => 'Data masih digunakan',

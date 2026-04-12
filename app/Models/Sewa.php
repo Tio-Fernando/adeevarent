@@ -12,9 +12,9 @@ class Sewa extends Model
         'nopol',
         'jenis_sewa',
         'jadwal_kembali',
-        'tanggal_kembali',
+        'tgl_kembali',
         'durasi',
-         'tgl_sewa',  
+        'tgl_sewa',  
         'harga_sewa',
         'opsi_pengantaran',
         'sub_total',
@@ -22,9 +22,7 @@ class Sewa extends Model
         'harga_total',
         'status',
         'biaya_supir',
-        'biaya_antar',
-        'lokasi_jemput',
-        'lokasi_kembali',
+        'lokasi_antar',
         'dp',
         'sisa_tagihan'
     ];
@@ -35,5 +33,9 @@ class Sewa extends Model
 
     public function kendaraan(){
         return $this->belongsTo(Kendaraan::class, 'nopol', 'nopol');
+    }
+
+    public function payments(){
+        return $this->hasMany(Payment::class);
     }
 }

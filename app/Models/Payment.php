@@ -15,11 +15,12 @@ class Payment extends Model
         'order_id',
         'snap_token',
         'status_pembayaran',
+        'dp',
+        'sisa_bayar'
     ];
 
-
-    public function sewa(){
-        
+    public function sewa()
+    {
+        return $this->belongsTo(Sewa::class);
     }
-
 }

@@ -11,6 +11,6 @@ class Pelanggan extends Model
     protected $fillable = ['id_user','nama_pelanggan','alamat'];
 
     public function user(){
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class, 'id_user');
     }
 }

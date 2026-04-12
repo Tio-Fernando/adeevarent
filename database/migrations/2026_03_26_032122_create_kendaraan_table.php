@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('harga');
             $table->text('deskripsi');
             $table->enum('warna',['Merah','Hitam','Putih']);
-            $table->enum('kondisi',['rusak','free']);
+            $table->enum('kondisi',['rusak','baik']);
             $table->enum('bbm',['solar','pertalite','pertamax']);
             $table->integer('tahun');
             $table->string('dir',255);

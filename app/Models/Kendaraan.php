@@ -27,6 +27,7 @@ class Kendaraan extends Model
         'bbm',
         'tahun',
         'dir',
+        'denda_terlambat',
         'status'
     ];
 

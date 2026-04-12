@@ -71,7 +71,7 @@
 
 
   <section class="max-w-7xl mx-auto px-6 mt-12 text-center">
-    <h2 class="text-2xl font-extrabold text-gray-900">Mengapa Memilih Kami</h2>
+    <h2 class="text-2xl font-extrabold text-gray-900">Why Rent With Us</h2>
     <p class="mt-2 text-gray-400 text-sm max-w-md mx-auto">Kami memberikan layanan terbaik dengan berbagai keunggulan
       untuk pengalaman rental yang sempurna.</p>
 
