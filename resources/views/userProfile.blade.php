@@ -22,8 +22,8 @@
                     </svg>
                 </a>
                 <div>
-                    <h1 class="font-['Poppins'] text-2xl md:text-[26px] font-bold text-[#1A1916] tracking-tight leading-tight">Profile Saya</h1>
-                    <p class="text-[13px] text-[#8C8882] mt-1">Kelola informasi pribadi dan keamanan akun Anda.</p>
+                    <h1 class="font-['Poppins'] text-2xl md:text-[26px] font-bold text-[#1A1916] tracking-tight leading-tight">My Profile</h1>
+                    <p class="text-[13px] text-[#8C8882] mt-1">Manage your personal information and account security.</p>
                 </div>
             </div>
             <a href="{{ route('profile.user.edit') }}" class="inline-flex items-center justify-center gap-2 bg-[#1A1916] text-white text-xs font-semibold tracking-wider uppercase px-5 py-3 rounded-xl hover:bg-[#333028] hover:-translate-y-px transition-all shadow-lg shadow-black/10 whitespace-nowrap">
@@ -31,7 +31,7 @@
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                 </svg>
-                Edit Profil
+                Edit Profile
             </a>
         </div>
 
@@ -81,7 +81,7 @@
                             @csrf
                             <button type="submit" class="w-full flex items-center justify-center gap-2 py-3 bg-[#FFF5F5] border border-[#FECACA] text-[#C81E1E] text-xs font-bold tracking-wider uppercase rounded-xl hover:bg-[#FEE2E2] hover:border-[#FCA5A5] transition-colors">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                                Keluar dari Akun
+                                Logout
                             </button>
                         </form>
                     </div>
@@ -173,87 +173,6 @@
                     </div>
                 </div>
 
-                {{-- Card: Riwayat Mobil (Terintegrasi $riwayat) --}}
-                <div class="bg-white rounded-[20px] border border-[#E8E6E0] shadow-sm hover:shadow-md transition-shadow p-8">
-                    <div class="flex items-center gap-3.5 pb-5 border-b border-[#ECEAE3] mb-7">
-                        <div class="w-11 h-11 rounded-xl bg-[#FEF0DC] flex items-center justify-center shrink-0">
-                            <svg class="w-5 h-5 text-[#D97706]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-1"/><path d="M13 1h-2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2z"/><path d="m5 8-3 4v5a2 2 0 0 0 2 2h4"/><circle cx="5" cy="13" r="1"/></svg>
-                        </div>
-                        <div>
-                            <div class="font-['Poppins'] text-base font-bold text-[#1A1916] tracking-tight">Riwayat Penyewaan Mobil</div>
-                            <div class="text-[12.5px] text-[#8C8882] mt-0.5">Daftar kendaraan yang pernah Anda sewa.</div>
-                        </div>
-                    </div>
-
-                   <div class="space-y-4">
-                        @forelse ($riwayat as $sewa)
-                            <div class="bg-[#F7F6F2] border border-[#ECEAE3] rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4">
-                                {{-- Gambar --}}
-                                <div class="w-full sm:w-[100px] h-[70px] bg-white border rounded-xl overflow-hidden flex items-center justify-center">
-                                    @if($sewa->kendaraan && $sewa->kendaraan->dir)
-                                        <img src="{{ asset('storage/' . $sewa->kendaraan->dir) }}" class="w-full h-full object-cover">
-                                    @else
-                                        <span class="text-xs text-gray-400">No Image</span>
-                                    @endif
-                                </div>
-
-                                {{-- Detail --}}
-                                {{-- Detail --}}
-<div class="flex-1 w-full">
-    <div class="flex justify-between items-start mb-1">
-        <div class="text-sm font-bold text-[#1A1916]">{{ $sewa->kendaraan->nama_kendaraan ?? 'Mobil' }}</div>
-        
-        {{-- LOGIKA TAMPILAN HARGA --}}
-        @if($sewa->status == 'Dibayar' || $sewa->payments()->where('status_pembayaran', 'DP')->where('transaction_status', 'settlement')->exists())
-            {{-- Jika sudah DP, tampilkan SISA TAGIHAN --}}
-            <div class="font-bold text-[#D97706] text-sm">
-                Rp {{ number_format($sewa->sisa_tagihan, 0, ',', '.') }}
-                <span class="block text-[9px] text-gray-400 font-normal mt-0.5 text-right">Sisa Tagihan</span>
-            </div>
-        @else
-            {{-- Jika belum DP atau sudah lunas total, tampilkan TOTAL HARGA --}}
-            <div class="font-bold text-[#D97706] text-sm">
-                Rp {{ number_format($sewa->harga_total, 0, ',', '.') }}
-            </div>
-        @endif
-    </div>
-    
-    <div class="text-[11px] text-[#8C8882] flex gap-4 mb-2">
-        <span>📅 {{ \Carbon\Carbon::parse($sewa->tgl_sewa)->format('d M') }} - {{ \Carbon\Carbon::parse($sewa->jadwal_kembali)->format('d M') }}</span>
-        <span>📍 {{ $sewa->opsi_pengantaran }}</span>
-    </div>
-    
-    <div class="flex items-center justify-between">
-        {{-- LOGIKA STATUS & TOMBOL --}}
-        @php
-            $sudahDP = $sewa->payments()->where('status_pembayaran', 'DP')->where('transaction_status', 'settlement')->exists();
-        @endphp
-
-        @if(in_array(strtolower($sewa->status), ['selesai', 'lunas']))
-            <span class="text-[10px] font-bold bg-green-100 text-green-700 px-2.5 py-1 rounded-md border border-green-200 uppercase">SELESAI LUNAS</span>
-            
-        @elseif(strtolower($sewa->status) == 'dp' || $sudahDP)
-            <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-md border border-blue-200 uppercase">MENUNGGU PELUNASAN</span>
-            <a href="{{ route('payment', $sewa->id) }}" class="text-[11px] font-bold bg-[#D97706] text-white px-3 py-1.5 rounded-lg shadow-sm hover:bg-[#B45309] transition-colors">Bayar Pelunasan</a>
-            
-        @elseif(strtolower($sewa->status) == 'booking')
-            <span class="text-[10px] font-bold bg-orange-100 text-orange-700 px-2.5 py-1 rounded-md border border-orange-200 uppercase">MENUNGGU DP</span>
-            <a href="{{ route('payment', $sewa->id) }}" class="text-[11px] font-bold bg-[#1A1916] text-white px-3 py-1.5 rounded-lg shadow-sm hover:bg-black transition-colors">Bayar DP Sekarang</a>
-            
-        @else
-            <span class="text-[10px] font-bold bg-gray-100 text-gray-500 px-2.5 py-1 rounded-md border border-gray-200 uppercase">{{ $sewa->status }}</span>
-        @endif
-    </div>
-</div>
-                            </div>
-                        @empty
-                            <div class="text-center py-10">
-                                <p class="text-gray-500 text-sm">Belum ada riwayat penyewaan.</p>
-                            </div>
-                        @endforelse
-                    </div>
-
-                </div>
             </div>
 
         </div>

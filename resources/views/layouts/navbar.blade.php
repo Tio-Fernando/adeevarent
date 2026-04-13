@@ -47,9 +47,18 @@
                     <p class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</p>
                 </div>
        
-                <a href="{{-- route('profile.user') --}}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
+                <a href="{{ route('profile.user') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     My Profile
+                </a>
+                <a href="{{ route('profile.rental-history') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
+                    <svg class="w-4 h-4 mr-3" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 4a2 2 0 100 4 2 2 0 000-4zM4 9h8v2H4V9z"/>
+                        <path d="M16 4a2 2 0 100 4 2 2 0 000-4zM12 9h8v2h-8V9z"/>
+                        <path d="M8 16a2 2 0 100 4 2 2 0 000-4zM4 21h8v2H4v-2z"/>
+                        <path d="M16 16a2 2 0 100 4 2 2 0 000-4zM12 21h8v2h-8v-2z"/>
+                    </svg>
+                    Rental History
                 </a>
                 <hr class="border-gray-50">
                 <form method="POST" action="{{ route('logout') }}">

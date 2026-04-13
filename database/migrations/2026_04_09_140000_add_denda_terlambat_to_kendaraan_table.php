@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('kendaraan', function (Blueprint $table) {
-            $table->integer('denda_terlambat')->default(0)->after('dir');
+            if (!Schema::hasColumn('kendaraan', 'denda_terlambat')) {
+                $table->integer('denda_terlambat')->default(0)->after('dir');
+            }
         });
     }
 

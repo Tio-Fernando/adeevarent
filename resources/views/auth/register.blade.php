@@ -34,18 +34,18 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Nama</label>
+                <label class="block text-sm font-medium text-gray-700">Name</label>
                 <input type="text" name="name" class="w-full p-3 rounded-lg border mt-1 focus:ring-2 focus:ring-orange-400 outline-none" placeholder="Enter your name" required>
             </div>
 
             <div class="grid grid-cols-1 gap-4 mb-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">No Telepon</label>
-                    <input type="text" name="phone" class="w-full p-3 rounded-lg border mt-1" placeholder="Masukan No telepon">
+                    <label class="block text-sm font-medium text-gray-700">Phone</label>
+                    <input type="text" name="phone" class="w-full p-3 rounded-lg border mt-1" placeholder="Enter your phone">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Alamat</label>
-                    <input type="text" name="alamat" class="w-full p-3 rounded-lg border mt-1" placeholder="Masukan Alamat">
+                    <label class="block text-sm font-medium text-gray-700">Address</label>
+                    <input type="text" name="alamat" class="w-full p-3 rounded-lg border mt-1" placeholder="Enter your address">
                 </div>
             </div>
 
@@ -62,7 +62,7 @@
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Lanjutkan dengan Google
+            Continues with Google
         </a>
     </div>
 
@@ -83,10 +83,10 @@
 <div class="w-full hidden md:w-1/2 md:flex items-center justify-center text-white p-10" style="background-color: #FF9E0C;">
     <div>
         <h1 class="text-4xl font-bold mb-4">
-            Selamat Datang Kembali Bos
+            Create Your Account!
         </h1>
         <p>
-            Destinasi impian menanti. Masuk dan pilih teman perjalananmu.
+            Start your journey with us. Sign up and explore your next adventure.
         </p>
     </div>
 </div>

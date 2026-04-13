@@ -5,7 +5,7 @@
             <div class="mb-8 md:mb-12">
                 <a href="{{ route('profile.user') }}" class="group inline-flex items-center text-gray-500 hover:text-orange-500 transition-all duration-300 mb-6 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100 hover:shadow-md">
                     <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    <span class="font-semibold text-sm">Kembali ke Profil</span>
+                    <span class="font-semibold text-sm">Kembali</span>
                 </a>
                 <h1 class="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Pelunasan Pembayaran</h1>
                 <p class="text-gray-500 mt-2 text-sm md:text-base font-medium">Selesaikan sisa tagihan untuk pesanan kendaraan Anda.</p>
@@ -70,7 +70,7 @@
                         <div class="bg-gray-900 p-6 md:p-8 text-white relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
                             <h3 class="font-black text-xl tracking-tight mb-1 relative z-10">Ringkasan Pelunasan</h3>
-                            <p class="text-gray-400 text-xs font-medium uppercase tracking-widest relative z-10">ORDER ID: #{{ $payment->order_id }}</p>
+                            <p class="text-gray-400 text-xs font-medium uppercase tracking-widest relative z-10">ORDER ID: #{{ $payment?->order_id ?? 'INV-' . $sewa->id }}</p>
                         </div>
                         
                         <div class="p-6 md:p-8">
@@ -128,7 +128,6 @@
     </div>
 
     <script>
-        // 1. UI Interaction
         function updateUIMethods() {
             const methodRadios = document.querySelectorAll('.method-radio');
             methodRadios.forEach(radio => {
@@ -159,13 +158,15 @@
             updateUIMethods();
         }));
         
-        updateUIMethods(); // Initial load
+        updateUIMethods();
 
-        // 2. Core API Charge
         document.getElementById('btn-pay-now').addEventListener('click', function() {
             const btn = this;
             const method = document.querySelector('input[name="payment_method"]:checked').value;
-            const bankCode = document.querySelector('input[name="bank_code"]:checked').value;
+            
+            // PERBAIKAN 1: Cara ambil bankCode lebih aman, pakai optional chaining
+            const bankRadio = document.querySelector('input[name="bank_code"]:checked');
+            const bankCode = bankRadio ? bankRadio.value : 'bca'; // Default BCA jika VA dipilih tapi belum klik logo banknya
 
             btn.disabled = true;
             btn.innerHTML = `<span class="flex items-center justify-center gap-2"><svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Memproses...</span>`;
@@ -179,38 +180,35 @@
             .then(data => {
                 const area = document.getElementById('payment-content-area');
                 
-        
-if(method === 'qris') {
- 
-    const qrUrl = data.actions?.find(a => a.name === 'generate-qr-code')?.url 
-                  || data.actions?.[0]?.url 
-                  || '';
+                if(method === 'qris') {
+                    const qrUrl = data.actions?.find(a => a.name === 'generate-qr-code')?.url 
+                                  || data.actions?.[0]?.url 
+                                  || '';
 
-    if (!qrUrl) {
-        alert("Gagal mendapatkan kode QRIS. Silakan coba metode lain.");
-        location.reload();
-        return;
-    }
+                    if (!qrUrl) {
+                        alert("Gagal mendapatkan kode QRIS. Silakan coba metode lain.");
+                        location.reload();
+                        return;
+                    }
 
-    area.innerHTML = `
-        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border-2 border-orange-500 text-center animate-fade-in relative overflow-hidden">
-            <div class="absolute -right-10 -top-10 w-32 h-32 bg-orange-50 rounded-full blur-2xl opacity-60"></div>
-            <h3 class="text-2xl font-black text-gray-900 mb-2 uppercase tracking-tighter relative z-10">Scan QRIS Pelunasan</h3>
-            <p class="text-sm text-gray-500 mb-8 font-medium relative z-10">Buka E-Wallet (Gopay/OVO/Dana) Anda.</p>
-            
-            <div class="bg-white p-5 inline-block rounded-[2rem] shadow-xl border border-orange-100 relative z-10">
-                <!-- Tambahkan onerror untuk handle jika gambar gagal load -->
-                <img src="${qrUrl}" 
-                     class="w-64 h-64 object-contain" 
-                     onerror="this.src='https://placehold.co/300x300?text=QR+Error+Refresh+Page'">
-            </div>
-            
-            <div class="mt-8 p-4 bg-orange-50 rounded-2xl text-orange-600 text-sm font-bold uppercase tracking-widest border border-orange-100 relative z-10">
-                Selesaikan pembayaran dalam 15 menit
-            </div>
-        </div>`;
-}
-else if(method === 'bank_transfer') {
+                    area.innerHTML = `
+                        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border-2 border-orange-500 text-center animate-fade-in relative overflow-hidden">
+                            <div class="absolute -right-10 -top-10 w-32 h-32 bg-orange-50 rounded-full blur-2xl opacity-60"></div>
+                            <h3 class="text-2xl font-black text-gray-900 mb-2 uppercase tracking-tighter relative z-10">Scan QRIS Pelunasan</h3>
+                            <p class="text-sm text-gray-500 mb-8 font-medium relative z-10">Buka E-Wallet (Gopay/OVO/Dana) Anda.</p>
+                            
+                            <div class="bg-white p-5 inline-block rounded-[2rem] shadow-xl border border-orange-100 relative z-10">
+                                <img src="${qrUrl}" 
+                                     class="w-64 h-64 object-contain" 
+                                     onerror="this.src='https://placehold.co/300x300?text=QR+Error+Refresh+Page'">
+                            </div>
+                            
+                            <div class="mt-8 p-4 bg-orange-50 rounded-2xl text-orange-600 text-sm font-bold uppercase tracking-widest border border-orange-100 relative z-10">
+                                Selesaikan pembayaran dalam 15 menit
+                            </div>
+                        </div>`;
+                }
+                else if(method === 'bank_transfer') {
                     const vaNumber = data.va_numbers?.[0]?.va_number || 'Error VA';
                     area.innerHTML = `
                         <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border-2 border-orange-500 text-center animate-fade-in relative overflow-hidden">
@@ -224,12 +222,13 @@ else if(method === 'bank_transfer') {
                         </div>`;
                 }
 
-                // Matikan tombol utama
                 btn.parentElement.classList.add('opacity-50', 'pointer-events-none');
                 btn.innerHTML = `<span class="relative z-10">Menunggu Pembayaran...</span>`;
+                
                 mulaiCekOtomatis();
             })
             .catch(err => {
+                console.error("Error Fetch:", err); // Biar ketahuan errornya apa di console
                 alert("Gagal memproses. Silakan coba lagi.");
                 btn.disabled = false;
                 btn.innerHTML = `<span class="relative z-10 flex items-center justify-center gap-2">Bayar Pelunasan Sekarang <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>`;
@@ -241,7 +240,8 @@ else if(method === 'bank_transfer') {
                 fetch("{{ route('booking.status', $sewa->id) }}")
                     .then(res => res.json())
                     .then(data => {
-                           if (data.status === 'lunas') {
+                        // PERBAIKAN 2: Penutup bracket (kurung kurawal) yang benar
+                        if (data.status === 'lunas') {
                             clearInterval(intervalCek);
                             Swal.fire({
                                 title: 'PELUNASAN SUKSES!',
@@ -249,10 +249,11 @@ else if(method === 'bank_transfer') {
                                 icon: 'success',
                                 confirmButtonColor: '#F97316'
                             }).then(() => {
-                                window.location.href = "{{ route('profile.user') }}";
+                                window.location.href = "{{ route('profile.rental-history') }}";
                             });
                         }
-                    });
+                    })
+                    .catch(err => console.error("Error Cek Status:", err));
             }, 5000);
         }
     </script>

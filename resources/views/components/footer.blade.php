@@ -35,13 +35,13 @@
 
       <!-- Tautan -->
       <div>
-        <h4 class="text-white font-bold text-sm mb-4">Tautan</h4>
+        <h4 class="text-white font-bold text-sm mb-4">Links</h4>
         <ul class="space-y-2 text-xs">
-          <li><a href="#" class="hover:text-primary transition">Home</a></li>
-          <li><a href="#" class="hover:text-primary transition">Profile</a></li>
-          <li><a href="#" class="hover:text-primary transition">Vehicles</a></li>
-          <li><a href="#" class="hover:text-primary transition">Services</a></li>
-          <li><a href="#" class="hover:text-primary transition">Gallery</a></li>
+          <li><a href="{{ route('home') }}" class="hover:text-primary transition">Home</a></li>
+          <li><a href="{{ route('profileCompany') }}" class="hover:text-primary transition">Profile</a></li>
+          <li><a href="{{ route('armada') }}" class="hover:text-primary transition">Vehicles</a></li>
+          <li><a href="{{ route('fasilitas') }}" class="hover:text-primary transition">Services</a></li>
+          <li><a href="{{ route('gallery') }}" class="hover:text-primary transition">Gallery</a></li>
         </ul>
       </div>
 

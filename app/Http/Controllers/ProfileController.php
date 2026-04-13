@@ -25,25 +25,14 @@ class ProfileController extends Controller
     /**
      * Show the user profile page.
      */
-  public function editUser(Request $request): View
-{
-    $user = Auth::user();
-    $pelanggan = $user->pelanggan;
+    public function editUser(Request $request): View
+    {
+        $user = Auth::user();
 
-    $riwayat = [];
-    if ($pelanggan) {
-        $riwayat = Sewa::with(['kendaraan', 'pelanggan', 'payments'])
-            ->where('pelanggan_id', $pelanggan->id)
-            ->latest()
-            ->get();
+        return view('userProfile', [
+            'user' => $user,
+        ]);
     }
-
-    // Masukkan semua variabel ke dalam view
-    return view('userProfile', [
-        'user' => $user,
-        'riwayat' => $riwayat,
-    ]);
-}
 
     /**
      * Show the edit user profile form.
@@ -52,6 +41,28 @@ class ProfileController extends Controller
     {
         return view('editUserProfile', [
             'user' => $request->user(),
+        ]);
+    }
+
+    /**
+     * Show the rental history page.
+     */
+    public function rentalHistory(Request $request): View
+    {
+        $user = Auth::user();
+        $pelanggan = $user->pelanggan;
+
+        $riwayat = [];
+        if ($pelanggan) {
+            $riwayat = Sewa::with(['kendaraan', 'pelanggan', 'payments'])
+                ->where('pelanggan_id', $pelanggan->id)
+                ->latest()
+                ->get();
+        }
+
+        return view('rentalHistory', [
+            'user' => $user,
+            'riwayat' => $riwayat,
         ]);
     }
 

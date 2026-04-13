@@ -75,13 +75,13 @@
       </div>
 
       <div>
-        <h4 class="text-white font-bold text-sm mb-6">Tautan</h4>
+        <h4 class="text-white font-bold text-sm mb-6">Links</h4>
         <ul class="space-y-3 text-xs">
-          <li><a href="#" class="hover:text-orange-500 transition">Home</a></li>
-          <li><a href="#" class="hover:text-orange-500 transition">Profile</a></li>
-          <li><a href="#" class="hover:text-orange-500 transition">Armada</a></li>
-          <li><a href="#" class="hover:text-orange-500 transition">Fasilitas</a></li>
-          <li><a href="#" class="hover:text-orange-500 transition">Galery</a></li>
+          <li><a href="{{ route('home') }}" class="hover:text-orange-500 transition">Home</a></li>
+          <li><a href="{{ route('profileCompany') }}" class="hover:text-orange-500 transition">Profile</a></li>
+          <li><a href="{{ route('armada') }}" class="hover:text-orange-500 transition">Vehicles</a></li>
+          <li><a href="{{ route('fasilitas') }}" class="hover:text-orange-500 transition">Services</a></li>
+          <li><a href="{{ route('gallery') }}" class="hover:text-orange-500 transition">Gallery</a></li>
         </ul>
       </div>
 

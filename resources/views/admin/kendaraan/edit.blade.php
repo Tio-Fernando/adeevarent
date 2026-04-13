@@ -82,7 +82,7 @@
                     <label class="block text-xs text-gray-500 mb-1">Kondisi</label>
                     <select name="kondisi" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-300 outline-none bg-white">
                         <option value="rusak" {{ old('kondisi', $kendaraan->kondisi) == 'rusak' ? 'selected' : '' }}>Rusak</option>
-                        <option value="free" {{ old('kondisi', $kendaraan->kondisi) == 'baik' ? 'selected' : '' }}>Baik</option>
+                        <option value="baik" {{ old('kondisi', $kendaraan->kondisi) == 'baik' ? 'selected' : '' }}>Baik</option>
                     </select>
                 </div>
 

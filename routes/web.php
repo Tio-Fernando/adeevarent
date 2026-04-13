@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminPaymentController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminPelangganController;
 use App\Http\Controllers\BookingController;
@@ -20,8 +22,6 @@ Route::get('/armada',[landingController::class,'armada'])->name('armada');
 Route::get('/fasilitas',[landingController::class,'fasilitas'])->name('fasilitas');
 Route::get('/gallery',[landingController::class,'gallery'])->name('gallery');
 
-
-
 Route::get('/profilCompany',[landingController::class,'profile'])->name('profileCompany');
 
 Route::get('/hubungiKami',[landingController::class,'hubungi'])->name('hubungi');
@@ -37,7 +37,10 @@ Route::middleware(['auth','role:Administrator'])->group(function(){
     Route::get('/sewa/{id}/detail', [BookingController::class, 'detail'])->name('booking.detail');
     Route::resource('admin/pengguna', AdminPelangganController::class, ['as' => 'admin']);
     Route::post('/booking/{id}',[BookingController::class,'selesai'])->name('penyelesaian');
+    Route::post('/admin/payment/{id}/konfirmasi', [AdminPaymentController::class, 'konfirmasi'])
+        ->name('admin.payment.konfirmasi');
     });
+    
 Route::middleware(['auth','role:Pelanggan'])->group(function(){
     Route::post('/proses-booking/{nopol}', [BookingController::class, 'store'])->name('booking.store');
     Route::get('/armada/{nopol}', [landingController::class, 'detail'])->name('detail');
@@ -62,6 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/profile/user',[ProfileController::class,'editUser'])->name('profile.user');
     Route::get('/profile/user/edit',[ProfileController::class,'editUserForm'])->name('profile.user.edit');
+    Route::get('/profile/rental-history',[ProfileController::class,'rentalHistory'])->name('profile.rental-history');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/user', [ProfileController::class, 'updateUser'])->name('profile.user.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

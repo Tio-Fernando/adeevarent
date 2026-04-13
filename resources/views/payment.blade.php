@@ -90,8 +90,6 @@
                 </label>
                 </div>
                 
-
-             
                 <div class="xl:col-span-5">
                     <div class="bg-white rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 sticky top-24 overflow-hidden flex flex-col">
                         
@@ -164,7 +162,9 @@
                                     <p class="text-xs font-black text-orange-500 uppercase tracking-widest mb-1">Total Pembayaran</p>
                                     <p class="text-gray-500 text-[10px] font-semibold uppercase">DP 50% dari total tagihan</p>
                                 </div>
-                                <h2 class="text-3xl md:text-4xl font-black text-orange-600 tracking-tighter">Rp {{ number_format($payment->jumlah_bayar, 0, ',', '.') }}</h2>
+                                <h2 class="text-3xl md:text-4xl font-black text-orange-600 tracking-tighter">
+                                    Rp {{ number_format($payment?->jumlah_bayar ?? $sewa->dp, 0, ',', '.') }}
+                                </h2>
                             </div>
 
                             <!-- Tombol Submit -->
@@ -187,9 +187,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT LOGIKA UI & CORE API -->
     <script>
-        // 1. SCRIPT UNTUK MEMBUAT UI BISA DIPENCET-PENCET (INTERAKTIF)
         const methodRadios = document.querySelectorAll('.method-radio');
         
         function updateUIMethods() {
@@ -280,7 +278,6 @@
                     return;
                 }
                 
-
                 if(method === 'cash'){
                     area.innerHTML = `
                        <div class="flex justify-center items-center h-full">
@@ -301,7 +298,6 @@
                     return;
                 }
 
-                
                 if(method === 'qris') {
                     const qrUrl = data?.actions?.[0]?.url || data?.qr_string || data?.redirect_url || '';
                     if(!qrUrl) {
@@ -398,7 +394,5 @@
             to { opacity: 1; transform: translateY(0) scale(1); } 
         }
         .animate-fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    </style>
-
-    
+    </style> 
 </x-user>

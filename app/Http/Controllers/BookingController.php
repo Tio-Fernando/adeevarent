@@ -173,11 +173,12 @@ class BookingController extends Controller
             'status'         => 'Booking',
         ]);
 
-        $kendaraan->update(['status' => 'booking']);
+   
+     
 
         $orderId = 'INV-' . $booking->id . '-' . time();
 
-        // SIMPAN PAYMENT (TIDAK PAKAI SNAP LAGI)
+
         Payment::create([
             'order_id'          => $orderId,
             'sewa_id'           => $booking->id,
@@ -196,22 +197,33 @@ class BookingController extends Controller
     public function payment($id)
     {
         $sewa = Sewa::with('kendaraan')->findOrFail($id);
-
-        if ($sewa->status === 'Booking' && $sewa->sisa_tagihan > 0) {
-            $dpSukses = Payment::where('sewa_id', $id)
+        
+        if ($sewa->sisa_tagihan > 0) {
+            $payment = Payment::where('sewa_id', $id)
                 ->where('status_pembayaran', 'dp')
-                ->where('transaction_status', 'settlement')
                 ->first();
-          
-            if ($dpSukses) {
-                return redirect()->route('pelunasan', $id);
+
+            // Jika payment record belum ada, buat satu
+            if (!$payment) {
+                $orderId = 'INV-' . $sewa->id . '-' . time();
+                $payment = Payment::create([
+                    'order_id'          => $orderId,
+                    'sewa_id'           => $sewa->id,
+                    'snap_token'        => '-', 
+                    'dp'                => $sewa->dp,
+                    'sisa_bayar'        => $sewa->sisa_tagihan,
+                    'jumlah_bayar'      => $sewa->dp,
+                    'payment_type'      => 'pending',
+                    'transaction_status' => 'pending',
+                    'status_pembayaran' => 'dp',
+                ]);
+              
             }
-            
-            $payment = Payment::where('sewa_id', $id)->where('status_pembayaran', 'dp')->first();
+
             return view('payment', compact('sewa', 'payment'));
         }
-        
-        if ($sewa->status === 'lunas' || $sewa->status === 'Selesai') {
+
+        if (strtolower($sewa->status) === 'lunas' || strtolower($sewa->status) === 'selesai') {
             return redirect()->route('home')->with('message', 'Pembayaran sudah selesai.');
         }
 
@@ -247,15 +259,16 @@ class BookingController extends Controller
             'jumlah_bayar' => $sewa->sisa_tagihan,
             'payment_type' => 'cash',
             'transaction_status' => 'pending',
-            'status_pembayaran' => 'lunas'
+            'status_pembayaran' => 'dp'
         ]);
     }
 
-    public function chargePayment(Request $request, $id)
+   
+
+      public function chargePayment(Request $request, $id)
     {
         $sewa = Sewa::findOrFail($id);
         
-        // Ambil payment yang 'pending' dan paling baru (latest)
         $payment = Payment::where('sewa_id', $id)
                           ->where('transaction_status', 'pending')
                           ->latest()
@@ -301,7 +314,6 @@ class BookingController extends Controller
         try {
             $response = CoreApi::charge($params);
 
-            // Update status payment menjadi pending dengan metode yang dipilih
             $payment->update([
                 'payment_type' => $request->payment_type == 'bank_transfer' ? 'va' : $request->payment_type,
                 'transaction_status' => 'pending',
@@ -312,6 +324,7 @@ class BookingController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
 
     // FUNGSI INI DIBIKIN LEBIH AMAN AGAR TIDAK ERROR 500
     public function paymentStatus($id)
@@ -334,76 +347,82 @@ class BookingController extends Controller
 
     public function midtransCallback(Request $request)
     {
-        $serverKey = config('services.midtrans.serverKey');
-        $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
-        
-        if ($hashed !== $request->signature_key) {
-            return response()->json(['message' => 'Invalid Signature'], 403);
-        }
+        try {
+            $serverKey = config('services.midtrans.serverKey');
 
-        $payment = Payment::where('order_id', $request->order_id)->first();
-        if (!$payment) {
-            return response()->json(['message' => 'Payment not found'], 404);
-        }
+            // Gunakan gross_amount langsung dari request agar presisi desimalnya sama dengan kiriman Midtrans
+            $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
 
-        $sewa = Sewa::find($payment->sewa_id);
-        if (!$sewa) {
-            return response()->json(['message' => 'Sewa not found'], 404);
-        }
+            if ($hashed !== $request->signature_key) {
+                Log::warning('Midtrans Callback: Invalid Signature. Order ID: ' . $request->order_id);
+                return response()->json(['message' => 'Invalid Signature'], 403);
+            }
 
-        $kendaraan = Kendaraan::where('nopol', $sewa->nopol)->first();
-        $statusTransaksi = $request->transaction_status;
+            $payment = Payment::where('order_id', $request->order_id)->first();
+            if (!$payment) {
+                Log::error('Midtrans Callback: Payment record not found. Order ID: ' . $request->order_id);
+                return response()->json(['message' => 'Payment not found'], 404);
+            }
 
-        // JIKA BERHASIL DIBAYAR
-        if ($statusTransaksi == 'capture' || $statusTransaksi == 'settlement') {
-            
-            // JIKA ITU TRANSAKSI PELUNASAN
-            if (str_contains($request->order_id, 'PELUNASAN') || $payment->status_pembayaran === 'lunas') {
-                
+            $sewa = Sewa::find($payment->sewa_id);
+            if (!$sewa) {
+                Log::error('Midtrans Callback: Sewa record not found. Sewa ID: ' . $payment->sewa_id);
+                return response()->json(['message' => 'Sewa not found'], 404);
+            }
+
+            $kendaraan = Kendaraan::where('nopol', $sewa->nopol)->first();
+            $statusTransaksi = $request->transaction_status;
+
+            // Gunakan strpos sebagai pengganti str_contains untuk keamanan versi PHP
+            $isPelunasan = (strpos($request->order_id, 'PELUNASAN') !== false) || ($payment->status_pembayaran === 'lunas');
+
+            if ($statusTransaksi == 'capture' || $statusTransaksi == 'settlement') {
+
+                if ($isPelunasan) {
+                    // UPDATE PELUNASAN
+                    $payment->update([
+                        'status_pembayaran' => 'lunas',
+                        'transaction_status' => 'settlement',
+                        'payment_type' => $request->payment_type
+                    ]);
+
+                    $sewa->update([
+                        'status' => 'lunas',
+                        'sisa_tagihan' => 0
+                    ]);
+                } else {
+                    // UPDATE DP / BOOKING AWAL
+                    $payment->update([
+                        'status_pembayaran' => 'dp',
+                        'transaction_status' => 'settlement',
+                        'payment_type' => $request->payment_type
+                    ]);
+
+                    $sewa->update(['status' => 'Booking']);
+
+                    if ($kendaraan) {
+                        $kendaraan->update(['status' => 'booking']);
+                    }
+                }
+            } else if (in_array($statusTransaksi, ['cancel', 'deny', 'expire'])) {
                 $payment->update([
-                    'status_pembayaran' => 'lunas',
-                    'transaction_status' => 'settlement',
-                    'payment_type' => $request->payment_type
+                    'status_pembayaran' => 'gagal',
+                    'transaction_status' => 'cancel'
                 ]);
 
-                $sewa->update([
-                    'status' => 'lunas', // Pastikan di database kamu ada enum 'lunas' (huruf kecil semua)
-                    'sisa_tagihan' => 0
-                ]);
-                
-             
-            } 
-            // JIKA ITU TRANSAKSI DP AWAL
-            else {
-                $payment->update([
-                    'status_pembayaran' => 'dp',
-                    'transaction_status' => 'settlement',
-                    'payment_type' => $request->payment_type
-                ]);
-
-                $sewa->update(['status' => 'Dibayar']); 
-
-                // MOBIL RESMI DIBOOKING
-                if ($kendaraan) {
-                    $kendaraan->update(['status' => 'booking']);
+                if (!$isPelunasan) {
+                    $sewa->update(['status' => 'Batal']);
+                    if ($kendaraan) {
+                        $kendaraan->update(['status' => 'free']);
+                    }
                 }
             }
-        } 
-        // JIKA PEMBAYARAN GAGAL
-        else if (in_array($statusTransaksi, ['cancel', 'deny', 'expire'])) {
-            $payment->update([
-                'status_pembayaran' => 'gagal',
-                'transaction_status' => 'cancel'
-            ]);
 
-            if (!str_contains($request->order_id, 'PELUNASAN')) {
-                $sewa->update(['status' => 'Batal']);
-                if ($kendaraan) {
-                    $kendaraan->update(['status' => 'free']);
-                }
-            }
+            return response()->json(['message' => 'Callback processed successfully']);
+        } catch (\Exception $e) {
+            // Ini akan mencatat error sebenarnya di storage/logs/laravel.log
+            Log::error('MIDTRANS CALLBACK CRASH: ' . $e->getMessage());
+            return response()->json(['message' => 'Internal Server Error'], 500);
         }
-        
-        return response()->json(['message' => 'Callback received']);
     }
 }
