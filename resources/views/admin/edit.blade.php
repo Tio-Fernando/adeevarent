@@ -20,7 +20,7 @@
         <div class="flex justify-center items-center">
             <div class="bg-white border flex justify-center border-gray-100 rounded-2xl p-6">
         
-                <form method="POST" action="{{ route('admin.update',$admin->id) }}" class="flex flex-col gap-5">
+                <form method="POST" action="{{ route('superadmin.admin.update',$admin->id) }}" class="flex flex-col gap-5">
                     @csrf
         
                     {{-- Nama --}}
@@ -48,7 +48,7 @@
                         <label for="email" class="text-xs font-medium text-gray-500 uppercase tracking-wide">
                             Email <span class="text-red-400">*</span>
                         </label>
-                        <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="cth. budi@gmail.com"
+                        <input type="email" id="email" name="email" value="{{ old('email', $admin->email) }}" placeholder="cth. budi@gmail.com"
                             class="border rounded-lg px-3 py-2.5 text-sm text-gray-800 transition
                                    focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent
                                    {{ $errors->has('email') ? 'border-red-300 bg-red-50' : 'border-gray-200' }}">
@@ -115,30 +115,6 @@
                     </div>
         
                     {{-- Level + Status --}}
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="flex flex-col gap-1.5">
-                            <label for="level" class="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                Level <span class="text-red-400">*</span>
-                            </label>
-                            <select id="level" name="level" class="border rounded-lg px-3 py-2.5 text-sm text-gray-800 transition
-                                       focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent
-                                       {{ $errors->has('level') ? 'border-red-300 bg-red-50' : 'border-gray-200' }}">
-                                <option value="">-- Pilih Level --</option>
-                                <option value="Administrator" {{ old('level') === 'Administrator' ? 'selected' : '' }}>Admin
-                                </option>
-                
-                            </select>
-                            @error('level')
-                                <span class="text-xs text-red-500 flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    {{ $message }}
-                                </span>
-                            @enderror
-                        </div>
         
                         <div class="flex flex-col gap-1.5">
                             <label for="status" class="text-xs font-medium text-gray-500 uppercase tracking-wide">

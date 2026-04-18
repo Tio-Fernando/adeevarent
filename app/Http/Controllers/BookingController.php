@@ -27,22 +27,29 @@ class BookingController extends Controller
         return redirect()->back()->with('error', 'Pesanan harus dilunasi terlebih dahulu.');
     }
 
-    $pengembalian = Carbon::now();
-    $jadwalKembali = Carbon::parse($sewa->jadwal_kembali);
-    $denda = 0;
+    $pengembalian = Carbon::now('Asia/Jakarta');
+    $jadwalKembali = Carbon::parse($sewa->jadwal_kembali, 'Asia/Jakarta');
+$denda = 0;
 
-    if ($pengembalian->greaterThan($jadwalKembali)) {
-        $lateHours = $jadwalKembali->diffInHours($pengembalian);
+if ($pengembalian->greaterThan($jadwalKembali)) {
 
-        // Tambahkan pembulatan ke atas jika masih ada sisa menit
-        if ($jadwalKembali->copy()->addHours($lateHours)->lessThan($pengembalian)) {
-            $lateHours++;
-        }
+    // Hitung selisih menit
+    $lateMinutes = $jadwalKembali->diffInMinutes($pengembalian);
 
-        $dendaPerJam = $sewa->kendaraan->denda_terlambat;
+    // Jika lebih dari 60 menit baru kena denda
+    if ($lateMinutes > 60) {
+
+        // Kurangi 60 menit toleransi
+        $lateMinutes -= 60;
+
+        // Hitung jam denda (dibulatkan ke atas)
+        $lateHours = ceil($lateMinutes / 60);
+
+        $dendaPerJam = (int) $sewa->kendaraan->denda_terlambat;
+
         $denda = $lateHours * $dendaPerJam;
     }
-
+}
     $sewa->update([
         'status' => 'selesai',
         'tgl_kembali' => $pengembalian,
@@ -173,12 +180,7 @@ class BookingController extends Controller
             'status'         => 'Booking',
         ]);
 
-   
-     
-
         $orderId = 'INV-' . $booking->id . '-' . time();
-
-
         Payment::create([
             'order_id'          => $orderId,
             'sewa_id'           => $booking->id,
@@ -203,7 +205,6 @@ class BookingController extends Controller
                 ->where('status_pembayaran', 'dp')
                 ->first();
 
-            // Jika payment record belum ada, buat satu
             if (!$payment) {
                 $orderId = 'INV-' . $sewa->id . '-' . time();
                 $payment = Payment::create([
@@ -274,8 +275,10 @@ class BookingController extends Controller
                           ->latest()
                           ->firstOrFail();
 
-
         if($request->payment_type === 'cash'){
+            $sewa->update([
+                'dp' => 0,
+            ]);
             $payment->update([
                 'status_pembayaran' => str_contains($payment->order_id, 'PELUNASAN') ? 'lunas' : 'dp'
             ]);
@@ -326,7 +329,7 @@ class BookingController extends Controller
     }
 
 
-    // FUNGSI INI DIBIKIN LEBIH AMAN AGAR TIDAK ERROR 500
+   
     public function paymentStatus($id)
     {
         $sewa = Sewa::find($id);
@@ -379,7 +382,7 @@ class BookingController extends Controller
             if ($statusTransaksi == 'capture' || $statusTransaksi == 'settlement') {
 
                 if ($isPelunasan) {
-                    // UPDATE PELUNASAN
+                  
                     $payment->update([
                         'status_pembayaran' => 'lunas',
                         'transaction_status' => 'settlement',

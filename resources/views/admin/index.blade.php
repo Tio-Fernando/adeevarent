@@ -69,9 +69,9 @@
                                     <div class="flex items-center gap-2">
                                         <div
                                             class="w-7 h-7 rounded-full bg-orange-100 text-orange-500 text-xs font-semibold flex items-center justify-center flex-shrink-0">
-                                            {{ strtoupper(substr($admin->name, 0, 1)) }}
+                                            {{ strtoupper(substr($admin->nama, 0, 1)) }}
                                         </div>
-                                        <span class="text-gray-800 font-medium">{{ $admin->name }}</span>
+                                        <span class="text-gray-800 font-medium">{{ $admin->nama }}</span>
                                     </div>
                                 </td>
                                 <td class="py-3 px-4 text-gray-500">{{ $admin->email }}</td>
@@ -105,7 +105,7 @@
                                         </a> 
 
                                         {{-- Toggle Status --}}
-                                        <form method="POST" action="">
+                                        <form method="POST" action="{{ route('superadmin.admin.toggleStatus', $admin->id) }}">
                                             @csrf @method('PATCH')
                                             <button type="submit"
                                                 class="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-blue-500 hover:bg-blue-50 transition">
@@ -114,8 +114,9 @@
                                         </form> 
 
                                         {{-- Hapus --}}
-                                        <form method="POST" action="{{ route('admin.destroy',$admin->id) }}"
-                                    >    
+                                        <form method="POST" action="{{ route('admin.destroy',$admin->id) }}">  
+                                         @csrf
+                                         @method('DELETE')  
                                             <button type="submit"
                                                 class="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-red-400 hover:bg-red-50 transition">
                                                 Hapus

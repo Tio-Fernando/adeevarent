@@ -287,7 +287,8 @@
                             <p class="text-sm text-gray-500 mb-8 font-medium relative z-10">Silakan datang ke kantor kami untuk melakukan pembayaran secara langsung dan melakukan verifikasi unit.</p>
                             
                            <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100">
-                    <p class="text-orange-600 font-bold uppercase tracking-widest">Sebutkan ID Pesanan: ${data.order_id || 'ID Kamu'}</p>
+                    <p class="text-orange-600 font-bold uppercase tracking-widest">Sebutkan ID Pesanan: 
+                        ${data.invoice || 'ID Kamu'}</p>
                 </div>
                             <div class="mt-8 p-4 bg-orange-50 rounded-2xl text-orange-600 text-xs md:text-sm font-bold uppercase tracking-widest border border-orange-100 relative z-10">
                                 Selesaikan pembayaran dalam 15 menit
@@ -366,26 +367,26 @@
         });
 
         function mulaiCekOtomatis() {
-    const intervalCek = setInterval(() => {
-        fetch("{{ route('booking.status', $sewa->id) }}")
-            .then(res => res.json())
-            .then(data => {
-                if (['settlement', 'capture'].includes(data.transaction_status)) {
-                    clearInterval(intervalCek);
-                    Swal.fire({
-                        title: 'Sukses!',
-                        text: 'Pembayaran berhasil, mengalihkan ke Home...',
-                        icon: 'success',
-                        timer: 3000,
-                        showConfirmButton: false
-                    });
-                    setTimeout(() => {
-                        window.location.href = "{{ route('home') }}";
-                    }, 3000);
-                }
-            });
-    }, 5000); // Cek setiap 5 detik
-}
+        const intervalCek = setInterval(() => {
+            fetch("{{ route('booking.status', $sewa->id) }}")
+                .then(res => res.json())
+                .then(data => {
+                    if (['settlement', 'capture'].includes(data.transaction_status)) {
+                        clearInterval(intervalCek);
+                        Swal.fire({
+                            title: 'Sukses!',
+                            text: 'Pembayaran berhasil, mengalihkan ke Home...',
+                            icon: 'success',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                        setTimeout(() => {
+                            window.location.href = "{{ route('home') }}";
+                        }, 3000);
+                    }
+                });
+        }, 5000); // Cek setiap 5 detik
+    }
     </script>
 
     <style>

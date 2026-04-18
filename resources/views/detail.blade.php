@@ -1,6 +1,5 @@
 <x-user>
-    <div class="max-w-5xl mx-auto px-4 py-8 font-sans">
-        
+    <div class="max-w-5xl mx-auto px-4 py-8 font-sans">  
         {{-- BAGIAN ATAS: Info Mobil & Spesifikasi --}}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
             <div>
@@ -92,8 +91,8 @@
             </select>
         </div>
     </div>
-    {{-- Hidden Input untuk jadwal_kembali agar backend tidak error --}}
-    <input type="hidden" name="jadwal_kembali" id="tanggal_kembali">
+    {{-- Hidden Input untuk jadwal_kembali (rencana kembali), bukan actual tgl_kembali --}}
+    <input type="hidden" name="jadwal_kembali" id="jadwal_kembali">
     
     <p class="text-[10px] text-gray-400 mt-2 px-2">
         *Mobil dikembalikan pada jam yang sama di hari terakhir sewa (Sistem 24 Jam).
@@ -319,7 +318,7 @@ function hitungTotal() {
         const minutes = String(tglKembali.getMinutes()).padStart(2, '0');
         
         const formatKembali = `${year}-${month}-${day}T${hours}:${minutes}`;
-        document.getElementById('tanggal_kembali').value = formatKembali;
+        document.getElementById('jadwal_kembali').value = formatKembali;
 
 
         const jenisSewa = document.querySelector('input[name="jenis_sewa"]:checked').value;
@@ -346,6 +345,8 @@ function hitungTotal() {
         if(document.getElementById('summary_sisa')) {
             document.getElementById('summary_sisa').innerText = `Sisa Pelunasan: ${formatRupiah(sisaBayar)}`;
         }
+    } else {
+        document.getElementById('jadwal_kembali').value = '';
     }
 }
 

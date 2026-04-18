@@ -17,6 +17,7 @@
 
                 <thead class="bg-gray-100 text-gray-700">
                     <tr>
+                        <th class="px-6 py-3 font-medium rounded-l-lg">Invoice</th>
                         <th class="px-6 py-3 font-medium rounded-l-lg">Pelanggan</th>
                         <th class="px-6 py-3 font-medium rounded-l-lg">No Pol</th>
                         <th class="px-6 py-3 font-medium rounded-l-lg">tgl Sewa</th>
@@ -33,7 +34,10 @@
 
                 <tbody>
                     @forelse ($booking as $item)
-                        <tr class="border-b hover:bg-gray-50 transition">
+                    <tr class="border-b hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 font-medium text-gray-800 whitespace-nowrap">
+                                {{ $item->invoice }}
+                            </td>
                             <td class="px-6 py-4 font-medium text-gray-800 whitespace-nowrap">
                                 {{ $item->pelanggan->nama_pelanggan }}
                             </td>
@@ -47,7 +51,11 @@
                                 {{ \Carbon\Carbon::parse($item->jadwal_kembali)->translatedFormat('j F Y H:i') }}
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-800 whitespace-nowrap">
-                                {{ \Carbon\Carbon::parse($item->tgl_kembali)->translatedFormat('j F Y H:i') }}
+                                @if($item->tgl_kembali)
+                                    {{ \Carbon\Carbon::parse($item->tgl_kembali)->translatedFormat('j F Y H:i') }}
+                                @else
+                                    -
+                                @endif
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-800 whitespace-nowrap">
                                 {{ $item->durasi }}
@@ -87,7 +95,7 @@
                             <td class="px-4 py-4">
                                 @if($item->status == 'Booking')
                                     <span class="bg-red-500 text-white px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-                                        Bookin
+                                        Booking
                                     </span>
                                 @else
                                     <span class="bg-green-500 text-white px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
@@ -249,16 +257,38 @@
                 <div class="flex gap-2">
                     
                     
-                    <form :action="`/admin/payment/${item.id}/konfirmasi`" method="POST" x-show="item.status !=='lunas' && !== 'selesai' ">
-                         @csrf
-                         <button 
-                             type="submit" 
-                             class="px-5 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition font-medium" 
-                             x-show="item.status !== 'lunas'"
-                         >
-                             <span x-text="item.sisa_tagihan > 0 ? 'Konfirmasi DP' : 'Konfirmasi Lunas'"></span>
-                         </button>
-                     </form>
+                 <form 
+                        :action="`/admin/payment/${item.id}/konfirmasi`" 
+                        method="POST" 
+                        x-show="item.status == 'booking'"
+                    >
+                        @csrf
+                        <button 
+                            type="submit" 
+                            class="px-5 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition font-medium" 
+                            x-show="item.status === 'booking'"
+                        >
+                           <span >
+                          Konfirmasi DP
+                            </span>
+                        </button>
+                    </form>
+                 <form 
+                        :action="`/admin/payment/${item.id}/lunas`" 
+                        method="POST" 
+                        x-show="item.status == 'dp'"
+                    >
+                        @csrf
+                        <button 
+                            type="submit" 
+                            class="px-5 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition font-medium" 
+                            x-show="item.status === 'dp'"
+                        >
+                           <span> 
+                          Konfirmasi Lunas
+                            </span>
+                        </button>
+                    </form>
 
                      <form :action="`/booking/${item.id}`" method="POST" x-show="item.status === 'lunas'">
                         @csrf

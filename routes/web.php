@@ -27,19 +27,39 @@ Route::get('/profilCompany',[landingController::class,'profile'])->name('profile
 Route::get('/hubungiKami',[landingController::class,'hubungi'])->name('hubungi');
 Route::resource('laporan',LaporanController::class);
 
-Route::middleware(['auth','role:Administrator'])->group(function(){
-    Route::resource('kendaraan',KendaraanController::class);
+Route::middleware(['auth', 'role:Administrator'])->group(function () {
+    Route::resource('kendaraan', KendaraanController::class);
     Route::resource('kategori', CategoryController::class);
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('wilayah',CabangController::class);
-    Route::get('/booking',[BookingController::class,'index'])->name('booking.index');
-    Route::get('/booking/{id}', [BookingController::class, 'show'])->name('booking.show');
-    Route::get('/sewa/{id}/detail', [BookingController::class, 'detail'])->name('booking.detail');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    Route::resource('wilayah', CabangController::class);
+
+    Route::get('/booking', [BookingController::class, 'index'])
+        ->name('booking.index');
+
+    Route::get('/booking/{id}', [BookingController::class, 'show'])
+        ->name('booking.show');
+
+    Route::get('/sewa/{id}/detail', [BookingController::class, 'detail'])
+        ->name('booking.detail');
+
     Route::resource('admin/pengguna', AdminPelangganController::class, ['as' => 'admin']);
-    Route::post('/booking/{id}',[BookingController::class,'selesai'])->name('penyelesaian');
-    Route::post('/admin/payment/{id}/konfirmasi', [AdminPaymentController::class, 'konfirmasi'])
-        ->name('admin.payment.konfirmasi');
-    });
+
+    Route::post('/booking/{id}', [BookingController::class, 'selesai'])
+        ->name('penyelesaian');
+
+    Route::post(
+        '/admin/payment/{id}/konfirmasi',
+        [AdminPaymentController::class, 'konfirmasi']
+    )->name('admin.payment.konfirmasi');
+
+    Route::post(
+        '/admin/payment/{id}/lunas',
+        [AdminPaymentController::class, 'konfirmasiLunas']
+    )->name('admin.payment.konfirmasiLunas');
+});
     
 Route::middleware(['auth','role:Pelanggan'])->group(function(){
     Route::post('/proses-booking/{nopol}', [BookingController::class, 'store'])->name('booking.store');
@@ -72,4 +92,11 @@ Route::middleware('auth')->group(function () {
     
 });
 
+Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'role:SuperAdmin'])->group(function () {
+    Route::resource('admin', \App\Http\Controllers\SuperAdmin\ManageAdminController::class)
+        ->names('admin');
+
+    Route::patch('admin/{id}/toggle-status', [\App\Http\Controllers\SuperAdmin\ManageAdminController::class, 'toggleStatus'])
+        ->name('admin.toggleStatus');
+});
 require __DIR__.'/auth.php';
