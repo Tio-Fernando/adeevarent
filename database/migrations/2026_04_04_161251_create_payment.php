@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payment', function (Blueprint $table) {
-            $table->id();
+        Schema::create('tr_pembayaran', function (Blueprint $table) {
+            $table->id('id_pembayaran');
             $table->string('order_id',25);
             $table->string('snap_token',255);
-            $table->foreignId('sewa_id')->constrained('sewa')->onDelete('cascade');
+            $table->foreignId('id_sewa')->constrained('tr_sewa', 'id_sewa')->onDelete('cascade');
             $table->string('payment_type',50);
             $table->enum('transaction_status',['pending','settlement','expire','cancel']);
             $table->integer('jumlah_bayar');
@@ -29,6 +29,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payment');
+        Schema::dropIfExists('tr_pembayaran');
     }
 };
+

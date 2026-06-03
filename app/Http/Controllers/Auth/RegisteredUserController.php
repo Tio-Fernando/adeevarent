@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'nama' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'min:8', Rules\Password::defaults()],
             'phone' => ['required','string','max:15'],
@@ -44,17 +44,16 @@ class RegisteredUserController extends Controller
             DB::beginTransaction();
             try {
                 $user = User::create([
-                    'name' => $request->name,
+                    'nama' => $request->nama,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
-                    'phone' => $request->phone,
                     'status' => true,
                     'level' => 'Pelanggan'
                 ]);
 
                 Pelanggan::create([
-                    'id_user' => $user->id, 
-                    'nama_pelanggan' => $request->name,
+                    'id_user' => $user->id_user, 
+                    'nama_pelanggan' => $request->nama,
                     'alamat' => $request->alamat,
                     'no_hp' => $request->phone
                 ]);

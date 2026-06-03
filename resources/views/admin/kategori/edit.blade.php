@@ -12,7 +12,7 @@
             <h2 class="text-2xl font-bold mb-8">Edit Kategori</h2>
 
            
-            <form action="{{ route('kategori.update', $kategori->id) }}" method="POST">
+            <form action="{{ route('kategori.update', $kategori->id_kategori) }}" method="POST">
                 @csrf
                 @method('PUT')
 

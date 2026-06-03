@@ -12,7 +12,7 @@
             <h2 class="text-2xl font-bold mb-8">Edit wilayah</h2>
 
            
-            <form action="{{ route('wilayah.update', $cabang->id) }}" method="POST">
+            <form action="{{ route('wilayah.update', $cabang->id_cabang) }}" method="POST">
                 @csrf
                 @method('PUT')
 

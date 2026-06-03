@@ -3,11 +3,42 @@
         {{-- HEADER --}}
         <h1 class="text-2xl font-bold text-gray-800 mb-6">Data Kendaraan</h1>
 
-        <div class="flex justify-end mb-3">
+        <div class="flex items-center justify-between gap-4 mb-2">
+    
+            <form method="GET" action="{{ route('kendaraan.index') }}" class="relative w-full sm:w-80 md:w-96 flex gap-2 items-center">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 pointer-events-none">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z">
+                        </path>
+                    </svg>
+                </span>
+
+                <input 
+                    type="text"
+                    name="search"
+                    placeholder="Cari nama mobil atau No.Pol..."
+                    value="{{ $search ?? '' }}"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-full focus:ring-orange-500 focus:border-orange-500 pl-10 p-2.5 outline-none sm:text-sm"/>
+                <button type="submit" class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-accent text-white rounded-full text-sm font-semibold transition whitespace-nowrap">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    Cari
+                </button>
+
+                @if($search)
+                    <a href="{{ route('kendaraan.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-200 hover:bg-gray-300 rounded-full text-sm font-semibold text-gray-700 whitespace-nowrap">
+                        Reset
+                    </a>
+                @endif
+            </form>
+
             <a href="{{ route('kendaraan.create') }}"
-               class="bg-primary hover:bg-accent text-white text-sm font-semibold px-5 py-2 rounded-full transition">
+               class="bg-primary hover:bg-accent text-white text-sm font-semibold px-5 py-2 rounded-full transition whitespace-nowrap">
                 Tambah Mobil
             </a>
+
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -25,6 +56,7 @@
                             {{ $item->nama_kendaraan }}
                         </h5>
                     </a>
+                    <p class="text-sm text-gray-400 mb-3">{{ $item->category->nama_kategori }} · {{ $item->jumlah_kursi ?? '-' }} Kursi</p>
                     
                     <p class="mb-6 text-body flex-grow italic text-sm text-gray-500">
                         {{ Str::limit($item->deskripsi, 100) }}

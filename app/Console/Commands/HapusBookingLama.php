@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Jaminan;
 use App\Models\Kendaraan;
 use App\Models\Payment;
 use App\Models\Sewa;
@@ -12,46 +13,70 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 #[Signature('app:booking-bersihkan')]
-#[Description('Command description')]
+#[Description('Hapus booking yang sudah kedaluwarsa')]
 class HapusBookingLama extends Command
 {
     /**
      * Execute the console command.
      */
-  public function handle()
-{
-    $ambangWaktu = Carbon::now()->subMinutes(15);
+    public function handle()
+    {
+        \Log::info('Cron booking berjalan: ' . now());
+        // Ambil semua booking
+        $sewas = Sewa::where('status', 'Booking')->get();
 
-    // Ambil data sewa yang expired
-    $sewas = Sewa::where('status', 'Booking')
-        ->where('created_at', '<', $ambangWaktu)
-        ->get();
-
-    if ($sewas->isEmpty()) {
-        $this->info('Tidak ada data booking yang kedaluwarsa.');
-        return;
-    }
-
-    DB::beginTransaction();
-
-    try {
-        foreach ($sewas as $sewa) {
-            // 1. Hapus payment terkait
-            Payment::where('sewa_id', $sewa->id)->delete();
-
-            Kendaraan::where('nopol', $sewa->nopol) // sesuaikan field relasi
-                ->update(['status' => 'free']);
-
-
-            $sewa->delete();
+        if ($sewas->isEmpty()) {
+            $this->info('Tidak ada data booking.');
+            return;
         }
 
-        DB::commit();
-        $this->info(count($sewas) . ' booking berhasil dibersihkan.');
-        
-    } catch (\Exception $e) {
-        DB::rollback();
-        $this->error('Gagal: ' . $e->getMessage());
+        $jumlahDihapus = 0;
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($sewas as $sewa) {
+
+                // Ambil payment terkait
+                $payment = Payment::where('id_tr_sewa', $sewa->id_tr_sewa)->first();
+
+                // Default expired 15 menit
+                $batasWaktu = Carbon::parse($sewa->created_at)->addMinutes(15);
+
+                // Jika pembayaran cash → 24 jam
+                if ($payment && $payment->payment_type === 'cash') {
+                    $batasWaktu = Carbon::parse($sewa->created_at)->addHours(24);
+                }
+
+                // Cek apakah sudah expired
+                if (Carbon::now()->greaterThan($batasWaktu)) {
+
+                    // Hapus payment terkait
+                    if ($payment) {
+                        $payment->delete();
+                    }
+
+                    Jaminan::where('id_tr_sewa', $sewa->id_tr_sewa)->delete();
+
+                    // Ubah status kendaraan jadi free
+                    Kendaraan::where('nopol', $sewa->nopol)
+                        ->update(['status' => 'free']);
+
+                    // Hapus sewa
+                    $sewa->delete();
+
+                    $jumlahDihapus++;
+                }
+            }
+
+            DB::commit();
+
+            $this->info($jumlahDihapus . ' booking berhasil dibersihkan.');
+        } catch (\Exception $e) {
+
+            DB::rollback();
+
+            $this->error('Gagal: ' . $e->getMessage());
+        }
     }
-}
 }

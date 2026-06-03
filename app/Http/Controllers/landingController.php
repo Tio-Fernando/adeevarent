@@ -6,6 +6,7 @@ use App\Models\Cabang;
 use App\Models\Kendaraan;
 use App\Models\Category;
 use App\Models\Sewa;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -79,8 +80,22 @@ class landingController extends Controller
      * Store a newly created resource in storage.
      */
 
-    public function laporanSuper(){
-        return view('owner.laporan');
+    public function laporanSuper(Request $request){
+        $bulan = $request->get('bulan', Carbon::now()->month);
+        $tahun = $request->get('tahun', Carbon::now()->year);
+
+        $laporan = Sewa::with(['pelanggan','kendaraan'])
+            ->whereIn('status',['dp','lunas','selesai'])
+            ->when($bulan, function ($query) use ($bulan) {
+                return $query->whereMonth('created_at', $bulan);
+            })
+            ->when($tahun, function ($query) use ($tahun) {
+                return $query->whereYear('created_at', $tahun);
+            })
+            ->latest()
+            ->paginate(10);
+
+        return view('owner.laporan', compact('laporan', 'bulan', 'tahun'));
     }
 
     /**

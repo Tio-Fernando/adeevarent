@@ -21,7 +21,7 @@ class AuthenticatedSessionController extends Controller
 
             $user = Auth::user();
 
-            if ($user->level === 'SuperAdmin') {
+            if ($user->level === 'Superadmin') {
                 return redirect()->route('superadmin.dashboard');
             } elseif ($user->level === 'Administrator') {
                 return redirect()->route('dashboard');
@@ -44,7 +44,18 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        if($user->level === 'SuperAdmin'){
+        if ((int) $user->status === 0) {
+            Auth::logout();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Akun Anda dinonaktifkan.'
+            ]);
+        }
+
+        if($user->level === 'Superadmin'){
             return redirect()->intended(route('superadmin.dashboard'));
         }elseif ($user->level === 'Administrator') {
              return redirect()->intended(route('dashboard'));

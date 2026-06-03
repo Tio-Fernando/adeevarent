@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pelanggan extends Model
 {
-    protected $primaryKey = 'id';
-    protected $table = 'pelanggan';
-    protected $fillable = ['id_user','nama_pelanggan','alamat'];
+    protected $primaryKey = 'id_pelanggan';
+    protected $table = 'ms_pelanggan';
+    protected $fillable = ['id_user','nama_pelanggan','no_hp','alamat'];
 
     public function user(){
         return $this->belongsTo(User::class, 'id_user');

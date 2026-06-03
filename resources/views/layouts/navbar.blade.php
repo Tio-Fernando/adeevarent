@@ -20,11 +20,11 @@
         <div class="relative" x-data="{ open: false }" @click.away="open = false">
             <div @click="open = !open" class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition">
                 <img class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-orange-100" 
-                     src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=FF9E0C&color=fff" 
-                     alt="{{ Auth::user()->name }}">
+                     src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->nama) }}&background=FF9E0C&color=fff" 
+                     alt="{{ Auth::user()->nama }}">
                 
                 <div class="hidden sm:block">
-                    <p class="text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</p>
+                    <p class="text-sm font-semibold text-gray-700">{{ Auth::user()->nama }}</p>
                     <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
                 </div>
                 
@@ -44,7 +44,7 @@
                  style="display: none;">
                 
                 <div class="px-4 py-3 border-b border-gray-50 sm:hidden">
-                    <p class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</p>
+                    <p class="text-sm font-bold text-gray-800">{{ Auth::user()->nama }}</p>
                 </div>
        
                 <a href="{{ route('profile.user') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">

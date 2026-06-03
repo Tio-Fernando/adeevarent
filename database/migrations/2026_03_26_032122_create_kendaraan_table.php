@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kendaraan', function (Blueprint $table) {
+        Schema::create('ms_kendaraan', function (Blueprint $table) {
             
             $table->string('nopol', 20)->primary();
-            $table->foreignId('category_id')->constrained('category')->onDelete('restrict');
-            $table->foreignId('cabang_id')->constrained('cabang')->onDelete('restrict');
+            $table->foreignId('id_kategori')->constrained('ms_kategori', 'id')->onDelete('restrict');
+            $table->foreignId('id_cabang')->constrained('ms_cabang', 'id')->onDelete('restrict');
             $table->string('nama_kendaraan',20);
             $table->enum('transmisi',['Matic','Manual']);
             $table->integer('harga');
@@ -35,6 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kendaraan');
+        Schema::dropIfExists('ms_kendaraan');
     }
 };
+

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use SweetAlert2\Laravel\Swal;
 
 class AdminController extends Controller
 {
@@ -12,27 +13,40 @@ class AdminController extends Controller
         $admins = User::where('level','Administrator')->paginate(10);
         return view('admin.index',compact('admins'));
     }
-
+    
     public function create(){
         return view('admin.create');
     }
 
     public function store(Request $request){
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:ms_users,email',
             'password' => 'required|string|min:8|confirmed',
         ]);
         
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'level' => 'Administrator',
-            'status' => 'aktif',
-        ]);
-        
-        return redirect()->route('admin.index')->with('success', 'Admin berhasil ditambahkan');
+        try{
+
+            User::create([
+                'nama' => $request->nama,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'level' => 'Administrator',
+                'status' => True,
+            ]);
+    
+      Swal::success([
+            'title' => 'Berhasil',
+            'text' => 'Admin berhasil ditambahkan',
+            'confirmButtonText' => 'OK',
+        ]);            
+            
+            return redirect()->route('admin.index')->with('success', 'Admin berhasil ditambahkan');
+        }catch(\Exception $e){
+
+        return back()->with('error', 'Gagal menambahkan Admin'. $e);
+
+        }
     }
 
     public function edit(string $id){
@@ -44,18 +58,17 @@ class AdminController extends Controller
         $admin = User::findOrFail($id);
         
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $admin->id,
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:ms_users,email,' . $admin->id_user . ',id_user',
             'password' => 'nullable|string|min:8|confirmed',
-            'level' => 'required|in:Administrator',
             'status' => 'required|in:aktif,nonaktif',
         ]);
         
         $data = [
-            'name' => $request->name,
+            'nama' => $request->nama,
             'email' => $request->email,
-            'level' => $request->level,
-            'status' => $request->status,
+            'level' => 'Administrator',
+            'status' => $request->status == 'aktif' ? 1 : 0,
         ];
         
         if ($request->filled('password')) {
@@ -76,7 +89,7 @@ class AdminController extends Controller
 
     public function toggleStatus(string $id){
         $admin = User::findOrFail($id);
-        $admin->status = $admin->status === 'aktif' ? 'nonaktif' : 'aktif';
+        $admin->status = $admin->status == 1 ? 0 : 1;
         $admin->save();
         
         return redirect()->route('admin.index')->with('success', 'Status admin berhasil diubah');

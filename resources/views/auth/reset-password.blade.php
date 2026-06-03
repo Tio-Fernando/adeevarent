@@ -8,7 +8,6 @@
 </head>
 <body class="flex flex-col min-h-screen md:flex-row">
 
-    <!-- LEFT FORM -->
     <div class="w-full md:w-1/2 flex items-center justify-center bg-gray-100 py-12 px-4">
         <div class="w-full max-w-sm">
             <h1 class="text-3xl font-bold mb-2 text-center">Reset Password</h1>

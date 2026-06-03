@@ -11,16 +11,6 @@
             </a>
         </div>
     
-        @if (session('success'))
-            <div
-                class="mb-4 flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-lg">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                {{ session('success') }}
-            </div>
-        @endif
-    
         @if (session('error'))
             <div class="mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,59 +23,59 @@
         {{-- TABEL --}}
         <div class="bg-white border border-gray-100 rounded-2xl p-5">
             <div class="flex items-center justify-between mb-4">
-                <span class="text-base font-medium text-gray-700">Data Admin</span>
-                <span class="text-xs text-gray-400 border border-gray-200 px-3 py-1 rounded-lg">
-                    {{ now()->translatedFormat('F Y') }}
-                </span>
+            
             </div>
     
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-gray-100">
-                            <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">No
+                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">No
                             </th>
-                            <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Nama
+                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Nama
                             </th>
-                            <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Email
+                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Email
                             </th>
-                            <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                Password</th>
-                            <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Level
+                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Level
                             </th>
-                            <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Status
+                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Status
                             </th>
-                            <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Aksi
+                            <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">Aksi
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($admins as $index => $admin)
                             <tr class="border-b border-gray-50 hover:bg-orange-50/30 transition">
-                                <td class="py-3 px-4 text-gray-400 text-xs">
+                                <td class="py-3 px-4 text-center text-gray-400 text-xs">
                                     {{$index+1}}
                                 </td>
                                 <td class="py-3 px-4">
-                                    <div class="flex items-center gap-2">
-                                        <div
-                                            class="w-7 h-7 rounded-full bg-orange-100 text-orange-500 text-xs font-semibold flex items-center justify-center flex-shrink-0">
-                                            {{ strtoupper(substr($admin->nama, 0, 1)) }}
-                                        </div>
-                                        <span class="text-gray-800 font-medium">{{ $admin->nama }}</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 text-[11px] font-bold flex items-center justify-center flex-shrink-0 border border-orange-200">
+                                        @php
+                                            $words = explode(' ', $admin->nama ?? $admin->name);
+                                            $initials = '';
+                                            foreach ($words as $w) {
+                                                $initials .= strtoupper(substr($w, 0, 1));
+                                            }
+                                            echo substr($initials, 0, 2); 
+                                        @endphp
                                     </div>
-                                </td>
+                                    <span class="text-gray-800 font-semibold">{{ $admin->nama ?? $admin->name }}</span>
+                                </div>
+                            </td>
                                 <td class="py-3 px-4 text-gray-500">{{ $admin->email }}</td>
-                                <td class="py-3 px-4 text-gray-300 tracking-widest text-xs">••••••••••</td>
-                                <td class="py-3 px-4">
+                                <td class="py-3 px-4 text-center">
                                     <span class="bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-md">
                                         {{ $admin->level }}
                                     </span>
                                 </td>
-                                <td class="py-3 px-4">
-                                    @if ($admin->status === 'aktif')
+                                <td class="py-3 px-4 text-center">
+                                    @if ($admin->status == 1)
                                         <span
                                             class="inline-flex items-center gap-1 bg-green-50 text-green-600 text-xs font-medium px-2.5 py-1 rounded-full">
-                                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full justify-center"></span>
                                             Aktif
                                         </span>
                                     @else
@@ -99,25 +89,25 @@
                                 <td class="py-3 px-4">
                                     <div class="flex items-center gap-1.5">
                                         {{-- Edit --}}
-                                        <a href="{{ route('admin.edit',$admin->id) }}"
+                                        <a href="{{ route('admin.edit',$admin->id_user) }}"
                                             class="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-100 transition">
                                             Edit
                                         </a> 
 
                                         {{-- Toggle Status --}}
-                                        <form method="POST" action="{{ route('superadmin.admin.toggleStatus', $admin->id) }}">
+                                        <form method="POST" action="{{ route('toggle',$admin->id_user) }}">
                                             @csrf @method('PATCH')
                                             <button type="submit"
                                                 class="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-blue-500 hover:bg-blue-50 transition">
-                                                {{ $admin->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}
+                                                {{ $admin->status == 1 ? 'Nonaktifkan' : 'Aktifkan' }}
                                             </button>
                                         </form> 
 
-                                        {{-- Hapus --}}
-                                        <form method="POST" action="{{ route('admin.destroy',$admin->id) }}">  
+                                     
+                                        <form method="POST" action="{{ route('admin.destroy',$admin->id_user) }}">  
                                          @csrf
                                          @method('DELETE')  
-                                            <button type="submit"
+                                            <button type="submit" onclick="confirm('Apakah anda ingin menghapus akun ini')"
                                                 class="text-xs px-3 py-1.5 border border-gray-200 rounded-lg text-red-400 hover:bg-red-50 transition">
                                                 Hapus
                                             </button>
@@ -143,11 +133,11 @@
             </div>
     
             {{-- PAGINATION --}}
-            {{-- @if ($admins->hasPages())
+            @if ($admins->hasPages())
                 <div class="mt-5 pt-4 border-t border-gray-100">
                     {{ $admins->links() }}
                 </div>
-            @endif --}}
+            @endif
         </div>
     
     </div>

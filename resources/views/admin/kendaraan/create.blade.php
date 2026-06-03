@@ -68,6 +68,14 @@
                      </select>
                 </div>
 
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">Jumlah Kursi</label>
+                    <input type="number" name="jumlah_kursi" value="{{ old('jumlah_kursi') }}"
+                           placeholder="Contoh: 5"
+                           min="1"
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300">
+                </div>
+
                 {{-- Harga --}}
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">Harga</label>
@@ -78,7 +86,7 @@
 
                 {{-- Denda Keterlambatan --}}
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1">Denda Keterlambatan (Rp/hari)</label>
+                    <label class="block text-xs text-gray-500 mb-1">Denda Keterlambatan (Rp/Jam)</label>
                     <input type="number" name="denda_terlambat" value="{{ old('denda_terlambat') }}"
                            placeholder="Contoh: 50000"
                            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300">
@@ -100,8 +108,8 @@
                     <label class="block text-xs text-gray-500 mb-1">Kondisi</label>
                          <select name="kondisi" id="kondisi" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white">
                              <option value="" disabled selected>Selected Option</option>
-                            <option value="rusak">Rusak</option>
-                            <option value="baik">Baik</option>
+                            <option value="Rusak">Rusak</option>
+                            <option value="Baik">Baik</option>
                          </select>
                 </div>
 
@@ -110,9 +118,9 @@
                     <label class="block text-xs text-gray-500 mb-1">Bahan Bakar</label>
                    <select name="bbm" id="bbm" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white">
                     <option value="" disabled selected>Selected Option</option>
-                    <option value="solar">Solar</option>
-                    <option value="pertalite">Pertalite</option>
-                    <option value="pertamax">Pertamax</option>
+                    <option value="Solar">Solar</option>
+                    <option value="Pertalite">Pertalite</option>
+                    <option value="Pertamax">Pertamax</option>
                    </select>
                 </div>
 
@@ -126,11 +134,11 @@
 
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">Kategori</label>
-                    <select name="category_id"
+                    <select name="id_kategori"
                             class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white">
                         <option value="" disabled selected>Selected Option</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                            <option value="{{ $category->id_kategori }}" {{ old('id_kategori') == $category->id_kategori ? 'selected' : '' }}>
                                 {{ $category->nama_kategori }}
                             </option>
                         @endforeach
@@ -139,11 +147,11 @@
 
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">Wilayah</label>
-                    <select name="cabang_id"
+                    <select name="id_cabang"
                             class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white">
                         <option value="" disabled selected>Selected Option</option>
                         @foreach($cabangs as $cabang)
-                            <option value="{{ $cabang->id }}" {{ old('cabang_id') == $cabang->id ? 'selected' : '' }}>
+                            <option value="{{ $cabang->id_cabang }}" {{ old('id_cabang') == $cabang->id_cabang ? 'selected' : '' }}>
                                 {{ $cabang->lokasi }}
                             </option>
                         @endforeach

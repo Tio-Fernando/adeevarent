@@ -55,7 +55,7 @@
                 <label class="block text-xs text-gray-400 uppercase font-bold mb-1">Kondisi</label>
             
                 <span class="px-3 py-1 rounded-full text-xs font-bold
-                                {{ $kendaraan->kondisi == 'free' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }}
+                                {{ $kendaraan->kondisi == 'Baik' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }}
                             ">
                     {{ strtoupper($kendaraan->kondisi ?? '-') }}
                 </span>
@@ -66,6 +66,11 @@
                 <p class="text-lg font-semibold text-gray-800">{{ ucfirst($kendaraan->bbm) }}</p>
             </div>
             
+            <div class="border-b border-gray-100 pb-2">
+                <label class="block text-xs text-gray-400 uppercase font-bold mb-1">Jumlah Kursi</label>
+                <p class="text-lg font-semibold text-gray-800">{{ $kendaraan->jumlah_kursi ?? '-' }}</p>
+            </div>
+
             <div class="border-b border-gray-100 pb-2">
                 <label class="block text-xs text-gray-400 uppercase font-bold mb-1">Tahun</label>
                 <p class="text-lg font-semibold text-gray-800">{{ $kendaraan->tahun }}</p>
@@ -88,7 +93,7 @@
             <div class="border-b border-gray-100 pb-2">
                 <label class="block text-xs text-gray-400 uppercase font-bold mb-1">Status</label>
                 <span
-                    class="px-3 py-1 rounded-full text-xs font-bold {{ $kendaraan->status == 'free' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }}">
+                    class="px-3 py-1 rounded-full text-xs font-bold {{ $kendaraan->status == 'Free' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }}">
                     {{ strtoupper($kendaraan->status) }}
                 </span>
             </div>

@@ -47,15 +47,14 @@
 
         <div class="flex flex-col justify-center px-8 sm:px-12 py-10 sm:py-14 text-center sm:text-left">
           <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
-            Experience the road<br>like never before
+            Nikmati Sensasi Berkendara<br>yang Belum Pernah Kamu Rasakan
           </h1>
           <p class="mt-3 sm:mt-4 text-white/75 text-sm leading-relaxed max-w-sm mx-auto sm:mx-0">
-            Aliquam adipiscing velit semper morbi. Purus non eu cursus porttitor tristique et gravida. Quis nunc
-            interdum gravida ullamcorper.
+            Perjalanan impianmu dimulai dari sini. Pilih armada terbaik dan nikmati kenyamanan maksimal di setiap kilometer perjalananmu.
           </p>
-          <a href="#"
+          <a href="{{ route('armada') }}"
             class="mt-5 sm:mt-6 w-fit mx-auto sm:mx-0 bg-white text-primary text-sm font-bold px-7 py-3 rounded-full shadow-lg hover:bg-gray-50 transition">
-            View all cars
+            Lihat Semua Armada
           </a>
         </div>
         <div class="flex items-end sm:items-center justify-center px-6 pb-0 sm:py-14 sm:pr-8">
@@ -71,7 +70,7 @@
 
 
   <section class="max-w-7xl mx-auto px-6 mt-12 text-center">
-    <h2 class="text-2xl font-extrabold text-gray-900">Why Rent With Us</h2>
+    <h2 class="text-2xl font-extrabold text-gray-900">Kenapa Harus Rental di Kami?</h2>
     <p class="mt-2 text-gray-400 text-sm max-w-md mx-auto">Kami memberikan layanan terbaik dengan berbagai keunggulan
       untuk pengalaman rental yang sempurna.</p>
 
@@ -106,7 +105,7 @@
           </div>
         </div>
         <div class="text-center">
-          <h3 class="text-primary font-bold text-sm">Support 24/7</h3>
+          <h3 class="text-primary font-bold text-sm">Layanan 24/7</h3>
           <p class="text-black/75 text-xs mt-1 leading-relaxed">Tim kami siap membantu Anda kapan saja dan di mana saja
           </p>
         </div>
@@ -169,7 +168,7 @@
   <section class="max-w-7xl mx-auto px-6 mt-14">
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-2xl font-extrabold text-gray-900">PILIH ARMADA ANDA<br>SEKARANG</h2>
-      <a href="{{ route('armada') }}" class="text-primary text-sm font-semibold hover:underline">View All →</a>
+      <a href="{{ route('armada') }}" class="text-primary text-sm font-semibold hover:underline">Lihat Selengkapnya →</a>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -189,7 +188,7 @@
           <div class="flex justify-between items-start mb-1">
             <div>
               <h3 class="font-bold text-2xl text-gray-900 leading-tight">{{ $car->nama_kendaraan }}</h3>
-              <p class="text-gray-400 text-sm">{{ $car->category->nama_kategori }}</p>
+              <p class="text-gray-400 text-sm">{{ $car->category?->nama_kategori }}</p>
             </div>
             <div class="text-right">
               <p class="text-orange-500 font-bold text-xl">Rp.{{ number_format($car->harga, 0, ',', '.') }}</p>
@@ -228,9 +227,9 @@
             </div> --}}
           </div>
 
-          <a href="#"
+          <a href="{{ route('armada') }}" 
             class="w-full text-center bg-primary hover:bg-accent text-white font-bold py-4 rounded-2xl transition shadow-lg shadow-orange-200">
-            View Details
+            Lihat Detail
           </a>
         </div>
       @endforeach
@@ -302,10 +301,9 @@
       </div>
 
       <div class="relative z-10 text-center mb-10">
-        <h2 class="text-white text-3xl sm:text-4xl font-extrabold">Facts In Numbers</h2>
+        <h2 class="text-white text-3xl sm:text-4xl font-extrabold">Capaian Kami dalam Angka</h2>
         <p class="text-white/70 text-sm mt-3 max-w-md mx-auto leading-relaxed">
-          Amet cras hac orci lacus. Faucibus ipsum arcu lectus nibh sapien bibendum ullamcorper in. Diam tincidunt
-          tincidunt erat at semper fermentum.
+          Kami terus tumbuh dan berkembang untuk memberikan layanan transportasi terbaik bagi ribuan pelanggan di berbagai destinasi.
         </p>
       </div>
 
@@ -373,21 +371,13 @@
 
       <div class="relative z-10 max-w-md">
         <h2 class="text-white text-3xl font-extrabold leading-snug">
-          Enjoy every mile with<br>adorable companionship.
+          Nikmati setiap kilometer perjalanan<br>dengan penuh keceriaan!
         </h2>
         <p class="text-white/75 text-sm mt-3 leading-relaxed">
           Pesan sekarang dan nikmati perjalanan terbaik bersama kami. Armada terawat, harga terjangkau.
         </p>
       </div>
 
-      <div class="relative z-10 mt-6 md:mt-0 flex items-center gap-3">
-        <input type="text" placeholder="Cari kendaraan..."
-          class="px-5 py-3 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-white w-52">
-        <button
-          class="bg-white text-primary text-sm font-bold px-6 py-3 rounded-xl hover:bg-gray-50 transition whitespace-nowrap">
-          Search
-        </button>
-      </div>
     </div>
   </section>
 

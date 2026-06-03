@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('kendaraan', function (Blueprint $table) {
-            if (!Schema::hasColumn('kendaraan', 'denda_terlambat')) {
+        Schema::table('ms_kendaraan', function (Blueprint $table) {
+            if (!Schema::hasColumn('ms_kendaraan', 'denda_terlambat')) {
                 $table->integer('denda_terlambat')->default(0)->after('dir');
             }
         });
@@ -23,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('kendaraan', function (Blueprint $table) {
+        Schema::table('ms_kendaraan', function (Blueprint $table) {
             $table->dropColumn('denda_terlambat');
         });
     }

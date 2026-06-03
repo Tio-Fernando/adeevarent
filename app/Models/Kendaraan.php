@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kendaraan extends Model
 {
-     protected $table = 'kendaraan';
+     protected $table = 'ms_kendaraan';
 
     protected $primaryKey = 'nopol';
 
@@ -16,13 +16,14 @@ class Kendaraan extends Model
 
     protected $fillable = [
         'nopol',
-        'category_id',
-        'cabang_id',
+        'id_kategori',
+        'id_cabang',
         'nama_kendaraan',
         'transmisi',
         'harga',
         'deskripsi',
         'warna',
+        'jumlah_kursi',
         'kondisi',
         'bbm',
         'tahun',
@@ -32,11 +33,11 @@ class Kendaraan extends Model
     ];
 
     public function category(){
-        return $this->belongsTo(Category::class,'category_id');
+        return $this->belongsTo(Category::class,'id_kategori');
     }
 
     public function cabang(){
-        return $this->belongsTo(Cabang::class,'cabang_id');
+        return $this->belongsTo(Cabang::class,'id_cabang');
     }
 
 }

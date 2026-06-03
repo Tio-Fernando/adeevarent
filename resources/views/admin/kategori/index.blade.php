@@ -37,14 +37,14 @@
                     </td>
 
                     <td class="px-6 py-4 text-right space-x-3">
-                        <a href="{{ route('kategori.edit',$item->id) }}" class="text-orange-500 hover:text-orange-600 font-medium">
+                        <a href="{{ route('kategori.edit',$item->id_kategori) }}" class="text-orange-500 hover:text-orange-600 font-medium">
                             Edit
                         </a>
-                   <form id="delete-form-{{ $item->id }}" action="{{ route('kategori.destroy', $item->id) }}" method="POST" class="inline">
+                   <form id="delete-form-{{ $item->id_kategori }}" action="{{ route('kategori.destroy', $item->id_kategori) }}" method="POST" class="inline">
                         @csrf
                         @method('DELETE')
 
-                        <button type="button" onclick="confirmDelete({{ $item->id }})" class="text-red-500 hover:text-red-600 font-medium">
+                        <button type="button" onclick="confirmDelete({{ $item->id_kategori }})" class="text-red-500 hover:text-red-600 font-medium">
                             Hapus
                         </button>
                     </form>

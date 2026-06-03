@@ -54,8 +54,8 @@ class ProfileController extends Controller
 
         $riwayat = [];
         if ($pelanggan) {
-            $riwayat = Sewa::with(['kendaraan', 'pelanggan', 'payments'])
-                ->where('pelanggan_id', $pelanggan->id)
+            $riwayat = Sewa::with(['kendaraan', 'pelanggan', 'payments', 'jaminan'])
+                ->where('id_pelanggan', $pelanggan->id_pelanggan)
                 ->latest()
                 ->get();
         }
@@ -71,13 +71,27 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill([
+            'nama' => $validated['name'],
+            'email' => $validated['email'],
+            'no_hp' => $validated['no_hp'] ?? $user->no_hp,
+        ]);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
+
+        // Determine redirect based on user role
+        if ($user->level === 'Superadmin') {
+            return Redirect::route('superAdmin.profileSuperAdmin')->with('status', 'profile-updated');
+        } elseif ($user->level === 'Administrator') {
+            return Redirect::route('admin.profile')->with('status', 'profile-updated');
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
@@ -89,9 +103,8 @@ class ProfileController extends Controller
         $validated = $request->validated();
 
         $user->fill([
-            'name' => $validated['name'],
+            'nama' => $validated['name'],
             'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
         ]);
 
         if ($user->isDirty('email')) {
@@ -100,16 +113,18 @@ class ProfileController extends Controller
 
         $user->save();
 
-        // Update atau create pelanggan record
+    
         $pelanggan = $user->pelanggan;
         if ($pelanggan) {
             $pelanggan->update([
                 'nama_pelanggan' => $validated['name'],
+                'no_hp' => $validated['no_hp'] ?? $pelanggan->no_hp,
                 'alamat' => $validated['address'] ?? $pelanggan->alamat,
             ]);
         } else {
             $user->pelanggan()->create([
                 'nama_pelanggan' => $validated['name'],
+                'no_hp' => $validated['no_hp'] ?? null,
                 'alamat' => $validated['address'] ?? '',
             ]);
         }
@@ -118,23 +133,138 @@ class ProfileController extends Controller
     }
 
     /**
-     * Delete the user's account.
+     * Update the user's password.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function changePassword(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $user = $request->user();
+        $user->password = bcrypt($request->password);
+        $user->save();
+// Determine redirect based on user role
+        if ($user->level === 'Superadmin') {
+            return Redirect::route('superadmin.profile')->with('status', 'password-updated');
+        } elseif ($user->level === 'Administrator') {
+            return Redirect::route('admin.profile')->with('status', 'password-updated');
+        }
+
+        
+        return Redirect::route('profile.user')->with('status', 'password-updated');
+    }
+
+    /**
+     * Update the admin's profile information.
+     */
+    public function updateAdmin(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'nama' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'no_hp' => ['nullable', 'string', 'max:20'],
         ]);
 
         $user = $request->user();
 
-        Auth::logout();
+        $user->fill([
+            'nama' => $validated['nama'],
+            'email' => $validated['email'],
+            'no_hp' => $validated['no_hp'] ?? $user->no_hp,
+        ]);
 
-        $user->delete();
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $user->save();
 
-        return Redirect::to('/');
+        return Redirect::route('admin.profile')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Update the admin's password.
+     */
+    public function updateAdminPassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $user = $request->user();
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return Redirect::route('admin.profile')->with('status', 'password-updated');
+    }
+
+    /**
+     * Update the super admin's profile information.
+     */
+    public function updateSuperAdmin(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'nama' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'no_hp' => ['nullable', 'string', 'max:20'],
+        ]);
+
+        $user = $request->user();
+
+        $user->fill([
+            'nama' => $validated['nama'],
+            'email' => $validated['email'],
+            'no_hp' => $validated['no_hp'] ?? $user->no_hp,
+        ]);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
+
+        return Redirect::route('superadmin.profile')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Update the super admin's password.
+     */
+    public function updateSuperAdminPassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ], [
+            'current_password.current_password' => 'Password saat ini tidak cocok!',
+        ]);
+
+        $user = $request->user();
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return Redirect::route('superadmin.profile')->with('status', 'password-updated');
+    }
+
+    /**
+     * Show the edit admin profile form.
+     */
+    public function editAdmin(Request $request): View
+    {
+        return view('admin.editProfileAdmin', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    /**
+     * Show the edit super admin profile form.
+     */
+    public function editSuperAdmin(Request $request): View
+    {
+        return view('superAdmin.editProfileSuperAdmin', [
+            'user' => $request->user(),
+        ]);
     }
 }

@@ -1,0 +1,8 @@
+﻿Starting validation rule replacement...
+Total files found: 25
+
+
+=== SUMMARY ===
+Files processed: 25
+Files updated: 0
+Total pattern matches replaced: 0

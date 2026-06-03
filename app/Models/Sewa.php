@@ -3,18 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Jaminan;
 
 class Sewa extends Model
 {
-    protected $table = 'sewa';
+    protected $table = 'tr_sewa';
+    protected $primaryKey = 'id_tr_sewa';
+    protected $appends = ['is_cash'];
     protected $fillable = [
-        'pelanggan_id',
+        'id_pelanggan',
         'nopol',
         'jenis_sewa',
-        'jadwal_kembali',
-        'tgl_kembali',
+        'tanggal_sewa',
+        'tanggal_kembali',
         'durasi',
-        'tgl_sewa',  
+        'jadwal_kembali',
         'harga_sewa',
         'opsi_pengantaran',
         'sub_total',
@@ -28,7 +31,7 @@ class Sewa extends Model
     ];
 
     public function pelanggan(){
-        return $this->belongsTo(Pelanggan::class);
+        return $this->belongsTo(Pelanggan::class, 'id_pelanggan', 'id_pelanggan');
     }
 
     public function kendaraan(){
@@ -36,6 +39,26 @@ class Sewa extends Model
     }
 
     public function payments(){
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class, 'id_tr_sewa', 'id_tr_sewa');
     }
+
+    protected static function booted()
+    {
+        static::created(function ($sewa) {
+            if (!$sewa->invoice) {
+                $sewa->update([
+                    'invoice' => now()->format('Ymd') . str_pad($sewa->id_tr_sewa, 3, '0', STR_PAD_LEFT)
+                ]);
+            }
+        });
+    }
+
+    public function getisCashAttribute(){
+        return $this->payments->where('payment_type','cash')->count() > 0;
+    }
+
+    public function jaminan(){
+        return $this->hasOne(Jaminan::class, 'id_tr_sewa', 'id_tr_sewa');
+     }
+
 }

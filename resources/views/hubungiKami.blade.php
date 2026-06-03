@@ -8,7 +8,7 @@
             <img src="{{ asset('img/kantor1.jpeg') }}" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110" alt="Banner Profile">
             <div class="absolute inset-0 bg-[#FF9E0C] bg-opacity-60 z-10 transition-opacity duration-500 group-hover:bg-opacity-40"></div>
             <div class="relative z-20">
-                <h1 class="text-6xl font-black text-white tracking-[0.3em] uppercase transition-transform duration-500 group-hover:scale-105">CONTACT US</h1>
+                <h1 class="text-6xl font-black text-white tracking-[0.3em] uppercase transition-transform duration-500 group-hover:scale-105">HUBUNGI KAMI</h1>
             </div>
         </div>
     </section>
@@ -31,12 +31,12 @@
                 </div>
 
                 <div class="space-y-10">
-                    <h2 class="hidden lg:block text-3xl md:text-4xl font-bold text-white mb-4">Our Support Center</h2>
+                    <h2 class="hidden lg:block text-3xl md:text-4xl font-bold text-white mb-4">Pusat Bantuan Pelanggan</h2>
                     
                     <div>
                         <h3 class="text-xl font-bold text-[#FF9E0C] mb-3 flex items-center gap-3">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                            24/7 Customer Care
+                            Layanan Pelanggan 24/7
                         </h3>
                         <p class="text-gray-300 leading-relaxed text-sm md:text-base font-['Inter']">
                             ADEEVA RENT menyediakan layanan pelanggan yang selalu siaga untuk menjawab kebutuhan Anda. Tim kami siap membantu memberikan informasi detail ketersediaan kendaraan, panduan reservasi, maupun dukungan darurat kapan pun Anda butuhkan.
@@ -46,7 +46,7 @@
                     <div>
                         <h3 class="text-xl font-bold text-[#FF9E0C] mb-3 flex items-center gap-3">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Mobility Consultation
+                            Konsultasi Rencana Perjalanan
                         </h3>
                         <p class="text-gray-300 leading-relaxed text-sm md:text-base font-['Inter']">
                             Bingung memilih tipe mobil yang tepat? Konsultasikan rencana perjalanan Anda bersama kami. Kami akan merekomendasikan armada terbaik yang sesuai dengan jumlah penumpang, destinasi, serta anggaran perjalanan Anda untuk memastikan kenyamanan maksimal.
@@ -67,17 +67,17 @@
             </div>
 
             <div class="lg:col-span-3 p-8 md:p-12">
-                <h2 class="text-3xl font-bold text-white mb-2">Send Us a Message</h2>
+                <h2 class="text-3xl font-bold text-white mb-2">Kirim Pesan</h2>
                 <p class="text-white/75 text-sm mb-8">Isi form di bawah ini dan kami akan segera menghubungi Anda kembali.</p>
 
                 <form id="contactForm" class="space-y-5">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
-                            <label class="block text-white font-semibold text-sm mb-2">Full Name</label>
-                            <input type="text" name="nama" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-900 font-medium placeholder-gray-400 border-2 border-transparent focus:border-white" placeholder="Enter your" required>
+                            <label class="block text-white font-semibold text-sm mb-2">Nama Lengkap</label>
+                            <input type="text" name="nama" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-900 font-medium placeholder-gray-400 border-2 border-transparent focus:border-white" placeholder="Nama Anda" required>
                         </div>
                         <div>
-                            <label class="block text-white font-semibold text-sm mb-2">Phone Number</label>
+                            <label class="block text-white font-semibold text-sm mb-2">Nomor Telepon</label>
                             <input type="tel" name="whatsapp" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-900 font-medium placeholder-gray-400 border-2 border-transparent focus:border-white" placeholder="08123xxx" required>
                         </div>
                     </div>
@@ -85,12 +85,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-white font-semibold text-sm mb-2">Email</label>
-                            <input type="email" name="email" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-900 font-medium placeholder-gray-400 border-2 border-transparent focus:border-white" placeholder="example@gmail.com" required>
+                            <input type="email" name="email" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-900 font-medium placeholder-gray-400 border-2 border-transparent focus:border-white" placeholder="contoh@gmail.com" required>
                         </div>
                         <div>
-                            <label class="block text-white font-semibold text-sm mb-2">Inquiry Type</label>
+                            <label class="block text-white font-semibold text-sm mb-2">Keperluan</label>
                             <select name="tujuan" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-900 font-medium border-2 border-transparent focus:border-white">
-                                <option value="">Select an option</option>
+                                <option value="">Pilih Keperluan</option>
                                 <option value="informasi">Informasi Rental</option>
                                 <option value="pemesanan">Pemesanan Kendaraan</option>
                                 <option value="keluhan">Keluhan</option>
@@ -100,25 +100,25 @@
                     </div>
 
                     <div>
-                        <label class="block text-white font-semibold text-sm mb-2">Message</label>
-                        <textarea name="pesan" rows="4" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-900 font-medium placeholder-gray-400 border-2 border-transparent focus:border-white resize-none" placeholder="Type your message here..." required></textarea>
+                        <label class="block text-white font-semibold text-sm mb-2">Pesan</label>
+                        <textarea name="pesan" rows="4" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-900 font-medium placeholder-gray-400 border-2 border-transparent focus:border-white resize-none" placeholder="Tulis pesan kamu disini..." required></textarea>
                     </div>
 
                     <button type="submit" class="w-full bg-white text-primary font-bold py-4 rounded-2xl transition hover:bg-gray-50 shadow-lg shadow-white/20 mt-2">
-                        Send Message
+                        Kirim Pesan
                     </button>
                 </form>
             </div>
         </div>
     </section>
 <section class="max-w-7xl mx-auto px-6 pb-16 animate-page-load">
-        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Our Service Network</h2>
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Jaringan Layanan Kami</h2>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 shadow-xl border border-gray-200 bg-white">
             
             <div class="lg:col-span-1 flex flex-col h-[500px] border-r border-gray-200">
                 <div class="bg-[#0B1221] p-5">
-                    <h3 class="font-bold text-white text-sm mb-3">ADEEVA RENT Service Points</h3>
+                    <h3 class="font-bold text-white text-sm mb-3">Titik Layanan ADEEVA RENT</h3>
                     <div class="relative">
                     </div>
                 </div>
@@ -231,7 +231,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-600 mb-0.5">Phone</p>
+                    <p class="text-sm text-gray-600 mb-0.5">Telepon</p>
                     <p class="font-bold text-gray-900">+6281380555815</p>
                 </div>
             </div>
@@ -243,7 +243,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-600 mb-0.5">Opening hours</p>
+                    <p class="text-sm text-gray-600 mb-0.5">Jam Operasional</p>
                     <p class="font-bold text-gray-900">Senin-Sabtu: 08:00 - 20:00</p>
                 </div>
             </div>
@@ -319,29 +319,54 @@
     document.getElementById('contactForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
+        const nama = this.querySelector('input[name="nama"]').value;
+        const noTelp = this.querySelector('input[name="whatsapp"]').value;
+        const email = this.querySelector('input[name="email"]').value;
+        const tujuanRaw = this.querySelector('select[name="tujuan"]');
+        const tujuan = tujuanRaw.options[tujuanRaw.selectedIndex].text; 
+        const pesan = this.querySelector('textarea[name="pesan"]').value;
+
+        const adminWA = "6281328803520"; 
+
+
+        const textPesan = `Halo Admin ADEEVA RENT, saya ingin menghubungi Anda. Berikut adalah detail pesan saya:
+
+            *Nama Lengkap:* ${nama}
+            *No. WhatsApp:* ${noTelp}
+            *Email:* ${email}
+            *Keperluan:* ${tujuan}
+
+            *Pesan:*
+            ${pesan}`;
+
+        const urlPesan = encodeURIComponent(textPesan);
+        const linkWA = `https://wa.me/${adminWA}?text=${urlPesan}`;
+
         const button = this.querySelector('button[type="submit"]');
         const originalText = button.innerText;
         
         button.disabled = true;
         button.classList.add('btn-loading');
-        button.innerText = 'Mengirim...';
+        button.innerText = 'Membuka WhatsApp...';
 
         setTimeout(() => {
             button.disabled = false;
             button.classList.remove('btn-loading');
             button.innerText = originalText;
             
+            window.open(linkWA, '_blank');
+
             Swal.fire({
-                title: 'Berhasil!',
-                text: 'Pesan Anda telah dikirim. Tim kami akan merespons dalam waktu singkat.',
+                title: 'Dialihkan ke WhatsApp!',
+                text: 'Silakan klik kirim pada aplikasi WhatsApp Anda.',
                 icon: 'success',
                 confirmButtonColor: '#FF9E0C',
                 confirmButtonText: 'OK'
             }).then(() => {
                 this.reset();
-                document.querySelector('select[name="tujuan"]').value = '';
+                tujuanRaw.value = '';
             });
-        }, 1500);
+        }, 1000);
     });
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

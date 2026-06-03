@@ -24,30 +24,17 @@
                 
                 <header class="bg-white border-b border-gray-100 h-20 flex items-center justify-between px-8 z-20">
     <div class="relative w-96 hidden md:block">
-        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-        </span>
-        <input type="text" placeholder="Search..." class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-full focus:ring-orange-500 focus:border-orange-500 block pl-10 p-2.5 outline-none sm:text-sm">
     </div>
 
     <div class="relative" x-data="{ open: false }" @click.away="open = false">
         <div @click="open = !open" class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition">
             <img class="w-10 h-10 rounded-full border-2 border-orange-100" 
-                 src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=FF9E0C&color=fff" 
-                 alt="{{ Auth::user()->name }}">
+                 src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->nama) }}&background=FF9E0C&color=fff" 
+                 alt="{{ Auth::user()->nama }}">
             
             <div class="hidden sm:block">
-                <p class="text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</p>
+                <p class="text-sm font-semibold text-gray-700">{{ Auth::user()->nama }}</p>
                 <p class="text-xs text-gray-500">
-                    @if(auth()->user()->role == 'SuperAdmin')
-                        Super Admin
-                    @elseif(auth()->user()->role == 'Administrator')
-                        Administrator
-                    @else
-                        
-                    @endif
                 </p>
             </div>
             
@@ -67,13 +54,25 @@
              style="display: none;">
             
             <div class="px-4 py-3 border-b border-gray-50 md:hidden">
-                <p class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</p>
+                <p class="text-sm font-bold text-gray-800">{{ Auth::user()->nama }}</p>
             </div>
 
-            <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
-                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                My Profile
-            </a>
+            @if(auth()->user()->level == 'SuperAdmin')
+                <a href="{{ route('superadmin.profile') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Profile Saya
+                </a>
+            @elseif(auth()->user()->level == 'Administrator')
+                <a href="{{ route('admin.profile') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Profile Saya
+                </a>
+            @else
+                <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Profile Saya
+                </a>
+            @endif
 
             <hr class="border-gray-50">
 

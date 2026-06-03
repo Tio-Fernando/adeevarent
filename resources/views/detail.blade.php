@@ -5,7 +5,7 @@
             <div>
                 <div class="flex items-center gap-3 mb-2">
                     <h1 class="text-4xl font-extrabold text-gray-900">{{ $kendaraan->nama_kendaraan }}</h1>
-                    @if($kendaraan->status == 'free')
+                    @if($kendaraan->status == 'Free')
                         <span class="bg-green-200 text-green-700 text-xs font-bold px-3 py-1 rounded-md uppercase">FREE</span>
                     @else
                         <span class="bg-red-200 text-red-700 text-xs font-bold px-3 py-1 rounded-md uppercase">{{ $kendaraan->status }}</span>
@@ -53,6 +53,13 @@
                     </div>
                     <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100">
                         <svg class="w-6 h-6 text-gray-700 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <p class="text-sm font-bold text-gray-900">Jumlah Kursi</p>
+                        <p class="text-xs text-gray-500">{{ $kendaraan->jumlah_kursi ?? '-' }}</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <svg class="w-6 h-6 text-gray-700 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         <p class="text-sm font-bold text-gray-900">Tahun</p>
@@ -62,6 +69,18 @@
             </div>
         </div>
 
+       <div class="mt-8 bg-gray-50 border border-gray-100 rounded-2xl p-6">
+    <div class="flex items-center gap-2 mb-3">
+        <svg class="w-5 h-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <h2 class="text-sm font-black text-gray-900 uppercase tracking-tighest text-justify">Deskripsi</h2>
+    </div>
+   <p class="text-justify text-gray-700 leading-8 tracking-normal">
+        {{ $kendaraan->deskripsi ?? 'Tidak ada deskripsi.' }}
+    </p>
+</div>
+        
         <form action="{{ route('booking.store', $kendaraan->nopol) }}" method="POST" id="formBooking">
             @csrf
             <input type="hidden" name="nopol" value="{{ $kendaraan->nopol }}">
@@ -70,18 +89,18 @@
     <input type="hidden" name="longitude" id="lng">
         {{-- Rental Duration --}}
 <div class="mb-8">
-    <h3 class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-3">Rental Duration</h3>
+    <h3 class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-3">Durasi Sewa</h3>
     <div class="bg-white rounded-2xl flex flex-col md:flex-row border border-gray-200 overflow-hidden">
         {{-- Tanggal Pick-up --}}
         <div class="flex-1 p-5 border-b md:border-b-0 md:border-r border-gray-200">
-            <label class="text-xs text-gray-500 mb-1 block font-semibold">Pick-up Date & Time</label>
-            <input type="datetime-local" name="tgl_sewa" id="tanggal_sewa"
+            <label class="text-xs text-gray-500 mb-1 block font-semibold">Jadwal Pengambilan</label>
+            <input type="datetime-local" name="tanggal_sewa" id="tanggal_sewa"
                    class="w-full bg-transparent border-none p-0 text-base font-bold text-gray-900 focus:ring-0 cursor-pointer"
                    required onchange="hitungTotal()">
         </div>
         {{-- Dropdown Durasi --}}
         <div class="flex-1 p-5">
-            <label class="text-xs text-gray-500 mb-1 block font-semibold">Duration</label>
+            <label class="text-xs text-gray-500 mb-1 block font-semibold">Durasi</label>
             <select id="durasi_hari" name="durasi" 
                     class="w-full bg-transparent border-none p-0 text-base font-bold text-gray-900 focus:ring-0 cursor-pointer"
                     onchange="hitungTotal()">
@@ -91,8 +110,8 @@
             </select>
         </div>
     </div>
-    {{-- Hidden Input untuk jadwal_kembali (rencana kembali), bukan actual tgl_kembali --}}
-    <input type="hidden" name="jadwal_kembali" id="jadwal_kembali">
+    {{-- Hidden Input untuk tanggal_kembali (rencana kembali), bukan actual tanggal_kembali setelah pengembalian --}}
+    <input type="hidden" name="tanggal_kembali" id="tanggal_kembali">
     
     <p class="text-[10px] text-gray-400 mt-2 px-2">
         *Mobil dikembalikan pada jam yang sama di hari terakhir sewa (Sistem 24 Jam).
@@ -142,6 +161,7 @@
                             </label>
                         </div>
                     </div>
+
                 </div>
 
                <div id="boxAlamat" class="mt-4 hidden transition-all duration-300">
@@ -159,11 +179,50 @@
     <div id="map" style="height: 300px; border-radius: 12px; border: 2px solid #e5e7eb; z-index: 1 !important;"></div>
     <p class="text-xs text-gray-500 mt-2">*Pastikan GPS aktif dan beri izin akses lokasi jika muncul notifikasi.</p>
 </div>
+
+
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Metode Pembayaran</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="tipe_pembayaran" value="dp" checked
+                                class="w-4 h-4 text-orange-500 focus:ring-orange-400" onchange="hitungTotal()">
+                            <span class="text-sm ml-3">DP 50%</span>
+                        </label>
+
+                        <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="tipe_pembayaran" value="lunas"
+                                class="w-4 h-4 text-orange-500 focus:ring-orange-400" onchange="hitungTotal()">
+                            <span class="text-sm ml-3">Bayar Lunas</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mt-4">
+  <button 
+    type="button"
+    onclick="toggleNote()"
+    class="text-sm text-orange-500 font-medium hover:underline"
+  >
+    + Tambahkan catatan (opsional)
+  </button>
+
+  <div id="noteField" class="hidden mt-2">
+    <textarea 
+      name="keterangan"
+      rows="2"
+      class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-400"
+      placeholder="Contoh: DP via QRIS OVO, atau ada permintaan khusus"
+    ></textarea>
+  </div>
+</div>
             </div>
+            
+            
 
             {{-- Payment Summary --}}
             <div class="mb-8">
-                <h3 class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-3">Payment Summary</h3>
+                <h3 class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-3">Rincian Pembayaran</h3>
+                
                 <div class="bg-gray-100 p-5 rounded-2xl border border-gray-200">
                     <div class="flex justify-between items-center mb-3">
                         <p class="text-sm text-gray-600">Harga Sewa <span id="text_durasi">(0 hari)</span></p>
@@ -175,7 +234,7 @@
                     </div>
                     <div class="border-t border-gray-300 pt-5 flex justify-between items-end">
                         <div>
-                            <p class="text-base font-bold text-gray-900 mb-1">Total Paid (Tagihan)</p>
+                            <p class="text-base font-bold text-gray-900 mb-1">Total Bayar (Tagihan)</p>
                             <div class="flex items-center gap-2 text-xs text-gray-600 mt-2">
                                 <span class="bg-orange-100 text-orange-600 px-2 py-1 rounded font-bold" id="summary_dp">
                                     Wajib DP 50%: Rp. 0
@@ -203,6 +262,10 @@
 
  <script>
 
+function toggleNote(){
+    const el = document.getElementById('noteField');
+    el.classList.toggle('hidden');
+}
 
 
     var map, marker;
@@ -306,8 +369,7 @@ function hitungTotal() {
 
     if (valMulai) {
         const tglMulai = new Date(valMulai);
-        
-        // --- LOGIKA OTOMATIS TANGGAL KEMBALI ---
+       
         const tglKembali = new Date(tglMulai);
         tglKembali.setDate(tglMulai.getDate() + durasiHari);
 
@@ -318,9 +380,9 @@ function hitungTotal() {
         const minutes = String(tglKembali.getMinutes()).padStart(2, '0');
         
         const formatKembali = `${year}-${month}-${day}T${hours}:${minutes}`;
-        document.getElementById('jadwal_kembali').value = formatKembali;
-
-
+        document.getElementById('tanggal_kembali').value = formatKembali;
+        
+        
         const jenisSewa = document.querySelector('input[name="jenis_sewa"]:checked').value;
 
         const totalSewa  = durasiHari * hargaPerHari;
@@ -328,8 +390,18 @@ function hitungTotal() {
         const totalAntar = 0;
         
         const grandTotal = totalSewa + totalSupir;
-        const dpWajib    = grandTotal * 0.5;
-        const sisaBayar  = grandTotal - dpWajib;
+        const tipePembayaran = document.querySelector('input[name="tipe_pembayaran"]:checked').value;
+
+        let dp = 0;
+        let sisaBayar = 0;
+
+        if (tipePembayaran === 'dp') {
+            dp = grandTotal * 0.5; 
+            sisaBayar = grandTotal - dp;
+        } else {
+            dp = grandTotal;
+            sisaBayar = 0;
+        }
 
         // --- UPDATE UI ---
         document.getElementById('text_durasi').innerText  = `(${durasiHari} hari)`;
@@ -339,23 +411,31 @@ function hitungTotal() {
             document.getElementById('summary_antar').innerText = formatRupiah(totalAntar);
         }
         
-        document.getElementById('summary_total').innerText = formatRupiah(grandTotal);
-        document.getElementById('summary_dp').innerText    = `Wajib DP 50%: ${formatRupiah(dpWajib)}`;
+        if (tipePembayaran === 'dp') {
+            document.getElementById('summary_total').innerText = formatRupiah(dp);
+        } else {
+            document.getElementById('summary_total').innerText = formatRupiah(grandTotal);
+        }
+        
+        if (tipePembayaran === 'dp') {
+            document.getElementById('summary_dp').innerText = `Wajib DP 50%: ${formatRupiah(dp)}`;
+        } else {
+            document.getElementById('summary_dp').innerText = `Bayar Lunas: ${formatRupiah(dp)}`;
+        }    
         
         if(document.getElementById('summary_sisa')) {
             document.getElementById('summary_sisa').innerText = `Sisa Pelunasan: ${formatRupiah(sisaBayar)}`;
         }
     } else {
-        document.getElementById('jadwal_kembali').value = '';
+        document.getElementById('tanggal_kembali').value = '';
     }
 }
 
 // Inisialisasi settingan waktu saat halaman dibuka
 document.addEventListener('DOMContentLoaded', function() {
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-       hitungTotal();
-    document.getElementById('tanggal_sewa').min = now.toISOString().slice(0, 16);
-});
+     const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); 
+     hitungTotal(); 
+     document.getElementById('tanggal_sewa').min = now.toISOString().slice(0, 16);
+      });
 </script>
 </x-user>

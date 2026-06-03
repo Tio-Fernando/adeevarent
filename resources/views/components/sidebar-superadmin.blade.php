@@ -20,7 +20,7 @@
             <a href="{{ route('laporan.super') }}"
                 class="flex items-center px-4 py-3 rounded-lg transition-colors
                 {{ request()->routeIs('laporan.super') ? 'bg-primary text-white shadow-sm' : 'text-white hover:text-primary' }}">
-                <span class="font-medium text-sm">Report</span>
+                <span class="font-medium text-sm">Laporan</span>
             </a>
 
 

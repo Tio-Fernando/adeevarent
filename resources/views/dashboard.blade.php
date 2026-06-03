@@ -1,23 +1,19 @@
 <x-app-layout>
-    {{-- Header Layout Bawaan Laravel (Opsional, bisa dihapus kalau kamu pakai custom header di dalam layout) --}}
     <x-slot name="header">
         <h2 class="font-bold text-2xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
 
-    {{-- Main Content Area --}}
     <div class="py-8 bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
-            {{-- 1. Stats Cards (4 Kolom) --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 
                 <div class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100/50">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-sm font-medium text-gray-400 mb-1">Total User</p>
-                            <h3 class="text-3xl font-extrabold text-gray-800">40,689</h3>
+                            <h3 class="text-3xl font-extrabold text-gray-800">{{ $user }}</h3>
                         </div>
                         <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-500 text-xl">
                             <img src="{{ asset('img/User.png') }}" alt="">
@@ -35,7 +31,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-sm font-medium text-gray-400 mb-1">Total Order</p>
-                            <h3 class="text-3xl font-extrabold text-gray-800">10,293</h3>
+                            <h3 class="text-3xl font-extrabold text-gray-800">{{ $totalOrder }}</h3>
                         </div>
                         <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-primary text-xl">
                             <img src="{{ asset('img/order.png') }}" alt="">
@@ -53,7 +49,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-sm font-medium text-gray-400 mb-1">Total Selesai</p>
-                            <h3 class="text-3xl font-extrabold text-gray-800">100</h3>
+                            <h3 class="text-3xl font-extrabold text-gray-800">{{ $totalSelesai }}</h3>
                         </div>
                         <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 text-xl">
                             <img src="{{ asset('img/selesai.png') }}" alt="">
@@ -89,16 +85,7 @@
 
             <div class="bg-white p-8 rounded-[1.5rem] shadow-sm border border-gray-100/50 mb-8">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-gray-800">Detail Selesai</h3>
-                    <div class="relative">
-                        <select class="appearance-none bg-white border border-gray-200 text-gray-600 py-2 pl-4 pr-10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
-                            <option>October</option>
-                            <option>November</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-400">
-                            <i class="fas fa-chevron-down text-xs"></i>
-                        </div>
-                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Grafik Penjualan</h3>
                 </div>
                 
                 {{-- Container untuk Chart.js/ApexCharts --}}
@@ -133,46 +120,48 @@
                                 <th class="pb-4">Status</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            <tr class="hover:bg-gray-50/50 transition-colors">
-                                <td class="py-4 pl-2 flex items-center gap-4">
-                                    <div class="w-16 h-10 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                                        {{-- Ganti src dengan gambar mobilmu nanti --}}
-                                        <i class="fas fa-car-side text-gray-400 text-xl"></i>
-                                    </div>
-                                    <span class="font-bold text-gray-800">Innova Zenix</span>
-                                </td>
-                                <td class="py-4 text-gray-600 font-medium">Awaudin</td>
-                                <td class="py-4 text-gray-500">Tanpa Sopir</td>
-                                <td class="py-4 text-gray-500">12.09.2026</td>
-                                <td class="py-4 text-gray-500">12.09.2026</td>
-                                <td class="py-4 font-bold text-gray-800">Rp.100.000</td>
-                                <td class="py-4">
-                                    <span class="px-4 py-1.5 bg-teal-500 text-white rounded-full text-xs font-bold tracking-wide shadow-sm">
-                                        Selesai
-                                    </span>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-gray-50/50 transition-colors">
-                                <td class="py-4 pl-2 flex items-center gap-4">
-                                    <div class="w-16 h-10 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                                        <i class="fas fa-car text-gray-400 text-xl"></i>
-                                    </div>
-                                    <span class="font-bold text-gray-800">Honda Brio</span>
-                                </td>
-                                <td class="py-4 text-gray-600 font-medium">Siti Aminah</td>
-                                <td class="py-4 text-gray-500">Dengan Sopir</td>
-                                <td class="py-4 text-gray-500">15.09.2026</td>
-                                <td class="py-4 text-gray-500">-</td>
-                                <td class="py-4 font-bold text-gray-800">Rp.350.000</td>
-                                <td class="py-4">
-                                    <span class="px-4 py-1.5 bg-primary text-white rounded-full text-xs font-bold tracking-wide shadow-sm">
-                                        Pending
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
+                          <tbody class="divide-y divide-gray-100">
+    @forelse ($bookingTerbaru as $item)
+        <tr class="hover:bg-gray-50/50 transition-colors">
+            <td class="py-4 pl-2 flex items-center gap-4">
+                @if ($item->kendaraan?->dir)
+                    <div class="w-16 h-10 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="{{ asset('storage/' . $item->kendaraan->dir) }}" class="w-full h-full object-contain">
+                    </div>
+                @else
+                    <div class="w-16 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-car text-gray-400 text-xl"></i>
+                    </div>
+                @endif
+                <span class="font-bold text-gray-800">{{ $item->kendaraan?->nama_kendaraan ?? '-' }}</span>
+            </td>
+            <td class="py-4 text-gray-600 font-medium">{{ $item->pelanggan?->nama_pelanggan ?? '-' }}</td>
+            <td class="py-4 text-gray-500">{{ $item->jenis_sewa === 'sopir' ? 'Dengan Sopir' : 'Tanpa Sopir' }}</td>
+            <td class="py-4 text-gray-500">{{ \Carbon\Carbon::parse($item->jadwal_kembali)->format('d.m.Y') }}</td>
+            <td class="py-4 text-gray-500">{{ $item->tanggal_kembali ? \Carbon\Carbon::parse($item->tanggal_kembali)->format('d.m.Y') : '-' }}</td>
+            <td class="py-4 font-bold text-gray-800">Rp.{{ number_format($item->harga_total, 0, ',', '.') }}</td>
+            <td class="py-4">
+                @php
+                    $status = strtolower(trim($item->status));
+                    $badge = match($status) {
+                        'selesai' => ['bg-teal-500', 'Selesai'],
+                        'lunas'   => ['bg-blue-500', 'Lunas'],
+                        'dp'      => ['bg-yellow-500', 'DP'],
+                        'batal'   => ['bg-red-500', 'Batal'],
+                        default   => ['bg-primary', ucfirst($status)],
+                    };
+                @endphp
+                <span class="px-4 py-1.5 {{ $badge[0] }} text-white rounded-full text-xs font-bold tracking-wide shadow-sm">
+                    {{ $badge[1] }}
+                </span>
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="7" class="py-8 text-center text-gray-400 font-medium">Belum ada data booking.</td>
+        </tr>
+    @endforelse
+</tbody>
                     </table>
                 </div>
             </div>
@@ -181,13 +170,17 @@
     </div>
 
     {{-- Script untuk Chart --}}
+    <script>
+        const labels = @json($labels);
+        const selesaiData = @json($selesaiData);
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var options = {
+            const options = {
                 series: [{
                     name: 'Selesai',
-                    data: [20, 25, 45, 30, 48, 32, 45, 85, 35, 50, 42, 55, 25, 30, 28, 45, 70, 55, 62, 50, 48, 55, 42, 53, 48]
+                    data: selesaiData
                 }],
                 chart: {
                     type: 'area',
@@ -195,23 +188,40 @@
                     toolbar: { show: false },
                     fontFamily: 'Inter, sans-serif'
                 },
-                colors: ['#FF9E0C'], // Warna Orange (Tailwind orange-500)
+                colors: ['#10B981'],
+                legend: {
+                    show: true,
+                    position: 'top',
+                    horizontalAlign: 'right',
+                    fontSize: '13px',
+                    labels: { colors: '#6B7280' },
+                    markers: { width: 10, height: 10, radius: 12 }
+                }, 
                 fill: {
                     type: 'gradient',
                     gradient: {
                         shadeIntensity: 1,
-                        opacityFrom: 0.5,
+                        opacityFrom: 0.35,
                         opacityTo: 0.05,
                         stops: [0, 100]
                     }
                 },
-                dataLabels: { enabled: false },
+                dataLabels: { 
+                    enabled: false 
+                },
                 stroke: {
                     curve: 'smooth',
                     width: 3
                 },
+                markers: {
+                    size: 4,
+                    colors: ['#10B981'],
+                    strokeColors: '#fff',
+                    strokeWidth: 2,
+                    hover: { size: 6 }
+                },
                 xaxis: {
-                    categories: ['5k', '', '10k', '', '15k', '', '20k', '', '25k', '', '30k', '', '35k', '', '40k', '', '45k', '', '50k', '', '55k', '', '60k', '', ''],
+                    categories: labels,
                     axisBorder: { show: false },
                     axisTicks: { show: false },
                     labels: {
@@ -219,30 +229,36 @@
                     }
                 },
                 yaxis: {
+                    min : 0,
+                    max: 20,
+                    tickAmount: 4,
+                    forceNiceScale: true,
                     labels: {
-                        formatter: function (value) { return value + "%"; },
+                        formatter: function (value) { 
+                            return Math.round(value);
+                        },
                         style: { colors: '#9CA3AF', fontSize: '12px' }
                     }
                 },
                 grid: {
                     borderColor: '#F3F4F6',
                     strokeDashArray: 4,
-                    yaxis: { lines: { show: true } }
-                },
-                markers: {
-                    size: 4,
-                    colors: ['#F97316'],
-                    strokeColors: '#fff',
-                    strokeWidth: 2,
-                    hover: { size: 6 }
                 },
                 tooltip: {
-                    theme: 'light'
+                    theme: 'light',
+                    y: {
+                        formatter: function (value) { return value + 'transaksi'; }
+                    }
                 }
             };
 
-            var chart = new ApexCharts(document.querySelector("#mainChart"), options);
+            const chart = new ApexCharts(document.querySelector("#mainChart"), options);
             chart.render();
         });
     </script>
+    {{-- <script>
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+    </script> --}}
 </x-app-layout>

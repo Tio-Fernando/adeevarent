@@ -17,18 +17,18 @@
 
 
     
-        <div class="flex justify-center items-center">
+        <div class="flex justify-center items-center  flex-col ">
             <div class="bg-white border flex justify-center border-gray-100 rounded-2xl p-6">
         
-                <form method="POST" action="{{ route('superadmin.admin.update',$admin->id) }}" class="flex flex-col gap-5">
+                <form method="POST" action="{{ route('admin.update',$admin->id_user) }}" class="flex flex-col gap-5">
                     @csrf
-        
+                    @method('PUT')
                     {{-- Nama --}}
                     <div class="flex flex-col gap-1.5">
                         <label for="nama" class="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                            Nama Lengkap <span class="text-red-400">*</span>
+                            Nama Lengkap
                         </label>
-                        <input type="text" id="nama" name="nama" value="{{ old('nama') }}" placeholder="cth. Budi Santoso"
+                        <input type="text" id="nama" name="nama" value="{{ old('nama', $admin->nama) }}" placeholder="cth. Handoko Priyanto"
                             class="border rounded-lg px-3 py-2.5 text-sm text-gray-800 transition
                                    focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent
                                    {{ $errors->has('nama') ? 'border-red-300 bg-red-50' : 'border-gray-200' }}">
@@ -46,7 +46,7 @@
         
                     <div class="flex flex-col gap-1.5">
                         <label for="email" class="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                            Email <span class="text-red-400">*</span>
+                            Email 
                         </label>
                         <input type="email" id="email" name="email" value="{{ old('email', $admin->email) }}" placeholder="cth. budi@gmail.com"
                             class="border rounded-lg px-3 py-2.5 text-sm text-gray-800 transition
@@ -68,12 +68,12 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1.5">
                             <label for="password" class="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                Password <span class="text-red-400">*</span>
+                                Password
                             </label>
                             <div class="relative">
                                 <input type="password" id="password" name="password" placeholder="Min. 8 karakter" class="w-full border rounded-lg px-3 py-2.5 text-sm text-gray-800 transition
-                                           focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent
-                                           {{ $errors->has('password') ? 'border-red-300 bg-red-50' : 'border-gray-200' }}">
+                                        focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent
+                                        {{ $errors->has('password') ? 'border-red-300 bg-red-50' : 'border-gray-200' }}">
                                 <button type="button" onclick="togglePassword('password', this)"
                                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,12 +97,12 @@
                         <div class="flex flex-col gap-1.5">
                             <label for="password_confirmation"
                                 class="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                Konfirmasi <span class="text-red-400">*</span>
+                                Konfirmasi
                             </label>
                             <div class="relative">
                                 <input type="password" id="password_confirmation" name="password_confirmation"
                                     placeholder="Ulang password" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-800 transition
-                                           focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent">
+                                        focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent">
                                 <button type="button" onclick="togglePassword('password_confirmation', this)"
                                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,18 +118,18 @@
         
                         <div class="flex flex-col gap-1.5">
                             <label for="status" class="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                Status <span class="text-red-400">*</span>
+                                Status
                             </label>
                             <select id="status" name="status" class="border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-800 transition
-                                       focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent">
-                                <option value="aktif" {{ old('status', 'aktif') === 'aktif' ? 'selected' : '' }}>Aktif</option>
-                                <option value="nonaktif" {{ old('status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                                    focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent">
+                                <option value="aktif" {{ old('status', $admin->status ? 'aktif' : 'nonaktif') === 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                <option value="nonaktif" {{ old('status', $admin->status ? 'aktif' : 'nonaktif') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                             </select>
                         </div>
                     </div>
         
                     <hr class="border-gray-100">
-                    <div class="flex items-center justify-end gap-3">
+                     <div class="flex items-center justify-end gap-3 mt-5">
                         <a href="{{ route('admin.index') }}"
                             class="px-5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:bg-gray-50 transition">
                             Batal
@@ -139,8 +139,9 @@
                             Simpan Pengguna
                         </button>
                     </div>
-        
                 </form>
+               
+        
             </div>
         </div>
     </div>

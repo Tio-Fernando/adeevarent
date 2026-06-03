@@ -14,10 +14,22 @@ class KendaraanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $kendaraans = Kendaraan::with(['category','cabang'])->latest()->get();
-        return view('admin.kendaraan.index',compact('kendaraans'));
+        $search = $request->get('search');
+        
+        $kendaraans = Kendaraan::with(['category','cabang'])
+            ->when($search, function ($query) use ($search) {
+                return $query->where('nama_kendaraan', 'like', '%' . $search . '%')
+                    ->orWhere('nopol', 'like', '%' . $search . '%')
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('nama_kategori', 'like', '%' . $search . '%');
+                    });
+            })
+            ->latest()
+            ->get();
+        
+        return view('admin.kendaraan.index', compact('kendaraans', 'search'));
     }
 
   
@@ -43,17 +55,18 @@ class KendaraanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nopol'          => 'required|string|max:20|unique:kendaraan,nopol',
-            'category_id'    => 'required|exists:category,id',
-            'cabang_id'      => 'required|exists:cabang,id',
+            'nopol'          => 'required|string|max:20|unique:ms_kendaraan,nopol',
+            'id_kategori'    => 'required|exists:ms_kategori,id_kategori',
+            'id_cabang'      => 'required|exists:ms_cabang,id_cabang',
             'nama_kendaraan' => 'required|string|max:20',
             'transmisi'      => 'required|in:Matic,Manual',
             'harga'          => 'required|integer|min:0',
             'deskripsi'      => 'required|string',
             'warna'          => 'required|in:Merah,Hitam,Putih',
-            'kondisi'        => 'required|in:rusak,baik',
-            'bbm'            => 'required|in:solar,pertalite,pertamax',
-            'tahun'          => 'required|integer|',
+            'jumlah_kursi'   => 'required|integer|min:1|max:20',
+            'kondisi'        => 'required|in:Rusak,Baik',
+            'bbm'            => 'required|in:Solar,Pertalite,Pertamax',
+            'tahun'          => 'required|integer|digits:4',
             'denda_terlambat' => 'required|integer|min:0',
             'dir'            => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -68,10 +81,10 @@ class KendaraanController extends Controller
         Kendaraan::create($data);
             Swal::success([
             'title' => 'Berhasil',
-            'text' => 'Kategori berhasil diupdate',
+            'text' => 'Kendaraan baru berhasil ditambahkan',
             'confirmButtonText' => 'OK',
         ]);
-        return redirect()->route('kendaraan.index')->with('success', 'Kendaraan berhasil ditambahkan.');
+        return redirect()->route('kendaraan.index')->with('success', 'Kendaraan baru berhasil ditambahkan.');
     }
     /**
      * Display the specified resource.
@@ -90,16 +103,17 @@ class KendaraanController extends Controller
        $kendaraan = Kendaraan::findOrFail($nopol);
 
        $request->validate([
-            'nopol'          => 'required|string|max:20|unique:kendaraan,nopol,' . $nopol . ',nopol',
-            'category_id'    => 'required|exists:category,id',
-            'cabang_id'      => 'required|exists:cabang,id',
+            'nopol'          => 'required|string|max:20|unique:ms_kendaraan,nopol,' . $nopol . ',nopol',
+            'id_kategori'    => 'required|exists:ms_kategori,id_kategori',
+            'id_cabang'      => 'required|exists:ms_cabang,id_cabang',
             'nama_kendaraan' => 'required|string|max:20',
             'transmisi'      => 'required|in:Matic,Manual',
             'harga'          => 'required|integer|min:0',
             'deskripsi'      => 'required|string',
             'warna'          => 'required|in:Merah,Hitam,Putih',
-            'kondisi'        => 'required|in:rusak,baik',
-            'bbm'            => 'required|in:solar,pertalite,pertamax',
+            'jumlah_kursi'   => 'required|integer|min:1|max:20',
+            'kondisi'        => 'required|in:Rusak,Baik',
+            'bbm'            => 'required|in:Solar,Pertalite,Pertamax',
             'tahun'          => 'required|integer|digits:4',
             'denda_terlambat' => 'required|integer|min:0',
             'dir'            => 'nullable|image|mimes:jpg,jpeg,png|max:2048',

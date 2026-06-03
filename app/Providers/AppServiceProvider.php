@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         RedirectIfAuthenticated::redirectUsing(function () {
             $user = Auth::user();
 
-            if ($user->level === 'SuperAdmin') {
+            if ($user->level === 'Superadmin') {
                 return route('superadmin.dashboard');
             } elseif ($user->level === 'Administrator') {
                 return route('dashboard');

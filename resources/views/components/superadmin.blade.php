@@ -32,19 +32,13 @@
     <div class="relative" x-data="{ open: false }" @click.away="open = false">
         <div @click="open = !open" class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition">
             <img class="w-10 h-10 rounded-full border-2 border-orange-100" 
-                 src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=FF9E0C&color=fff" 
-                 alt="{{ Auth::user()->name }}">
+                 src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->nama) }}&background=FF9E0C&color=fff" 
+                 alt="{{ Auth::user()->nama }}">
             
             <div class="hidden sm:block">
-                <p class="text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</p>
+                <p class="text-sm font-semibold text-gray-700">{{ Auth::user()->nama }}</p>
                 <p class="text-xs text-gray-500">
-                    @if(auth()->user()->role == 'SuperAdmin')
-                        Super Admin
-                    @elseif(auth()->user()->role == 'Administrator')
-                        Administrator
-                    @else
-                        
-                    @endif
+                
                 </p>
             </div>
             
@@ -54,22 +48,22 @@
         </div>
 
         <div x-show="open" 
-             x-transition:enter="transition ease-out duration-100"
-             x-transition:enter-start="transform opacity-0 scale-95"
-             x-transition:enter-end="transform opacity-100 scale-100"
-             x-transition:leave="transition ease-in duration-75"
-             x-transition:leave-start="transform opacity-100 scale-100"
-             x-transition:leave-end="transform opacity-0 scale-95"
-             class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-30 overflow-hidden" 
-             style="display: none;">
+            x-transition:enter="transition ease-out duration-100"
+            x-transition:enter-start="transform opacity-0 scale-95"
+            x-transition:enter-end="transform opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75"
+            x-transition:leave-start="transform opacity-100 scale-100"
+            x-transition:leave-end="transform opacity-0 scale-95"
+            class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-30 overflow-hidden" 
+            style="display: none;">
     
             <div class="px-4 py-3 border-b border-gray-50 md:hidden">
-                <p class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</p>
+                <p class="text-sm font-bold text-gray-800">{{ Auth::user()->nama }}</p>
             </div>
 
-            <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
+            <a href="{{ route('superadmin.profile') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                My Profile
+                Profil Saya
             </a>
             
             <hr class="border-gray-50">
@@ -78,7 +72,7 @@
                 @csrf
                 <button type="submit" class="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                    Logout
+                    Keluar
                 </button>
             </form> 
         </div>

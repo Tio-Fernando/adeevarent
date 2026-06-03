@@ -14,8 +14,6 @@
                 <p class="text-xs text-gray-400 mt-0.5">Isi data di bawah untuk menambahkan akun admin baru</p>
             </div>
         </div>
-
-
         
         @if (session('error'))
             <div class="mb-4 flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">
@@ -30,7 +28,7 @@
         <div class="flex justify-center items-center">
             <div class="bg-white border flex justify-center border-gray-100 rounded-2xl p-6">
         
-                <form method="POST" action="{{ route('superadmin.admin.store') }}" class="flex flex-col gap-5">
+                <form method="POST" action="{{ route('admin.store') }}" class="flex flex-col gap-5">
                     @csrf
         
                     {{-- Nama --}}
@@ -38,7 +36,7 @@
                         <label for="nama" class="text-xs font-medium text-gray-500 uppercase tracking-wide">
                             Nama Lengkap <span class="text-red-400">*</span>
                         </label>
-                        <input type="text" id="nama" name="nama" value="{{ old('nama') }}" placeholder="cth. Budi Santoso"
+                        <input type="text" id="nama" name="nama" value="{{ old('nama') }}" placeholder="cth. Awa Setiabudi"
                             class="border rounded-lg px-3 py-2.5 text-sm text-gray-800 transition
                                    focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent
                                    {{ $errors->has('nama') ? 'border-red-300 bg-red-50' : 'border-gray-200' }}">
@@ -124,10 +122,6 @@
                             </div>
                         </div>
                     </div>
-        
-                    {{-- Level + Status --}}
-                    <input type="hidden" name="level" value="Administrator">
-                <input type="hidden" name="status" value="aktif">
         
                     <hr class="border-gray-100">
                     <div class="flex items-center justify-end gap-3">

@@ -10,13 +10,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password','phone','status'])]
+#[Fillable(['nama', 'email', 'password','status','level'])]
 #[Hidden(['password', 'remember_token'])]
+
+
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
-
+  protected $table = 'ms_users';
+  protected $primaryKey = 'id_user';
     /**
      * Get the attributes that should be cast.
      *

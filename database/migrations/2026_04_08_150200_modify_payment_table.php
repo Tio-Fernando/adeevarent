@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('payment', function (Blueprint $table) {
+        Schema::table('tr_pembayaran', function (Blueprint $table) {
           
             $table->dropColumn('payment_type');
             $table->enum('payment_type', ['qris', 'va', 'cash'])->after('transaction_status');
@@ -26,7 +26,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('payment', function (Blueprint $table) {
+        Schema::table('tr_pembayaran', function (Blueprint $table) {
             $table->dropColumn(['payment_type', 'dp', 'sisa_bayar']);
             $table->string('payment_type', 50)->after('transaction_status');
         });

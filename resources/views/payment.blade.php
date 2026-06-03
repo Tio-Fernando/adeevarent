@@ -2,7 +2,6 @@
     <div class="min-h-screen bg-[#F8FAFC] py-8 md:py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-orange-100 selection:text-orange-900">
         <div class="max-w-6xl mx-auto">
             
-            <!-- Header & Back Button -->
             <div class="mb-8 md:mb-12">
                 <a href="{{ url()->previous() }}" class="group inline-flex items-center text-gray-500 hover:text-orange-500 transition-all duration-300 mb-6 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100 hover:shadow-md">
                     <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -11,15 +10,11 @@
                 <h1 class="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Metode Pembayaran</h1>
                 <p class="text-gray-500 mt-2 text-sm md:text-base font-medium">Pilih metode pembayaran yang paling nyaman untuk Anda.</p>
             </div>
-
             <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 lg:gap-12">
-            
                 <div id="payment-content-area" class="xl:col-span-7 space-y-6">
               
                     <label class="method-card group block bg-white p-6 md:p-8 rounded-[2rem] border-2 border-orange-500 shadow-lg shadow-orange-500/10 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-                    
                         <div class="absolute -right-10 -top-10 w-32 h-32 bg-orange-50 rounded-full blur-2xl opacity-60"></div>
-                        
                         <input type="radio" name="payment_method" value="qris" id="method_qris" class="hidden method-radio" checked>
                         <div class="flex items-center justify-between relative z-10">
                             <div class="flex items-center gap-5 md:gap-6">
@@ -51,13 +46,11 @@
                                     <p class="text-xs md:text-sm text-gray-500 font-medium mt-1">Bayar via ATM atau Mobile Banking</p>
                                 </div>
                             </div>
-                            <!-- Lingkaran Indikator -->
                             <div class="circle-outer w-7 h-7 rounded-full border-[3px] border-gray-200 flex items-center justify-center transition-colors">
                                 <div class="circle-inner w-3.5 h-3.5 bg-orange-500 rounded-full opacity-0 transition-opacity"></div>
                             </div>
                         </label>
 
-                        <!-- Pilihan Bank (Interaktif) -->
                         <div class="flex flex-wrap gap-3 pl-0 md:pl-20 mt-2">
                             @foreach(['bca', 'mandiri', 'bni', 'bri'] as $bank)
                                 <label class="cursor-pointer flex-1 sm:flex-none">
@@ -97,7 +90,7 @@
                         <div class="bg-gray-900 p-6 md:p-8 text-white relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
                             <h3 class="font-black text-xl tracking-tight mb-1 relative z-10">Ringkasan Pesanan</h3>
-                            <p class="text-gray-400 text-xs font-medium uppercase tracking-widest relative z-10">ID: #{{ strtoupper(Str::random(8)) }}</p>
+                            <p class="text-gray-400 text-xs font-medium uppercase tracking-widest relative z-10">ID: #{{ $invoice }}</p>
                         </div>
                         
                         <div class="p-6 md:p-8">
@@ -120,7 +113,7 @@
                             <div class="flex items-center justify-between bg-gray-50/50 p-4 rounded-2xl border border-gray-100/50 mb-8">
                                 <div class="text-left">
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Mulai</p>
-                                    <p class="text-sm font-bold text-gray-800">{{ Carbon\Carbon::parse($sewa->tgl_sewa)->format('d M Y') }}</p>
+                                    <p class="text-sm font-bold text-gray-800">{{ Carbon\Carbon::parse($sewa->tanggal_sewa)->format('d M Y') }}</p>
                                 </div>
                                 <div class="flex-1 flex items-center justify-center px-4">
                                     <div class="h-px bg-gray-300 w-full relative">
@@ -152,7 +145,6 @@
                             </div>
                         </div>
 
-                        <!-- Total Bottom (Garis Putus-putus ala Struk) -->
                         <div class="p-6 md:p-8 bg-orange-50/30 border-t-2 border-dashed border-gray-200 mt-auto relative">
                             <div class="absolute -top-3 -left-3 w-6 h-6 bg-[#F8FAFC] rounded-full border-b-2 border-r-2 border-transparent"></div>
                             <div class="absolute -top-3 -right-3 w-6 h-6 bg-[#F8FAFC] rounded-full border-b-2 border-l-2 border-transparent"></div>
@@ -160,7 +152,12 @@
                             <div class="flex justify-between items-end mb-6">
                                 <div>
                                     <p class="text-xs font-black text-orange-500 uppercase tracking-widest mb-1">Total Pembayaran</p>
-                                    <p class="text-gray-500 text-[10px] font-semibold uppercase">DP 50% dari total tagihan</p>
+                                    <p class="text-gray-500 text-[10px] font-semibold uppercase">
+                                        {{ $payment?->jumlah_bayar 
+                                            ? 'Jumlah yang harus dibayar'
+                                            : 'Jumlah DP yang harus dibayar'
+                                        }}
+                                    </p>
                                 </div>
                                 <h2 class="text-3xl md:text-4xl font-black text-orange-600 tracking-tighter">
                                     Rp {{ number_format($payment?->jumlah_bayar ?? $sewa->dp, 0, ',', '.') }}
@@ -198,7 +195,6 @@
                 const icon = card.querySelector('img');
                 
                 if(radio.checked) {
-                    // Beri warna oranye dan shadow jika dipilih
                     card.classList.add('border-orange-500', 'shadow-lg', 'shadow-orange-500/10');
                     card.classList.remove('border-gray-100');
                     outerCircle.classList.add('border-orange-500');
@@ -209,7 +205,6 @@
                         icon.classList.remove('grayscale');
                     }
                 } else {
-                    // Ubah jadi abu-abu jika tidak dipilih
                     card.classList.remove('border-orange-500', 'shadow-lg', 'shadow-orange-500/10');
                     card.classList.add('border-gray-100');
                     outerCircle.classList.remove('border-orange-500');
@@ -223,12 +218,10 @@
             });
         }
 
-        // Jalankan fungsi saat radio berubah
         methodRadios.forEach(radio => {
             radio.addEventListener('change', updateUIMethods);
         });
 
-        // Panggil sekali saat load untuk state awal
         updateUIMethods();
 
        
@@ -241,8 +234,13 @@
         
         document.getElementById('btn-pay-now').addEventListener('click', function() {
             const btn = this;
-            const method = document.querySelector('input[name="payment_method"]:checked').value;
-            const bankCode = document.querySelector('input[name="bank_code"]:checked').value;
+            const method = document.querySelector('input[name="payment_method"]:checked')?.value;
+            const bankCode = document.querySelector('input[name="bank_code"]:checked')?.value;
+
+            if (!method) {
+                alert('Pilih metode pembayaran terlebih dahulu');
+                return;
+            }
 
             btn.disabled = true;
             btn.innerHTML = `
@@ -255,7 +253,7 @@
                 </span>
             `;
 
-            fetch("{{ route('booking.charge', $sewa->id) }}", {
+            fetch("{{ route('booking.charge', $sewa->id_tr_sewa) }}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -267,46 +265,63 @@
                     bank: bankCode 
                 })
             })
-            .then(res => res.json())
+            .then(res => res.json()
+        
+        )
             .then(data => {
+                console.log('Payment Response:', data);
                 const area = document.getElementById('payment-content-area');
-                
-                if(!data || data.message === 'error' || data.code) {
-                    alert('Error: ' + (data.message || 'Gagal memproses pembayaran'));
+
+                if(!data || (data.status_code !== '200' && data.status_code !== '201')) {
+                    console.error('Payment Error:', data?.message || 'Gagal memproses pembayaran');
+                    alert('Error: ' + (data?.message || 'Gagal memproses pembayaran'));
                     btn.disabled = false;
                     btn.innerHTML = `<span class="relative z-10">Bayar Sekarang</span>`;
                     return;
                 }
-                
+
                 if(method === 'cash'){
                     area.innerHTML = `
                        <div class="flex justify-center items-center h-full">
                         <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border-2 border-orange-500 text-center animate-fade-in w-full max-w-lg relative overflow-hidden">
                             <div class="absolute -right-10 -top-10 w-32 h-32 bg-orange-50 rounded-full blur-2xl opacity-60"></div>
-                            <h3 class="text-2xl md:text-3xl font-black text-gray-900 mb-2 uppercase tracking-tighter relative z-10">Scan QRIS</h3>
+                            <h3 class="text-2xl md:text-3xl font-black text-gray-900 mb-2 uppercase tracking-tighter relative z-10">Cash</h3>
                             <p class="text-sm text-gray-500 mb-8 font-medium relative z-10">Silakan datang ke kantor kami untuk melakukan pembayaran secara langsung dan melakukan verifikasi unit.</p>
                             
                            <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100">
-                    <p class="text-orange-600 font-bold uppercase tracking-widest">Sebutkan ID Pesanan: 
-                        ${data.invoice || 'ID Kamu'}</p>
-                </div>
-                            <div class="mt-8 p-4 bg-orange-50 rounded-2xl text-orange-600 text-xs md:text-sm font-bold uppercase tracking-widest border border-orange-100 relative z-10">
-                                Selesaikan pembayaran dalam 15 menit
+                                <p class="text-orange-600 font-bold uppercase tracking-widest">ID Pesanan: 
+                                    {{ $invoice }}</p>
+                            </div>
+                            <div class="mt-8 p-4 bg-green-50 rounded-2xl text-green-600 text-xs md:text-sm font-bold uppercase tracking-widest border border-green-100 relative z-10">
+                                ✓ Pembayaran dicatat sebagai Cash. Menunggu konfirmasi admin.
                             </div>
                         </div>
                     </div>
-                    `
+                    `;
+
+                    btn.parentElement.classList.add('opacity-50', 'pointer-events-none');
+                    btn.innerHTML = `<span class="relative z-10">Menunggu Konfirmasi...</span>`;
+                    btn.classList.remove('from-orange-500', 'to-orange-600');
+                    btn.classList.add('bg-gray-500');
+
+                    mulaiCekOtomatis();
                     return;
                 }
 
                 if(method === 'qris') {
-                    const qrUrl = data?.actions?.[0]?.url || data?.qr_string || data?.redirect_url || '';
-                    if(!qrUrl) {
+                    const qrString = data?.qr_string || '';
+                    if(!qrString) {
+                        console.error('QRIS Response:', data);
                         alert('Error: QR Code tidak tergenerate');
                         btn.disabled = false;
                         btn.innerHTML = `<span class="relative z-10">Bayar Sekarang</span>`;
                         return;
                     }
+
+                    // Generate QR code URL menggunakan QR Server API
+                    const encodedQR = encodeURIComponent(qrString);
+                    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodedQR}`;
+
                     area.innerHTML = `
                     <div class="flex justify-center items-center h-full">
                         <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border-2 border-orange-500 text-center animate-fade-in w-full max-w-lg relative overflow-hidden">
@@ -315,7 +330,10 @@
                             <p class="text-sm text-gray-500 mb-8 font-medium relative z-10">Buka E-Wallet Anda (Gopay, OVO, Dana, ShopeePay).</p>
                             
                             <div class="bg-white p-5 inline-block rounded-[2rem] shadow-[0_0_40px_rgba(249,115,22,0.15)] border border-orange-100 relative z-10">
-                                <img src="${qrUrl}" class="w-56 h-56 md:w-64 md:h-64 object-contain" alt="QRIS">
+                                <img src="${qrImageUrl}" class="w-56 h-56 md:w-64 md:h-64 object-contain" alt="QRIS QR Code" onerror="this.style.display='none'; document.getElementById('qr-fallback').style.display='block';">
+                            </div>
+                            <div id="qr-fallback" style="display:none;" class="text-red-500 text-sm font-bold p-4">
+                                QR Code gagal dimuat. Silakan refresh halaman.
                             </div>
                             
                             <div class="mt-8 p-4 bg-orange-50 rounded-2xl text-orange-600 text-xs md:text-sm font-bold uppercase tracking-widest border border-orange-100 relative z-10">
@@ -324,34 +342,98 @@
                         </div>
                     </div>
                     `;
-                } else if(method === 'bank_transfer') {
-                    if(!data.va_numbers || !data.va_numbers[0] || !data.va_numbers[0].va_number) {
-                        alert('Error: Nomor VA tidak tergenerate');
-                        btn.disabled = false;
-                        btn.innerHTML = `<span class="relative z-10">Bayar Sekarang</span>`;
-                        return;
-                    }
-                    const vaNumber = data.va_numbers[0].va_number;
-                    area.innerHTML = `
-                        <div class="flex justify-center items-center h-full">
-                            <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border-2 border-orange-500 animate-fade-in text-center w-full max-w-lg relative overflow-hidden">
-                                <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-orange-50 rounded-full blur-2xl opacity-60"></div>
-                                <h3 class="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tighter relative z-10">Virtual Account ${bankCode.toUpperCase()}</h3>
-                                
-                                <div class="bg-gray-50 p-8 rounded-[2rem] border border-gray-100 relative z-10">
-                                    <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Nomor Pembayaran</p>
-                                    <p class="text-3xl md:text-4xl font-black text-orange-600 tracking-tighter">${vaNumber}</p>
-                                </div>
-                                
-                                <button onclick="navigator.clipboard.writeText('${vaNumber}'); alert('Nomor disalin!')" 
-                                        class="mt-8 w-full bg-gray-900 text-white px-6 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors shadow-lg shadow-gray-900/20 relative z-10">
-                                    Salin Nomor VA
-                                </button>
-                            </div>
-                        </div>
-                    `;
                 }
-                
+             else if(method === 'bank_transfer') {
+    if(bankCode === 'mandiri') {
+
+        const billKey = data?.mandiri?.bill_key;
+        const billerCode = data?.mandiri?.biller_code;
+
+        if(!billKey || !billerCode){
+            alert('Error: Bill Mandiri tidak tergenerate');
+            btn.disabled = false;
+            btn.innerHTML = `<span class="relative z-10">Bayar Sekarang</span>`;
+            return;
+        }
+
+        area.innerHTML = `
+        <div class="flex justify-center items-center h-full">
+            <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border-2 border-orange-500 animate-fade-in text-center w-full max-w-lg relative overflow-hidden">
+
+                <h3 class="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tighter">
+                    Mandiri Bill Payment
+                </h3>
+
+                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-4">
+                    <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
+                        Biller Code
+                    </p>
+                    <p class="text-3xl font-black text-orange-600">
+                        ${billerCode}
+                    </p>
+                </div>
+
+                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                    <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
+                        Bill Key
+                    </p>
+
+                    <p class="text-3xl font-black text-orange-600 break-all">
+                        ${billKey}
+                    </p>
+                </div>
+
+                <button
+                    onclick="navigator.clipboard.writeText('${billKey}')"
+                    class="mt-8 w-full bg-gray-900 text-white px-6 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors"
+                >
+                    Salin Bill Key
+                </button>
+            </div>
+        </div>
+        `;
+
+    } else {
+
+        // VA BIASA
+        if(!data.va_numbers || !data.va_numbers[0] || !data.va_numbers[0].va_number) {
+            alert('Error: Nomor VA tidak tergenerate');
+            btn.disabled = false;
+            btn.innerHTML = `<span class="relative z-10">Bayar Sekarang</span>`;
+            return;
+        }
+
+        const vaNumber = data.va_numbers[0].va_number;
+
+        area.innerHTML = `
+        <div class="flex justify-center items-center h-full">
+            <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border-2 border-orange-500 animate-fade-in text-center w-full max-w-lg relative overflow-hidden">
+
+                <h3 class="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tighter">
+                    Virtual Account ${bankCode.toUpperCase()}
+                </h3>
+
+                <div class="bg-gray-50 p-8 rounded-[2rem] border border-gray-100">
+                    <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">
+                        Nomor Pembayaran
+                    </p>
+
+                    <p class="text-3xl md:text-4xl font-black text-orange-600 tracking-tighter">
+                        ${vaNumber}
+                    </p>
+                </div>
+
+                <button
+                    onclick="navigator.clipboard.writeText('${vaNumber}')"
+                    class="mt-8 w-full bg-gray-900 text-white px-6 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors"
+                >
+                    Salin Nomor VA
+                </button>
+            </div>
+        </div>
+        `;
+    }
+}
                 btn.parentElement.classList.add('opacity-50', 'pointer-events-none');
                 btn.innerHTML = `<span class="relative z-10">Menunggu Pembayaran...</span>`;
                 btn.classList.remove('from-orange-500', 'to-orange-600');
@@ -368,7 +450,7 @@
 
         function mulaiCekOtomatis() {
         const intervalCek = setInterval(() => {
-            fetch("{{ route('booking.status', $sewa->id) }}")
+            fetch("{{ route('booking.status', $sewa->id_tr_sewa) }}")
                 .then(res => res.json())
                 .then(data => {
                     if (['settlement', 'capture'].includes(data.transaction_status)) {
@@ -382,10 +464,11 @@
                         });
                         setTimeout(() => {
                             window.location.href = "{{ route('home') }}";
-                        }, 3000);
+                        }, 5000);
+                    return;
                     }
                 });
-        }, 5000); // Cek setiap 5 detik
+        }, 5000); 
     }
     </script>
 

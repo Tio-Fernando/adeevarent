@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('sewa', function (Blueprint $table) {
+        Schema::table('tr_sewa', function (Blueprint $table) {
             // Tambah kolom tanggal_kembali
             $table->string('lokasi_antar')->nullable()->after('biaya_supir');
             $table->dropColumn(['lokasi_jemput','lokasi_kembali']);
@@ -23,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('sewa', function (Blueprint $table) {
+        Schema::table('tr_sewa', function (Blueprint $table) {
             $table->dropColumn('lokasi_antar');
         });
     }

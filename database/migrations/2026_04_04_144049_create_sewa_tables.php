@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sewa', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('pelanggan_id')->constrained('pelanggan')->onDelete('restrict');
+        Schema::create('tr_sewa', function (Blueprint $table) {
+            $table->id('id_sewa');
+            $table->foreignId('id_pelanggan')->constrained('ms_pelanggan', 'id_pelanggan')->onDelete('restrict');
             $table->string('nopol', 9);
             $table->foreign('nopol')
                 ->references('nopol')
-                ->on('kendaraan')
+                ->on('ms_kendaraan')
                 ->onDelete('restrict');
             $table->enum('jenis_sewa',['sopir','lepas kunci']);
             $table->date('tgl_sewa');
@@ -44,6 +44,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sewa_tables');
+        Schema::dropIfExists('tr_sewa');
     }
 };
+
