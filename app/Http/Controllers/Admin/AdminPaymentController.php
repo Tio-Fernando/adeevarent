@@ -52,7 +52,7 @@ class AdminPaymentController extends Controller
                 'transaction_status' => 'settlement',
             ]);
 
-            $kendaraan->update(['status' => 'Booking']);
+            $kendaraan->update(['status' => 'booking']);
             
             $sewa->update([
                 'status'       => 'dp',

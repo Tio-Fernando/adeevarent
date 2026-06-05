@@ -377,7 +377,7 @@
                  <form 
                         :action="`/admin/payment/${item.id_tr_sewa}/konfirmasi`" 
                         method="POST" 
-                        x-show="item.status === 'booking' && item.is_cash"
+                        x-show="item.status === 'booking' && item.is_cash && item.transaction_status !== 'settlement'"
                         @submit.prevent="handleKonfirmasiDP($event, item.id_tr_sewa)"
                     >
                         @csrf
@@ -391,7 +391,7 @@
                  <form 
                         :action="`/admin/payment/${item.id_tr_sewa}/lunas`" 
                         method="POST" 
-                        x-show="item.status === 'dp' && item.is_cash"
+                        x-show="item.status === 'dp' && item.is_cash && item.transaction_status !== 'settlement'"
                         @submit.prevent="handleKonfirmasiLunas($event, item.id_tr_sewa)"
                     >
                         @csrf

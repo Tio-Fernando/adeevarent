@@ -197,6 +197,24 @@
                         </label>
                     </div>
                 </div>
+
+                <div class="mt-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Metode Pembayaran</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="metode_pembayaran" value="cash" 
+                                   class="accent-orange-500" checked>
+                            <span class="text-sm font-semibold">Bayar di Tempat (Cash)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="radio" name="metode_pembayaran" value="online" 
+                                   class="accent-orange-500">
+                            <span class="text-sm font-semibold">Bayar Online (Transfer/QRIS)</span>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1">Cash: bayar langsung saat pengambilan unit di kantor.</p>
+                </div>
+
                 <div class="mt-4">
   <button 
     type="button"

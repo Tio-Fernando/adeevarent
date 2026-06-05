@@ -40,12 +40,40 @@
             <h3 class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-4">Data Booking</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                <div class="flex flex-col gap-1.5">
+                <div class="flex flex-col gap-1.5 relative">
                     <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">
                         Pelanggan <span class="text-red-400">*</span>
                     </label>
-                    <select name="id_pelanggan"
-                        class="border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 {{ $errors->has('id_pelanggan') ? 'border-red-300' : '' }}">
+                    <div class="relative">
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="searchPelanggan" placeholder="Cari nama atau email..."
+                                class="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 {{ $errors->has('id_pelanggan') ? 'border-red-300' : '' }}">
+                            <button type="button" onclick="clearSearchPelanggan()"
+                                class="p-2.5 rounded-lg border border-gray-200 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition"
+                                title="Hapus pencarian">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="dropdownPelanggan"
+                            class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto z-50 hidden">
+                            @forelse($pelanggan as $p)
+                                <div class="searchable-pelanggan px-3 py-2.5 hover:bg-orange-50 cursor-pointer transition border-b border-gray-100 last:border-b-0"
+                                    data-id="{{ $p->id_pelanggan }}"
+                                    data-name="{{ strtolower($p->nama_pelanggan) }}"
+                                    data-email="{{ strtolower($p->user->email ?? '') }}"
+                                    onclick="selectPelanggan('{{ $p->id_pelanggan }}', '{{ $p->nama_pelanggan }}', '{{ $p->user->email ?? '-' }}')">
+                                    <div class="text-sm font-medium text-gray-800">{{ $p->nama_pelanggan }}</div>
+                                    <div class="text-xs text-gray-500">{{ $p->user->email ?? '-' }}</div>
+                                </div>
+                            @empty
+                                <div class="px-3 py-2.5 text-sm text-gray-500">Tidak ada pelanggan</div>
+                            @endforelse
+                        </div>
+                    </div>
+                    <select name="id_pelanggan" id="id_pelanggan"
+                        class="hidden">
                         <option value="">-- Pilih Pelanggan --</option>
                         @foreach($pelanggan as $p)
                             <option value="{{ $p->id_pelanggan }}" {{ old('id_pelanggan') == $p->id_pelanggan ? 'selected' : '' }}>
@@ -53,17 +81,49 @@
                             </option>
                         @endforeach
                     </select>
+                    <div id="selectedPelanggan" class="text-xs text-orange-600 font-medium mt-1 hidden">
+                        ✓ <span id="selectedPelangganText"></span>
+                    </div>
                     @error('id_pelanggan')
                         <span class="text-xs text-red-500">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <div class="flex flex-col gap-1.5">
+                <div class="flex flex-col gap-1.5 relative">
                     <label class="text-xs font-medium text-gray-500 uppercase tracking-wide">
                         Kendaraan <span class="text-red-400">*</span>
                     </label>
+                    <div class="relative">
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="searchKendaraan" placeholder="Cari nama atau plat nomor..."
+                                class="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 {{ $errors->has('nopol') ? 'border-red-300' : '' }}">
+                            <button type="button" onclick="clearSearchKendaraan()"
+                                class="p-2.5 rounded-lg border border-gray-200 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition"
+                                title="Hapus pencarian">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="dropdownKendaraan"
+                            class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto z-50 hidden">
+                            @forelse($kendaraan as $k)
+                                <div class="searchable-kendaraan px-3 py-2.5 hover:bg-orange-50 cursor-pointer transition border-b border-gray-100 last:border-b-0"
+                                    data-nopol="{{ $k->nopol }}"
+                                    data-harga="{{ $k->harga }}"
+                                    data-name="{{ strtolower($k->nama_kendaraan) }}"
+                                    data-plat="{{ strtolower($k->nopol) }}"
+                                    onclick="selectKendaraan('{{ $k->nopol }}', '{{ $k->nama_kendaraan }}', {{ $k->harga }})">
+                                    <div class="text-sm font-medium text-gray-800">{{ $k->nama_kendaraan }} - {{ $k->nopol }}</div>
+                                    <div class="text-xs text-gray-500">Rp {{ number_format($k->harga, 0, ',', '.') }}/hari</div>
+                                </div>
+                            @empty
+                                <div class="px-3 py-2.5 text-sm text-gray-500">Tidak ada kendaraan</div>
+                            @endforelse
+                        </div>
+                    </div>
                     <select name="nopol" id="nopol"
-                        class="border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 {{ $errors->has('nopol') ? 'border-red-300' : '' }}"
+                        class="hidden"
                         onchange="hitungTotal()">
                         <option value="">-- Pilih Kendaraan --</option>
                         @foreach($kendaraan as $k)
@@ -75,6 +135,9 @@
                             </option>
                         @endforeach
                     </select>
+                    <div id="selectedKendaraan" class="text-xs text-orange-600 font-medium mt-1 hidden">
+                        ✓ <span id="selectedKendaraanText"></span>
+                    </div>
                     @error('nopol')
                         <span class="text-xs text-red-500">{{ $message }}</span>
                     @enderror
@@ -183,6 +246,13 @@
                         <span class="ml-3 text-sm text-gray-700 font-medium">Bayar Lunas</span>
                     </label>
                 </div>
+            </div>
+
+            <input type="hidden" name="metode_pembayaran" value="cash">
+
+            <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700">
+                Booking melalui sistem admin selalu menggunakan metode <strong>Cash</strong> 
+                dan langsung terkonfirmasi.
             </div>
         </div>
 
@@ -328,7 +398,112 @@
         );
     }
 
+    function selectPelanggan(id, nama, email) {
+        document.getElementById('id_pelanggan').value = id;
+        document.getElementById('searchPelanggan').value = `${nama} (${email})`;
+        document.getElementById('dropdownPelanggan').classList.add('hidden');
+        document.getElementById('selectedPelanggan').classList.remove('hidden');
+        document.getElementById('selectedPelangganText').textContent = `${nama} (${email})`;
+    }
+
+    function clearSearchPelanggan() {
+        document.getElementById('searchPelanggan').value = '';
+        document.getElementById('id_pelanggan').value = '';
+        document.getElementById('selectedPelanggan').classList.add('hidden');
+        filterPelanggan();
+    }
+
+    function filterPelanggan() {
+        const searchInput = document.getElementById('searchPelanggan').value.toLowerCase();
+        const items = document.querySelectorAll('.searchable-pelanggan');
+        const dropdown = document.getElementById('dropdownPelanggan');
+        let visibleCount = 0;
+
+        items.forEach(item => {
+            const name = item.dataset.name;
+            const email = item.dataset.email;
+            const matches = name.includes(searchInput) || email.includes(searchInput);
+            item.style.display = matches ? 'block' : 'none';
+            if (matches) visibleCount++;
+        });
+
+        dropdown.classList.toggle('hidden', visibleCount === 0 && searchInput.length > 0);
+    }
+
+    function selectKendaraan(nopol, nama, harga) {
+        document.getElementById('nopol').value = nopol;
+        document.getElementById('searchKendaraan').value = `${nama} - ${nopol}`;
+        document.getElementById('dropdownKendaraan').classList.add('hidden');
+        document.getElementById('selectedKendaraan').classList.remove('hidden');
+        document.getElementById('selectedKendaraanText').textContent = `${nama} - ${nopol} (Rp ${new Intl.NumberFormat('id-ID').format(harga)}/hari)`;
+        hitungTotal();
+    }
+
+    function clearSearchKendaraan() {
+        document.getElementById('searchKendaraan').value = '';
+        document.getElementById('nopol').value = '';
+        document.getElementById('selectedKendaraan').classList.add('hidden');
+        filterKendaraan();
+    }
+
+    function filterKendaraan() {
+        const searchInput = document.getElementById('searchKendaraan').value.toLowerCase();
+        const items = document.querySelectorAll('.searchable-kendaraan');
+        const dropdown = document.getElementById('dropdownKendaraan');
+        let visibleCount = 0;
+
+        items.forEach(item => {
+            const name = item.dataset.name;
+            const plat = item.dataset.plat;
+            const matches = name.includes(searchInput) || plat.includes(searchInput);
+            item.style.display = matches ? 'block' : 'none';
+            if (matches) visibleCount++;
+        });
+
+        dropdown.classList.toggle('hidden', visibleCount === 0 && searchInput.length > 0);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+        const searchInputPelanggan = document.getElementById('searchPelanggan');
+        const dropdownPelanggan = document.getElementById('dropdownPelanggan');
+
+        // Show dropdown when input is focused
+        searchInputPelanggan.addEventListener('focus', function() {
+            if (document.querySelectorAll('.searchable-pelanggan:not([style*="display: none"])').length > 0 || searchInputPelanggan.value.length === 0) {
+                dropdownPelanggan.classList.remove('hidden');
+            }
+        });
+
+        // Filter as user types
+        searchInputPelanggan.addEventListener('input', filterPelanggan);
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!searchInputPelanggan.contains(event.target) && !dropdownPelanggan.contains(event.target)) {
+                dropdownPelanggan.classList.add('hidden');
+            }
+        });
+
+        const searchInputKendaraan = document.getElementById('searchKendaraan');
+        const dropdownKendaraan = document.getElementById('dropdownKendaraan');
+
+        // Show dropdown when input is focused
+        searchInputKendaraan.addEventListener('focus', function() {
+            if (document.querySelectorAll('.searchable-kendaraan:not([style*="display: none"])').length > 0 || searchInputKendaraan.value.length === 0) {
+                dropdownKendaraan.classList.remove('hidden');
+            }
+        });
+
+        // Filter as user types
+        searchInputKendaraan.addEventListener('input', filterKendaraan);
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!searchInputKendaraan.contains(event.target) && !dropdownKendaraan.contains(event.target)) {
+                dropdownKendaraan.classList.add('hidden');
+            }
+        });
+
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         document.getElementById('tanggal_sewa').min = now.toISOString().slice(0, 16);
