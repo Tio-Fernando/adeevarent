@@ -134,7 +134,7 @@
                                 <input type="radio" name="jenis_sewa" value="sopir"
                                        class="w-4 h-4 text-orange-500 focus:ring-orange-400"
                                        onchange="hitungTotal()">
-                                <span class="ml-3 text-sm text-gray-700 font-medium">Dengan Supir (+ Rp 150.000/hari)</span>
+                                <span class="ml-3 text-sm text-gray-700 font-medium">Dengan Supir</span>
                             </label>
                         </div>
                     </div>
@@ -285,7 +285,6 @@ function toggleNote(){
     el.classList.toggle('hidden');
 }
 
-
     var map, marker;
 
     function getCurrentLocation() {
@@ -404,7 +403,7 @@ function hitungTotal() {
         const jenisSewa = document.querySelector('input[name="jenis_sewa"]:checked').value;
 
         const totalSewa  = durasiHari * hargaPerHari;
-        const totalSupir = (jenisSewa === 'sopir') ? (150000 * durasiHari) : 0;
+        const totalSupir = 0;
         const totalAntar = 0;
         
         const grandTotal = totalSewa + totalSupir;
@@ -421,7 +420,7 @@ function hitungTotal() {
             sisaBayar = 0;
         }
 
-        // --- UPDATE UI ---
+
         document.getElementById('text_durasi').innerText  = `(${durasiHari} hari)`;
         document.getElementById('summary_sewa').innerText  = formatRupiah(totalSewa);
         document.getElementById('summary_supir').innerText = formatRupiah(totalSupir);

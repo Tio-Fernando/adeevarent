@@ -188,7 +188,7 @@ if ($pengembalian->greaterThan($jadwalKembali)) {
 
         if ($durasi < 1) $durasi = 1;
         $hargaSewa   = $kendaraan->harga * $durasi;
-        $biayaSupir  = ($request->jenis_sewa === 'sopir') ? (150000 * $durasi) : 0;
+        $biayaSupir  =  0;
         $grandTotal  = $hargaSewa + $biayaSupir;
         
         if ($request->tipe_pembayaran == 'dp') {
@@ -595,7 +595,7 @@ public function createBooking()
         $durasi      = max(1, ceil($totalJam / 24));
 
         $hargaSewa  = $kendaraan->harga * $durasi;
-        $biayaSupir = ($request->jenis_sewa === 'sopir') ? (150000 * $durasi) : 0;
+        $biayaSupir =  0;
         $grandTotal = $hargaSewa + $biayaSupir;
 
         if ($request->tipe_pembayaran === 'dp') {

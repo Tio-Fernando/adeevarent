@@ -152,9 +152,9 @@ class AdminPaymentController extends Controller
     {
         $sewa = Sewa::findOrFail($id);
 
-        if (!in_array($sewa->status, ['lunas', 'dp'])) {
-            return back()->with('error', 'Hanya pesanan dengan status DP atau lunas yang dapat dibatalkan.');
-        }
+       if (!in_array($sewa->status, ['lunas', 'dp', 'Booking'])) { 
+    return back()->with('error', 'Hanya pesanan dengan status Booking, DP, atau Lunas yang dapat dibatalkan.'); 
+}
 
         $kendaraan = $sewa->kendaraan;
         if (!$kendaraan) {

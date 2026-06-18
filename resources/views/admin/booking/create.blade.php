@@ -188,7 +188,7 @@
                             <input type="radio" name="jenis_sewa" value="sopir"
                                 class="w-4 h-4 text-orange-500 focus:ring-orange-400"
                                 onchange="hitungTotal()">
-                            <span class="ml-3 text-sm text-gray-700 font-medium">Dengan Supir (+ Rp 150.000/hari)</span>
+                            <span class="ml-3 text-sm text-gray-700 font-medium">Dengan Supir</span>
                         </label>
                     </div>
                 </div>
@@ -323,7 +323,7 @@
         const durasiHari2    = parseInt(document.getElementById('durasi_hari').value) || 1;
 
         const totalSewa  = durasiHari2 * hargaPerHari;
-        const totalSupir = jenisSewa === 'sopir' ? 150000 * durasiHari2 : 0;
+        const totalSupir = 0;
         const grandTotal = totalSewa + totalSupir;
         const dp         = tipePembayaran === 'dp' ? grandTotal * 0.5 : grandTotal;
 
