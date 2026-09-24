@@ -14,7 +14,10 @@ class JaminanController extends Controller
 
         // Pastikan hanya pelanggan pemilik sewa yang bisa akses
         $user = auth()->user();
-
+  if ($sewa->jenis_sewa === 'sopir' && $sewa->status === 'pending_konfirmasi') {
+        return redirect()->route('riwayat')
+            ->with('error', 'Mohon tunggu konfirmasi biaya sopir dari admin terlebih dahulu.');
+    }
         if (
             strtolower($user->level) === 'pelanggan' &&
             isset($user->pelanggan) &&

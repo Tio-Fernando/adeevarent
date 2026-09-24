@@ -25,6 +25,7 @@ class Sewa extends Model
         'harga_total',
         'status',
         'biaya_supir',
+        'destinasi',
         'lokasi_antar',
         'dp',
         'sisa_tagihan'

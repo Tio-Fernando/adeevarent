@@ -127,15 +127,34 @@
                             <label class="flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
                                 <input type="radio" name="jenis_sewa" value="lepas kunci"
                                        class="w-4 h-4 text-orange-500 focus:ring-orange-400"
-                                       checked onchange="hitungTotal()">
+                                       checked onchange="toggleDestinasi(); hitungTotal()">
                                 <span class="ml-3 text-sm text-gray-700 font-medium">Lepas Kunci (Tanpa Supir)</span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
                                 <input type="radio" name="jenis_sewa" value="sopir"
                                        class="w-4 h-4 text-orange-500 focus:ring-orange-400"
-                                       onchange="hitungTotal()">
+                                       onchange="toggleDestinasi(); hitungTotal()">
                                 <span class="ml-3 text-sm text-gray-700 font-medium">Dengan Supir</span>
                             </label>
+                            <div id="sopirInfo" class="hidden mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                                <p class="text-xs text-blue-700 font-medium flex items-center gap-2">
+                                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Booking dengan supir akan dikonfirmasi admin terlebih dahulu untuk biaya sopir.
+                                </p>
+                            </div>
+                            <div id="destinasiBox" class="hidden mt-4">
+    <label class="block text-sm font-bold text-gray-700 mb-2">
+        Destinasi Perjalanan
+    </label>
+
+    <textarea
+        name="destinasi"
+        rows="3"
+        class="w-full border rounded-lg p-3"
+        placeholder="Contoh: Malang - Batu - Bromo PP"></textarea>
+</div>
                         </div>
                     </div>
 
@@ -198,22 +217,6 @@
                     </div>
                 </div>
 
-                <div class="mt-4">
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Metode Pembayaran</label>
-                    <div class="flex gap-4">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="metode_pembayaran" value="cash" 
-                                   class="accent-orange-500" checked>
-                            <span class="text-sm font-semibold">Bayar di Tempat (Cash)</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="metode_pembayaran" value="online" 
-                                   class="accent-orange-500">
-                            <span class="text-sm font-semibold">Bayar Online (Transfer/QRIS)</span>
-                        </label>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-1">Cash: bayar langsung saat pengambilan unit di kantor.</p>
-                </div>
 
                 <div class="mt-4">
   <button 
@@ -280,6 +283,22 @@
 
  <script>
 
+function toggleDestinasi() {
+    const jenis = document.querySelector(
+        'input[name="jenis_sewa"]:checked'
+    ).value;
+
+    const box = document.getElementById('destinasiBox');
+    const info = document.getElementById('sopirInfo');
+
+    if (jenis === 'sopir') {
+        box.classList.remove('hidden');
+        info.classList.remove('hidden');
+    } else {
+        box.classList.add('hidden');
+        info.classList.add('hidden');
+    }
+}
 function toggleNote(){
     const el = document.getElementById('noteField');
     el.classList.toggle('hidden');
@@ -304,7 +323,7 @@ function toggleNote(){
                 document.getElementById('lat').value = lat;
                 document.getElementById('lng').value = lng;
 
-                // 2. Update Peta & Marker
+                
                 const newPos = [lat, lng];
                 map.setView(newPos, 18); // Zoom sangat dekat (akurat)
 
@@ -452,6 +471,7 @@ function hitungTotal() {
 document.addEventListener('DOMContentLoaded', function() {
      const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); 
      hitungTotal(); 
+     toggleDestinasi();
      document.getElementById('tanggal_sewa').min = now.toISOString().slice(0, 16);
       });
 </script>

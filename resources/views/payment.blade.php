@@ -64,23 +64,6 @@
                             @endforeach
                         </div>
                     </div>
-                    <label class="method-card group block bg-white p-6 md:p-8 rounded-[2rem] border-2 border-gray-100 shadow-sm cursor-pointer transition-all duration-300 hover:border-orange-500 relative overflow-hidden">
-                    <input type="radio" name="payment_method" value="cash" class="hidden method-radio">
-                    <div class="flex items-center justify-between relative z-10">
-                        <div class="flex items-center gap-5 md:gap-6">
-                            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                                <img src="https://img.icons8.com/fluency/48/money-box.png" class="w-8 h-8 md:w-10 md:h-10 grayscale group-hover:grayscale-0" alt="Cash">
-                            </div>
-                            <div>
-                                <h4 class="font-extrabold text-gray-900 text-lg md:text-xl tracking-tight uppercase">Bayar di Tempat (Cash)</h4>
-                                <p class="text-xs md:text-sm text-gray-500 font-medium mt-1">Bayar langsung di kantor saat pengambilan unit.</p>
-                            </div>
-                        </div>
-                        <div class="circle-outer w-7 h-7 rounded-full border-[3px] border-gray-200 flex items-center justify-center">
-                            <div class="circle-inner w-3.5 h-3.5 bg-orange-500 rounded-full opacity-0"></div>
-                        </div>
-                    </div>
-                </label>
                 </div>
                 
                 <div class="xl:col-span-5">
@@ -153,9 +136,9 @@
                                 <div>
                                     <p class="text-xs font-black text-orange-500 uppercase tracking-widest mb-1">Total Pembayaran</p>
                                     <p class="text-gray-500 text-[10px] font-semibold uppercase">
-                                        {{ $payment?->jumlah_bayar 
-                                            ? 'Jumlah yang harus dibayar'
-                                            : 'Jumlah DP yang harus dibayar'
+                                        {{ $sewa->dp > 0
+                                            ? 'Jumlah DP yang harus dibayar'
+                                            : 'Jumlah yang harus dibayar'
                                         }}
                                     </p>
                                 </div>
@@ -277,34 +260,6 @@
                     alert('Error: ' + (data?.message || 'Gagal memproses pembayaran'));
                     btn.disabled = false;
                     btn.innerHTML = `<span class="relative z-10">Bayar Sekarang</span>`;
-                    return;
-                }
-
-                if(method === 'cash'){
-                    area.innerHTML = `
-                       <div class="flex justify-center items-center h-full">
-                        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border-2 border-orange-500 text-center animate-fade-in w-full max-w-lg relative overflow-hidden">
-                            <div class="absolute -right-10 -top-10 w-32 h-32 bg-orange-50 rounded-full blur-2xl opacity-60"></div>
-                            <h3 class="text-2xl md:text-3xl font-black text-gray-900 mb-2 uppercase tracking-tighter relative z-10">Cash</h3>
-                            <p class="text-sm text-gray-500 mb-8 font-medium relative z-10">Silakan datang ke kantor kami untuk melakukan pembayaran secara langsung dan melakukan verifikasi unit.</p>
-                            
-                           <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100">
-                                <p class="text-orange-600 font-bold uppercase tracking-widest">ID Pesanan: 
-                                    {{ $invoice }}</p>
-                            </div>
-                            <div class="mt-8 p-4 bg-green-50 rounded-2xl text-green-600 text-xs md:text-sm font-bold uppercase tracking-widest border border-green-100 relative z-10">
-                                ✓ Pembayaran dicatat sebagai Cash. Menunggu konfirmasi admin.
-                            </div>
-                        </div>
-                    </div>
-                    `;
-
-                    btn.parentElement.classList.add('opacity-50', 'pointer-events-none');
-                    btn.innerHTML = `<span class="relative z-10">Menunggu Konfirmasi...</span>`;
-                    btn.classList.remove('from-orange-500', 'to-orange-600');
-                    btn.classList.add('bg-gray-500');
-
-                    mulaiCekOtomatis();
                     return;
                 }
 

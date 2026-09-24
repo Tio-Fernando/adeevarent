@@ -64,7 +64,7 @@
                     </div>
                 </div>
 
-                <label class="method-card group block bg-white p-6 rounded-[2rem] border-2 border-gray-100 shadow-sm cursor-pointer transition-all hover:border-orange-500 relative overflow-hidden">
+                {{-- <label class="method-card group block bg-white p-6 rounded-[2rem] border-2 border-gray-100 shadow-sm cursor-pointer transition-all hover:border-orange-500 relative overflow-hidden">
                     <input type="radio" name="payment_method" value="cash" class="hidden method-radio">
                     <div class="flex items-center justify-between relative z-10">
                         <div class="flex items-center gap-5">
@@ -80,7 +80,7 @@
                             <div class="circle-inner w-3.5 h-3.5 bg-orange-500 rounded-full opacity-0"></div>
                         </div>
                     </div>
-                </label>
+                </label> --}}
 
             </div>
 
@@ -209,23 +209,23 @@
         .then(data => {
             const area = document.getElementById('payment-content-area');
 
-            if (method === 'cash') {
-                area.innerHTML = `
-                    <div class="bg-white p-8 rounded-[2rem] shadow-2xl border-2 border-orange-500 text-center animate-fade-in">
-                        <h3 class="text-2xl font-black text-gray-900 mb-4 uppercase">Pelunasan Cash</h3>
-                        <p class="text-sm text-gray-500 mb-6">Pelanggan akan melakukan pelunasan langsung di kantor.</p>
-                        <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100 relative z-10">
-                                        <p class="text-orange-600 font-bold uppercase tracking-widest text-xs mb-1">ID Pesanan:</p>
-                                        <p class="text-orange-600 font-black text-xl md:text-2xl tracking-tight">
-                                            {{ $invoice }}
-                                        </p>
-                                    </div>
-                        <a href="{{ route('booking.index') }}" class="inline-block bg-gray-900 text-white px-8 py-3 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-gray-800 transition">
-                            Kembali ke Daftar Booking
-                        </a>
-                    </div>`;
-                return;
-            }
+            // if (method === 'cash') {
+            //     area.innerHTML = `
+            //         <div class="bg-white p-8 rounded-[2rem] shadow-2xl border-2 border-orange-500 text-center animate-fade-in">
+            //             <h3 class="text-2xl font-black text-gray-900 mb-4 uppercase">Pelunasan Cash</h3>
+            //             <p class="text-sm text-gray-500 mb-6">Pelanggan akan melakukan pelunasan langsung di kantor.</p>
+            //             <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100 relative z-10">
+            //                             <p class="text-orange-600 font-bold uppercase tracking-widest text-xs mb-1">ID Pesanan:</p>
+            //                             <p class="text-orange-600 font-black text-xl md:text-2xl tracking-tight">
+            //                                 {{ $invoice }}
+            //                             </p>
+            //                         </div>
+            //             <a href="{{ route('booking.index') }}" class="inline-block bg-gray-900 text-white px-8 py-3 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-gray-800 transition">
+            //                 Kembali ke Daftar Booking
+            //             </a>
+            //         </div>`;
+            //     return;
+            // }
 
             if (method === 'qris') {
                 const qrString = data?.qr_string || '';

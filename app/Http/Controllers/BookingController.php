@@ -45,7 +45,8 @@ class BookingController extends InvoiceController
                 return $query->whereDate('tanggal_sewa', '<=', $tanggalSampai);
             })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->appends($request->except('page'));
         
         return view('admin.booking.index', compact('booking', 'search', 'tanggalDari', 'tanggalSampai'));
     }
@@ -121,7 +122,6 @@ if ($pengembalian->greaterThan($jadwalKembali)) {
             ->translatedFormat('j F Y H:i') : null;
 
         $latestPayment = $sewa->payments->sortByDesc('created_at')->first();
-        $isCash = $latestPayment ? ($latestPayment->payment_type === 'cash') : false;
 
         return response()->json([
             'id_tr_sewa' => $sewa->id_tr_sewa,
@@ -144,7 +144,6 @@ if ($pengembalian->greaterThan($jadwalKembali)) {
             'harga_total' => $sewa->harga_total,
             'sisa_tagihan' => $sewa->sisa_tagihan,
             'status' => strtolower(trim($sewa->status)),
-            'is_cash' => $isCash, 
             'has_jaminan' => $sewa->jaminan !== null,
             'jaminan'     => $sewa->jaminan,
         ]);
@@ -158,12 +157,17 @@ if ($pengembalian->greaterThan($jadwalKembali)) {
             'jenis_sewa'        => 'required|in:sopir,lepas kunci',
             'opsi_pengantaran'  => 'required|in:diantar,tidak',
             'tipe_pembayaran'   => 'required|in:dp,lunas',
-            'metode_pembayaran' => 'required|in:cash,online',
+            'metode_pembayaran' => 'nullable',
             'lokasi_antar'      => 'nullable|string|max:255',
             'keterangan'        => 'nullable|string|max:255',
             'latitude'          => 'nullable', 
             'longitude'         => 'nullable',
         ]);
+                    if ($request->jenis_sewa == 'sopir') {
+                $request->validate([
+                    'destinasi' => 'required|string|max:500',
+                ]);
+            }
 
         $pelanggan = Auth::user()->pelanggan;
         if (!$pelanggan) {
@@ -217,20 +221,32 @@ if ($pengembalian->greaterThan($jadwalKembali)) {
             'durasi'         => $durasi,
             'harga_sewa'     => $kendaraan->harga,
             'sub_total'      => $hargaSewa,
+            'destinasi' => $request->destinasi,
             'biaya_supir'    => $biayaSupir,
             'lokasi_antar'   => $koordinat,
             'harga_total'    => $grandTotal,
             'dp'             => $dp,
             'sisa_tagihan'   => $sisaTagihan,
             'opsi_pengantaran' => $request->opsi_pengantaran,
-            'status'         => 'booking',
+          'status' => $request->jenis_sewa == 'sopir'
+            ? 'pending_konfirmasi'
+            : 'booking',
         ]);
+        if ($request->jenis_sewa == 'sopir') {
+
+    Swal::success([
+        'title' => 'Berhasil',
+        'text' => 'Booking berhasil dibuat dan sedang menunggu konfirmasi biaya sopir.',
+        'confirmButtonText' => 'OK',
+    ]);
+
+    return redirect()->route('home');
+}
 
         $orderId = 'INV-' . $booking->id_tr_sewa . '-' . time();
         
         $invoice = $this->generateInvoice($booking);
 
-        $isCashBooking = $request->metode_pembayaran === 'cash';
 
         Payment::create([
             'order_id'           => $orderId,
@@ -239,16 +255,11 @@ if ($pengembalian->greaterThan($jadwalKembali)) {
             'keterangan'         => $request->keterangan,
             'sisa_bayar'         => $sisaTagihan,
             'jumlah_bayar'       => $jumlahBayar,
-            'payment_type'       => $isCashBooking ? 'cash' : 'pending',
+            'payment_type'       => 'pending',
             'transaction_status' => 'pending',
             'status_pembayaran'  => $statusPembayaran,
         ]);
 
-        if ($isCashBooking) {
-            return redirect()->route('jaminan.show', $booking->id_tr_sewa)
-                ->with('invoice', $invoice)
-                ->with('success', 'Booking berhasil! Silakan datang ke kantor untuk pembayaran.');
-        }
 
         return redirect()->route('jaminan.show', $booking->id_tr_sewa)
             ->with('invoice', $invoice);
@@ -261,11 +272,10 @@ if ($pengembalian->greaterThan($jadwalKembali)) {
         $latestPayment = Payment::where('id_tr_sewa', $id_tr_sewa)
             ->latest()
             ->first();
-
-        if ($latestPayment && $latestPayment->payment_type === 'cash') {
-            return redirect()->route('home')
-                ->with('message', 'Booking cash Anda sedang menunggu konfirmasi admin.');
-        }
+  if ($sewa->jenis_sewa === 'sopir' && $sewa->status === 'pending_konfirmasi') {
+        return redirect()->route('riwayat')
+            ->with('error', 'Mohon tunggu konfirmasi biaya sopir dari admin terlebih dahulu.');
+    }
         
         if (in_array(strtolower($sewa->status), ['booking', 'dp'])) {
             $payment = Payment::where('id_tr_sewa', $id_tr_sewa)
@@ -302,6 +312,10 @@ if ($pengembalian->greaterThan($jadwalKembali)) {
     {
         $sewa = Sewa::with('kendaraan')->findOrFail($id_tr_sewa);
 
+          if ($sewa->jenis_sewa === 'sopir' && $sewa->status === 'pending_konfirmasi') {
+        return redirect()->route('riwayat')
+            ->with('error', 'Mohon tunggu konfirmasi biaya sopir dari admin terlebih dahulu.');
+    }
         if ($sewa->sisa_tagihan <= 0) {
             return redirect()->route('home')->with('message' , 'Tidak ada sisa tagihan untuk dibayar.');
         }
@@ -325,11 +339,44 @@ if ($pengembalian->greaterThan($jadwalKembali)) {
             'order_id' => $orderId,
             'id_tr_sewa' => $sewa->id_tr_sewa,
             'jumlah_bayar' => $sewa->sisa_tagihan,
-            'payment_type' => 'cash',
+            'payment_type' => 'pending',
             'transaction_status' => 'pending',
             'keterangan' => null, 
             'status_pembayaran' => 'lunas'
         ]);
+    }
+
+    public function cancelBooking($id_tr_sewa)
+    {
+        $sewa = Sewa::with('kendaraan')->findOrFail($id_tr_sewa);
+
+        if (!in_array(strtolower($sewa->status), ['batal', 'cancelled', 'selesai'])) {
+            
+            $sewa->update([
+                'status' => 'batal'
+            ]);
+
+            if ($sewa->kendaraan) {
+                $sewa->kendaraan->update([
+                    'status' => 'Free'
+                ]);
+            }
+
+            $payment = Payment::where('id_tr_sewa', $id_tr_sewa)
+                ->where('transaction_status', 'pending')
+                ->first();
+                
+            if ($payment) {
+                $payment->update([
+                    'transaction_status' => 'cancel',
+                    'status_pembayaran' => 'batal'
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Pesanan berhasil dibatalkan. Kendaraan telah dibebaskan.');
+        }
+
+        return redirect()->back()->with('error', 'Pesanan ini sudah tidak dapat dibatalkan.');
     }
 
 
@@ -344,23 +391,6 @@ if ($pengembalian->greaterThan($jadwalKembali)) {
                         
         $invoice = $this->generateInvoice($sewa);
 
-        if($request->payment_type === 'cash'){
-
-            $isPelunasan = str_contains($payment->order_id, 'PELUNASAN') || $payment->status_pembayaran === 'lunas';
-
-            $payment->update([
-                'payment_type' => 'cash',
-                'transaction_status' => 'pending',
-                'status_pembayaran' => $isPelunasan ? 'lunas' : 'dp'
-            ]);
-
-            return response()->json([
-                'status_code' => '200', 
-                'message' => 'Silakan lakukan pembayaran di kantor kami.',
-                'payment_type' => 'cash',
-                'invoice' => $invoice
-            ]);
-        }
 
 
         Config::$serverKey = config('services.midtrans.serverKey');
@@ -580,9 +610,12 @@ public function createBooking()
             'jenis_sewa'        => 'required|in:sopir,lepas kunci',
             'opsi_pengantaran'  => 'required|in:diantar,tidak',
             'tipe_pembayaran'   => 'required|in:dp,lunas',
-            'metode_pembayaran' => 'required|in:cash,online',
+            'metode_pembayaran' => 'nullable',
         ]);
-
+   if ($request->jenis_sewa === 'sopir') {
+        $rules['destinasi']   = 'required|string|max:500';
+        $rules['biaya_supir'] = 'required|numeric|min:0';
+    }
         $kendaraan = Kendaraan::findOrFail($request->nopol);
 
         if (strtolower($kendaraan->status) !== 'free') {
@@ -595,7 +628,10 @@ public function createBooking()
         $durasi      = max(1, ceil($totalJam / 24));
 
         $hargaSewa  = $kendaraan->harga * $durasi;
-        $biayaSupir =  0;
+        $biayaSupir = $request->jenis_sewa === 'sopir'
+        ? (int) $request->biaya_supir
+        : 0;
+
         $grandTotal = $hargaSewa + $biayaSupir;
 
         if ($request->tipe_pembayaran === 'dp') {
@@ -619,6 +655,7 @@ public function createBooking()
             'durasi'           => $durasi,
             'harga_sewa'       => $kendaraan->harga,
             'sub_total'        => $hargaSewa,
+            'destinasi'        => $request->destinasi,
             'biaya_supir'      => $biayaSupir,
             'harga_total'      => $grandTotal,
             'dp'               => $dp,
@@ -634,8 +671,8 @@ public function createBooking()
             'order_id'           => $orderId,
             'id_tr_sewa'         => $booking->id_tr_sewa,
             'jumlah_bayar'       => $jumlahBayar,
-            'payment_type'       => 'cash',
-            'transaction_status' => 'settlement',
+            'payment_type'       => 'pending',
+            'transaction_status' => 'pending',
             'status_pembayaran'  => $statusPembayaran,
         ]);
 
@@ -663,7 +700,7 @@ public function createBooking()
                     'order_id'           => $orderId,
                     'id_tr_sewa'            => $sewa->id_tr_sewa,
                     'jumlah_bayar'       => $sewa->dp > 0 ? $sewa->dp : $sewa->harga_total,
-                    'payment_type'       => 'cash',
+                    'payment_type'       => 'pending',
                     'transaction_status' => 'pending',
                     'status_pembayaran'  => $sewa->dp > 0 ? 'dp' : 'lunas',
                 ]);
@@ -688,7 +725,7 @@ public function createBooking()
                     'order_id'           => $orderId,
                     'id_tr_sewa'         => $sewa->id_tr_sewa,
                     'jumlah_bayar'       => $sewa->sisa_tagihan,
-                    'payment_type'       => 'cash',
+                    'payment_type'       => 'pending',
                     'transaction_status' => 'pending',
                     'status_pembayaran'  => 'lunas',
                 ]);

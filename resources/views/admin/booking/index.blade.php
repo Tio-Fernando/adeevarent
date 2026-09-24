@@ -94,6 +94,7 @@
                         <th class="px-6 py-3 font-bold text-center">Status</th>
                         <th class="px-6 py-3 font-bold text-center">Dokumen</th>
                         <th class="px-6 py-3 font-bold text-center">Keterangan</th>
+                        <th class="px-6 py-3 font-bold text-center">Destinasi</th>
                         <th class="px-6 py-3 font-bold rounded-r-lg text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -175,7 +176,6 @@
 
                         <td class="px-4 py-4 text-center">
                         @php
-                            // Membersihkan string dari spasi dan mengubah ke huruf kecil
                             $statusClean = strtolower(trim($item->status));
                         @endphp
 
@@ -210,7 +210,12 @@
                         <td class="px-6 py-4 font-medium text-gray-800 whitespace-nowrap text-center">
                         {{ $item->payments->first()->keterangan ?? '-' }}
                         </td>
-                        
+                        <td>
+                     
+    <p class="text-sm font-semibold text-gray-800">
+        {{ $item->destinasi }}
+    </p>
+                        </td>
                         <td class="px-6 py-4 text-center">
                             <div class="flex items-center justify-center gap-2">
                                 <button 
@@ -374,7 +379,7 @@
 
             <div class="px-6 py-4 border-t flex flex-wrap gap-2 justify-start bg-gray-50 rounded-b-2xl">
                     
-                 <form 
+                 {{-- <form 
                         :action="`/admin/payment/${item.id_tr_sewa}/konfirmasi`" 
                         method="POST" 
                         x-show="item.status === 'booking' && item.is_cash && item.transaction_status !== 'settlement'"
@@ -401,8 +406,32 @@
                         >
                             Konfirmasi Lunas
                         </button>
-                    </form>
+                    </form> --}}
                 
+                 <form
+    :action="`/booking/${item.id_tr_sewa}/konfirmasi-sopir`"
+    method="POST"
+    x-show="item.status === 'pending_konfirmasi'"
+    class="flex gap-2"
+>
+    @csrf
+
+    <input
+        type="number"
+        name="biaya_supir"
+        min="0"
+        required
+        placeholder="Biaya Sopir"
+        class="border rounded-lg px-3 py-2 text-sm"
+    >
+
+    <button
+        type="submit"
+        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+    >
+        Konfirmasi
+    </button>
+</form>
                      <form :action="`/admin/payment/${item.id_tr_sewa}/batal`" method="POST" id="form-batal"
                      x-show="item.status === 'dp' || item.status === 'lunas'"
                      >
@@ -466,135 +495,135 @@
                 });
             }
 
-        window.handleKonfirmasiDP = function(event, id) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
+        // window.handleKonfirmasiDP = function(event, id) {
+        //     event.preventDefault();
+        //     const form = event.target;
+        //     const formData = new FormData(form);
             
-            Swal.fire({
-                title: 'Konfirmasi DP?',
-                text: "Apakah Anda yakin ingin mengkonfirmasi pembayaran DP ini?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#10b981',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Konfirmasi!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Memproses...',
-                        text: "Sedang mengonfirmasi DP",
-                        icon: 'info',
-                        allowOutsideClick: false,
-                        didOpen: async () => {
-                            Swal.showLoading();
-                            try {
-                                const response = await fetch(form.action, {
-                                    method: 'POST',
-                                    body: formData,
-                                    headers: {
-                                        'X-Requested-With': 'XMLHttpRequest',
-                                    }
-                                });
+        //     Swal.fire({
+        //         title: 'Konfirmasi DP?',
+        //         text: "Apakah Anda yakin ingin mengkonfirmasi pembayaran DP ini?",
+        //         icon: 'question',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#10b981',
+        //         cancelButtonColor: '#6b7280',
+        //         confirmButtonText: 'Ya, Konfirmasi!',
+        //         cancelButtonText: 'Batal'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             Swal.fire({
+        //                 title: 'Memproses...',
+        //                 text: "Sedang mengonfirmasi DP",
+        //                 icon: 'info',
+        //                 allowOutsideClick: false,
+        //                 didOpen: async () => {
+        //                     Swal.showLoading();
+        //                     try {
+        //                         const response = await fetch(form.action, {
+        //                             method: 'POST',
+        //                             body: formData,
+        //                             headers: {
+        //                                 'X-Requested-With': 'XMLHttpRequest',
+        //                             }
+        //                         });
 
-                                const data = await response.json();
+        //                         const data = await response.json();
 
-                                if (response.ok) {
-                                    Swal.fire({
-                                        title: 'Berhasil!',
-                                        text: data.message || 'DP berhasil dikonfirmasi',
-                                        icon: 'success',
-                                        timer: 2000
-                                    }).then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        title: 'Error!',
-                                        text: data.message || 'Terjadi kesalahan saat mengonfirmasi DP',
-                                        icon: 'error',
-                                        confirmButtonColor: '#ef4444'
-                                    });
-                                }
-                            } catch (error) {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: error.message || 'Terjadi kesalahan jaringan',
-                                    icon: 'error',
-                                    confirmButtonColor: '#ef4444'
-                                });
-                            }
-                        }
-                    });
-                }
-            });
-        }
+        //                         if (response.ok) {
+        //                             Swal.fire({
+        //                                 title: 'Berhasil!',
+        //                                 text: data.message || 'DP berhasil dikonfirmasi',
+        //                                 icon: 'success',
+        //                                 timer: 2000
+        //                             }).then(() => {
+        //                                 location.reload();
+        //                             });
+        //                         } else {
+        //                             Swal.fire({
+        //                                 title: 'Error!',
+        //                                 text: data.message || 'Terjadi kesalahan saat mengonfirmasi DP',
+        //                                 icon: 'error',
+        //                                 confirmButtonColor: '#ef4444'
+        //                             });
+        //                         }
+        //                     } catch (error) {
+        //                         Swal.fire({
+        //                             title: 'Error!',
+        //                             text: error.message || 'Terjadi kesalahan jaringan',
+        //                             icon: 'error',
+        //                             confirmButtonColor: '#ef4444'
+        //                         });
+        //                     }
+        //                 }
+        //             });
+        //         }
+        //     });
+        // }
 
-        window.handleKonfirmasiLunas = function(event, id) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
+        // window.handleKonfirmasiLunas = function(event, id) {
+        //     event.preventDefault();
+        //     const form = event.target;
+        //     const formData = new FormData(form);
             
-            Swal.fire({
-                title: 'Konfirmasi Pelunasan?',
-                text: "Apakah Anda yakin ingin mengkonfirmasi pembayaran pelunasan ini?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#10b981',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Konfirmasi!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Memproses...',
-                        text: "Sedang mengonfirmasi Lunas",
-                        icon: 'info',
-                        allowOutsideClick: false,
-                        didOpen: async () => {
-                            Swal.showLoading();
-                            try {
-                                const response = await fetch(form.action, {
-                                    method: 'POST',
-                                    body: formData,
-                                    headers: {
-                                        'X-Requested-With': 'XMLHttpRequest',
-                                    }
-                                });
+        //     Swal.fire({
+        //         title: 'Konfirmasi Pelunasan?',
+        //         text: "Apakah Anda yakin ingin mengkonfirmasi pembayaran pelunasan ini?",
+        //         icon: 'question',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#10b981',
+        //         cancelButtonColor: '#6b7280',
+        //         confirmButtonText: 'Ya, Konfirmasi!',
+        //         cancelButtonText: 'Batal'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             Swal.fire({
+        //                 title: 'Memproses...',
+        //                 text: "Sedang mengonfirmasi Lunas",
+        //                 icon: 'info',
+        //                 allowOutsideClick: false,
+        //                 didOpen: async () => {
+        //                     Swal.showLoading();
+        //                     try {
+        //                         const response = await fetch(form.action, {
+        //                             method: 'POST',
+        //                             body: formData,
+        //                             headers: {
+        //                                 'X-Requested-With': 'XMLHttpRequest',
+        //                             }
+        //                         });
 
-                                const data = await response.json();
+        //                         const data = await response.json();
 
-                                if (response.ok) {
-                                    Swal.fire({
-                                        title: 'Berhasil!',
-                                        text: data.message || 'Pembayaran berhasil dikonfirmasi',
-                                        icon: 'success',
-                                        timer: 2000
-                                    }).then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        title: 'Error!',
-                                        text: data.message || 'Terjadi kesalahan saat mengonfirmasi pembayaran',
-                                        icon: 'error',
-                                        confirmButtonColor: '#ef4444'
-                                    });
-                                }
-                            } catch (error) {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: error.message || 'Terjadi kesalahan jaringan',
-                                    icon: 'error',
-                                    confirmButtonColor: '#ef4444'
-                                });
-                            }
-                        }
-                    });
-                }
-            });
-        }
+        //                         if (response.ok) {
+        //                             Swal.fire({
+        //                                 title: 'Berhasil!',
+        //                                 text: data.message || 'Pembayaran berhasil dikonfirmasi',
+        //                                 icon: 'success',
+        //                                 timer: 2000
+        //                             }).then(() => {
+        //                                 location.reload();
+        //                             });
+        //                         } else {
+        //                             Swal.fire({
+        //                                 title: 'Error!',
+        //                                 text: data.message || 'Terjadi kesalahan saat mengonfirmasi pembayaran',
+        //                                 icon: 'error',
+        //                                 confirmButtonColor: '#ef4444'
+        //                             });
+        //                         }
+        //                     } catch (error) {
+        //                         Swal.fire({
+        //                             title: 'Error!',
+        //                             text: error.message || 'Terjadi kesalahan jaringan',
+        //                             icon: 'error',
+        //                             confirmButtonColor: '#ef4444'
+        //                         });
+        //                     }
+        //                 }
+        //             });
+        //         }
+        //     });
+        // }
 
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('[id^="map-"]').forEach(function (el) {

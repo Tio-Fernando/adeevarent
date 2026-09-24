@@ -63,23 +63,6 @@
                         </div>
                     </div>
 
-                    <label class="method-card group block bg-white p-6 md:p-8 rounded-[2rem] border-2 border-gray-100 shadow-sm cursor-pointer transition-all duration-300 hover:border-orange-500 relative overflow-hidden">
-                        <input type="radio" name="payment_method" value="cash" class="hidden method-radio">
-                        <div class="flex items-center justify-between relative z-10">
-                            <div class="flex items-center gap-5 md:gap-6">
-                                <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 group-hover:bg-gray-100 transition-colors">
-                                    <img src="https://img.icons8.com/fluency/48/money-box.png" class="w-8 h-8 md:w-10 md:h-10 grayscale group-hover:grayscale-0" alt="Cash">
-                                </div>
-                                <div>
-                                    <h4 class="font-extrabold text-gray-900 text-lg md:text-xl tracking-tight uppercase">Bayar di Tempat (Cash)</h4>
-                                    <p class="text-xs md:text-sm text-gray-500 font-medium mt-1">Bayar langsung saat pengambilan unit.</p>
-                                </div>
-                            </div>
-                            <div class="circle-outer w-7 h-7 rounded-full border-[3px] border-gray-200 flex items-center justify-center">
-                                <div class="circle-inner w-3.5 h-3.5 bg-orange-500 rounded-full opacity-0"></div>
-                            </div>
-                        </div>
-                    </label>
                 </div>
 
                 <div class="xl:col-span-5">
@@ -109,8 +92,18 @@
                             <div class="space-y-4 text-sm text-gray-600">
                                 <div class="flex justify-between items-center">
                                     <span class="font-medium">Total Harga Sewa</span>
+                                    <span class="font-bold text-gray-900">Rp {{ number_format($sewa->sub_total, 0, ',', '.') }}</span>
+                                </div>
+                                @if($sewa->biaya_supir > 0)
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Biaya Supir</span>
+                                    <span class="font-bold text-gray-900">Rp {{ number_format($sewa->biaya_supir, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="flex justify-between items-center pt-1 border-t border-gray-200">
+                                    <span class="font-bold text-gray-700">Total Keseluruhan</span>
                                     <span class="font-bold text-gray-900">Rp {{ number_format($sewa->harga_total, 0, ',', '.') }}</span>
                                 </div>
+                                @endif
                                 <div class="flex justify-between items-center">
                                     <span class="font-medium">Uang Muka (DP) Terbayar</span>
                                     <span class="font-black text-emerald-500">- Rp {{ number_format($sewa->dp, 0, ',', '.') }}</span>
@@ -243,43 +236,6 @@
                             </div>
                         </div>`;
                 }
-                else if(method === 'cash') {
-                        area.innerHTML = `
-                            <div class="flex justify-center items-center h-full">
-                                <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border-2 border-orange-500 text-center animate-fade-in w-full max-w-lg relative overflow-hidden font-sans">
-                                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-orange-50 rounded-full blur-2xl opacity-60"></div>
-                                    
-                                    <h3 class="text-2xl md:text-3xl font-black text-gray-900 mb-2 uppercase tracking-tighter relative z-10">Pelunasan Cash</h3>
-                                    <p class="text-sm text-gray-500 mb-8 font-medium relative z-10">Silakan datang ke kantor kami untuk melakukan pembayaran secara langsung dan melakukan verifikasi unit.</p>
-                                    
-                                    <div class="bg-orange-50 p-6 rounded-2xl border border-orange-100 relative z-10">
-                                        <p class="text-orange-600 font-bold uppercase tracking-widest text-xs mb-1">ID Pesanan:</p>
-                                        <p class="text-orange-600 font-black text-xl md:text-2xl tracking-tight">
-                                            {{ $invoice }}
-                                        </p>
-                                    </div>
-
-                                    <div class="mt-8 p-4 bg-green-50 rounded-2xl text-green-600 text-xs md:text-sm font-bold uppercase tracking-widest border border-green-100 relative z-10">
-                                        ✓ Pembayaran dicatat sebagai Cash. Menunggu konfirmasi admin.
-                                    </div>
-
-                                    <div class="mt-8 relative z-10">
-                                        <a href="{{ route('profile.rental-history') }}" class="inline-block bg-gray-900 text-white px-10 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-gray-800 transition">
-                                            Kembali ke History
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-
-                        btn.parentElement.classList.add('opacity-50', 'pointer-events-none');
-                        btn.innerHTML = `<span class="relative z-10">Menunggu Konfirmasi...</span>`;
-                        btn.classList.remove('from-orange-500', 'to-orange-600');
-                        btn.classList.add('bg-gray-500');
-
-                        mulaiCekOtomatis();
-                        return;
-                    }
                     else if(method === 'bank_transfer') {
     if(bankCode === 'mandiri') {
 

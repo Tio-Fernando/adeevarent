@@ -68,23 +68,26 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
 
     Route::post('/booking/{id}', [BookingController::class, 'selesai'])
         ->name('penyelesaian');
+   Route::post(
+    '/booking/{id}/konfirmasi-sopir',
+    [AdminPaymentController::class, 'konfirmasiSopir']
+)->name('booking.konfirmasi.sopir');
+    // Route::post(
+    //     '/admin/payment/{id}/konfirmasi',
+    //     [AdminPaymentController::class, 'konfirmasi']
+    // )->name('admin.payment.konfirmasi');
 
-    Route::post(
-        '/admin/payment/{id}/konfirmasi',
-        [AdminPaymentController::class, 'konfirmasi']
-    )->name('admin.payment.konfirmasi');
-
-    Route::post(
-        '/admin/payment/{id}/lunas',    
-        [AdminPaymentController::class, 'konfirmasiLunas']
-    )->name('admin.payment.konfirmasiLunas');
+    // Route::post(
+    //     '/admin/payment/{id}/lunas',    
+    //     [AdminPaymentController::class, 'konfirmasiLunas']
+    // )->name('admin.payment.konfirmasiLunas');
     Route::post(
         '/admin/payment/{id}/batal',
         [AdminPaymentController::class, 'batal']
     )->name('admin.payment.batal');
     Route::patch('pengguna/status/{id}',[AdminPelangganController::class,'toggleStatus']
     )->name('pelanggan.status');
-
+    
     Route::get('/sewa/{id_tr_sewa}/jaminan', [JaminanController::class, 'adminShow']
     )->name('admin.jaminan.show');
     Route::get('/booking/{id_tr_sewa}/jaminan', [JaminanController::class, 'adminShowForm'])->name('booking.admin.jaminan');
@@ -108,6 +111,8 @@ Route::middleware(['auth','role:Pelanggan'])->group(function(){
     Route::get('/jaminan/{id_tr_sewa}', [JaminanController::class, 'show'])->name('jaminan.show');
     Route::post('/jaminan/{id_tr_sewa}', [JaminanController::class, 'store'])->name('jaminan.store');
     Route::get('/jaminan/{id_tr_sewa}/view', [JaminanController::class, 'getUserJaminan'])->name('jaminan.view');
+    Route::put('/booking/{id_tr_sewa}/cancel', [BookingController::class, 'cancelBooking'])->name('sewa.cancel');
+    
 
     });
 

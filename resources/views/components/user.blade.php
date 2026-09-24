@@ -120,7 +120,7 @@
                x-transition:leave="transition ease-in duration-75"
                x-transition:leave-start="transform opacity-100 scale-100"
                x-transition:leave-end="transform opacity-0 scale-95"
-               class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-30 overflow-hidden"
+               class="absolute r      ight-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl z-30 overflow-hidden"
                style="display: none;">
 
             <div class="px-4 py-3 border-b border-gray-100 sm:hidden">
@@ -216,6 +216,7 @@
         {{ $slot }} 
  </main>
  <x-footer/>
+ @include('sweetalert2::index')
  @stack('scripts')
 </body>
 </html>

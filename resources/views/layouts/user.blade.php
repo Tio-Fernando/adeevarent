@@ -36,5 +36,6 @@
         {{ $slot }} 
  </main>
  <x-footer/>
+ @include('sweetalert2::index')
 </body>
 </html>

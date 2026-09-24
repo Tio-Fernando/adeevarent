@@ -175,23 +175,59 @@
             <h3 class="text-lg font-bold text-gray-900 mb-4">Opsi Layanan & Pengambilan</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Jenis Sewa</label>
-                    <div class="space-y-3">
-                        <label class="flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
-                            <input type="radio" name="jenis_sewa" value="lepas kunci"
-                                class="w-4 h-4 text-orange-500 focus:ring-orange-400"
-                                checked onchange="hitungTotal()">
-                            <span class="ml-3 text-sm text-gray-700 font-medium">Lepas Kunci (Tanpa Supir)</span>
-                        </label>
-                        <label class="flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
-                            <input type="radio" name="jenis_sewa" value="sopir"
-                                class="w-4 h-4 text-orange-500 focus:ring-orange-400"
-                                onchange="hitungTotal()">
-                            <span class="ml-3 text-sm text-gray-700 font-medium">Dengan Supir</span>
-                        </label>
-                    </div>
-                </div>
+              {{-- SESUDAH --}}
+<div>
+    <label class="block text-sm font-bold text-gray-700 mb-2">Jenis Sewa</label>
+    <div class="space-y-3">
+        <label class="flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+            <input type="radio" name="jenis_sewa" value="lepas kunci"
+                class="w-4 h-4 text-orange-500 focus:ring-orange-400"
+                checked onchange="hitungTotal(); toggleDestinasi()">
+            <span class="ml-3 text-sm text-gray-700 font-medium">Lepas Kunci (Tanpa Supir)</span>
+        </label>
+        <label class="flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+            <input type="radio" name="jenis_sewa" value="sopir"
+                class="w-4 h-4 text-orange-500 focus:ring-orange-400"
+                onchange="hitungTotal(); toggleDestinasi()">
+            <span class="ml-3 text-sm text-gray-700 font-medium">Dengan Supir</span>
+        </label>
+    </div>
+
+{{-- SESUDAH --}}
+<div id="destinasiBox" class="hidden mt-4 space-y-3">
+
+    <div>
+        <label class="block text-sm font-bold text-gray-700 mb-1">
+            Destinasi Perjalanan
+        </label>
+        <textarea
+            name="destinasi"
+            rows="3"
+            class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            placeholder="Contoh: Malang - Batu - Bromo PP"></textarea>
+    </div>
+
+    <div>
+        <label class="block text-sm font-bold text-gray-700 mb-1">
+            Biaya Sopir <span class="text-red-400">*</span>
+        </label>
+        <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 font-medium">Rp</span>
+            <input
+                type="number"
+                name="biaya_supir"
+                id="biaya_supir"
+                min="0"
+                step="1000"
+                placeholder="0"
+                class="w-full border border-gray-200 rounded-xl pl-10 pr-3 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                oninput="hitungTotal()">
+        </div>
+        <p class="text-xs text-gray-400 mt-1">*Sudah termasuk dalam total tagihan.</p>
+    </div>
+
+</div>
+</div>
 
                 <div>
                     <div class="flex items-center gap-2 mb-2">
@@ -293,6 +329,28 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
+
+function toggleDestinasi() {
+    const checked = document.querySelector('input[name="jenis_sewa"]:checked');
+    if (!checked) return;
+
+    const box      = document.getElementById('destinasiBox');
+    const textarea = box.querySelector('textarea[name="destinasi"]');
+    const inputBiaya = document.getElementById('biaya_supir');
+
+    if (checked.value === 'sopir') {
+        box.classList.remove('hidden');
+        textarea.required    = true;
+        inputBiaya.required  = true;   
+    } else {
+        box.classList.add('hidden');
+        textarea.required    = false;
+        textarea.value       = '';
+        inputBiaya.required  = false; 
+        inputBiaya.value     = '';    
+        hitungTotal();               
+    }
+}
     var map, marker;
 
     const formatRupiah = (angka) => 'Rp. ' + new Intl.NumberFormat('id-ID').format(angka);
@@ -322,10 +380,11 @@
         const tipePembayaran = document.querySelector('input[name="tipe_pembayaran"]:checked')?.value;
         const durasiHari2    = parseInt(document.getElementById('durasi_hari').value) || 1;
 
-        const totalSewa  = durasiHari2 * hargaPerHari;
-        const totalSupir = 0;
-        const grandTotal = totalSewa + totalSupir;
-        const dp         = tipePembayaran === 'dp' ? grandTotal * 0.5 : grandTotal;
+
+const totalSewa  = durasiHari2 * hargaPerHari;
+const totalSupir = parseInt(document.getElementById('biaya_supir')?.value) || 0; 
+const grandTotal = totalSewa + totalSupir;
+const dp         = tipePembayaran === 'dp' ? grandTotal * 0.5 : grandTotal;
 
         document.getElementById('text_durasi').innerText   = `(${durasiHari2} hari)`;
         document.getElementById('summary_sewa').innerText  = formatRupiah(totalSewa);
@@ -464,6 +523,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        
         const searchInputPelanggan = document.getElementById('searchPelanggan');
         const dropdownPelanggan = document.getElementById('dropdownPelanggan');
 
@@ -508,6 +568,7 @@
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         document.getElementById('tanggal_sewa').min = now.toISOString().slice(0, 16);
         hitungTotal();
+        toggleDestinasi();
     });
 </script>
 </x-app-layout>

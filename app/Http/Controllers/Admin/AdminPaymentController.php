@@ -10,143 +10,143 @@ use SweetAlert2\Laravel\Swal;
 
 class AdminPaymentController extends Controller
 {
-    public function konfirmasi($id)
-    {
-        try {
-            $sewa = Sewa::findOrFail($id);    
-            if (strtolower($sewa->status) !== 'booking') {
-                $message = 'Status sewa bukan Booking';
-                if (request()->expectsJson()) {
-                    return response()->json(['message' => $message], 422);
-                }
-                return back()->with('error', $message);
-            }
-            $kendaraan = $sewa->kendaraan;
-            if (!$kendaraan) {
-                $message = 'Kendaraan tidak ditemukan untuk sewa ini';
-                if (request()->expectsJson()) {
-                    return response()->json(['message' => $message], 422);
-                }
-                return back()->with('error', $message);
-            }
+    // public function konfirmasi($id)
+    // {
+    //     try {
+    //         $sewa = Sewa::findOrFail($id);    
+    //         if (strtolower($sewa->status) !== 'booking') {
+    //             $message = 'Status sewa bukan Booking';
+    //             if (request()->expectsJson()) {
+    //                 return response()->json(['message' => $message], 422);
+    //             }
+    //             return back()->with('error', $message);
+    //         }
+    //         $kendaraan = $sewa->kendaraan;
+    //         if (!$kendaraan) {
+    //             $message = 'Kendaraan tidak ditemukan untuk sewa ini';
+    //             if (request()->expectsJson()) {
+    //                 return response()->json(['message' => $message], 422);
+    //             }
+    //             return back()->with('error', $message);
+    //         }
             
-            $payment = Payment::where('id_tr_sewa', $id)
-                ->where('transaction_status', 'pending')
-                ->where('status_pembayaran', 'dp')
-                ->latest()
-                ->first();
+    //         $payment = Payment::where('id_tr_sewa', $id)
+    //             ->where('transaction_status', 'pending')
+    //             ->where('status_pembayaran', 'dp')
+    //             ->latest()
+    //             ->first();
 
-            if (!$payment) {
-                $message = 'Tidak ada pembayaran pending';
-                if (request()->expectsJson()) {
-                    return response()->json(['message' => $message], 422);
-                }
-                return back()->with('error', $message);
-            }
+    //         if (!$payment) {
+    //             $message = 'Tidak ada pembayaran pending';
+    //             if (request()->expectsJson()) {
+    //                 return response()->json(['message' => $message], 422);
+    //             }
+    //             return back()->with('error', $message);
+    //         }
 
-            $dp = $sewa->harga_total / 2;
+    //         $dp = $sewa->harga_total / 2;
 
-            $payment->update([
-                'dp'                 => $dp,
-                'status_pembayaran'  => 'dp',
-                'transaction_status' => 'settlement',
-            ]);
+    //         $payment->update([
+    //             'dp'                 => $dp,
+    //             'status_pembayaran'  => 'dp',
+    //             'transaction_status' => 'settlement',
+    //         ]);
 
-            $kendaraan->update(['status' => 'booking']);
+    //         $kendaraan->update(['status' => 'booking']);
             
-            $sewa->update([
-                'status'       => 'dp',
-                'dp'           => $dp,
-                'sisa_tagihan' => $dp,
-            ]);
+    //         $sewa->update([
+    //             'status'       => 'dp',
+    //             'dp'           => $dp,
+    //             'sisa_tagihan' => $dp,
+    //         ]);
 
-            $message = 'DP berhasil dikonfirmasi';
-            if (request()->expectsJson()) {
-                return response()->json(['message' => $message, 'success' => true], 200);
-            }
+    //         $message = 'DP berhasil dikonfirmasi';
+    //         if (request()->expectsJson()) {
+    //             return response()->json(['message' => $message, 'success' => true], 200);
+    //         }
 
-            Swal::success([
-                'title'             => 'Berhasil',
-                'text'              => 'Konfirmasi DP Berhasil',
-                'confirmButtonText' => 'OK',
-            ]);
+    //         Swal::success([
+    //             'title'             => 'Berhasil',
+    //             'text'              => 'Konfirmasi DP Berhasil',
+    //             'confirmButtonText' => 'OK',
+    //         ]);
 
-            return back()->with('success', $message);
-        } catch (\Exception $e) {
-            $message = 'Terjadi kesalahan: ' . $e->getMessage();
-            if (request()->expectsJson()) {
-                return response()->json(['message' => $message], 500);
-            }
-            return back()->with('error', $message);
-        }
-    }
+    //         return back()->with('success', $message);
+    //     } catch (\Exception $e) {
+    //         $message = 'Terjadi kesalahan: ' . $e->getMessage();
+    //         if (request()->expectsJson()) {
+    //             return response()->json(['message' => $message], 500);
+    //         }
+    //         return back()->with('error', $message);
+    //     }
+    // }
 
-    public function konfirmasiLunas($id)
-    {
-        try {
-            $sewa = Sewa::findOrFail($id);
+    // public function konfirmasiLunas($id)
+    // {
+    //     try {
+    //         $sewa = Sewa::findOrFail($id);
 
-            if ($sewa->status !== 'dp') {
-                $message = 'Status sewa bukan dp, status saat ini: ' . $sewa->status;
-                if (request()->expectsJson()) {
-                    return response()->json(['message' => $message], 422);
-                }
-                return back()->with('error', $message);
-            }
+    //         if ($sewa->status !== 'dp') {
+    //             $message = 'Status sewa bukan dp, status saat ini: ' . $sewa->status;
+    //             if (request()->expectsJson()) {
+    //                 return response()->json(['message' => $message], 422);
+    //             }
+    //             return back()->with('error', $message);
+    //         }
 
-            $kendaraan = $sewa->kendaraan;
-            if (!$kendaraan) {
-                $message = 'Kendaraan tidak ditemukan untuk sewa ini';
-                if (request()->expectsJson()) {
-                    return response()->json(['message' => $message], 422);
-                }
-                return back()->with('error', $message);
-            }
-            $payment = Payment::where('id_tr_sewa', $id)
-                ->where('transaction_status', 'pending')
-                ->where('status_pembayaran', 'lunas')
-                ->latest()
-                ->first();
+    //         $kendaraan = $sewa->kendaraan;
+    //         if (!$kendaraan) {
+    //             $message = 'Kendaraan tidak ditemukan untuk sewa ini';
+    //             if (request()->expectsJson()) {
+    //                 return response()->json(['message' => $message], 422);
+    //             }
+    //             return back()->with('error', $message);
+    //         }
+    //         $payment = Payment::where('id_tr_sewa', $id)
+    //             ->where('transaction_status', 'pending')
+    //             ->where('status_pembayaran', 'lunas')
+    //             ->latest()
+    //             ->first();
 
-            if (!$payment) {
-                $message = 'Tidak ada pembayaran DP yang bisa dilunasi';
-                if (request()->expectsJson()) {
-                    return response()->json(['message' => $message], 422);
-                }
-                return back()->with('error', $message);
-            }
+    //         if (!$payment) {
+    //             $message = 'Tidak ada pembayaran DP yang bisa dilunasi';
+    //             if (request()->expectsJson()) {
+    //                 return response()->json(['message' => $message], 422);
+    //             }
+    //             return back()->with('error', $message);
+    //         }
 
-            $payment->update([
-                'status_pembayaran'  => 'lunas',
-                'transaction_status' => 'settlement',
-                'sisa_bayar'         => 0,
-            ]);
+    //         $payment->update([
+    //             'status_pembayaran'  => 'lunas',
+    //             'transaction_status' => 'settlement',
+    //             'sisa_bayar'         => 0,
+    //         ]);
 
-            $sewa->update([
-                'status'       => 'lunas',
-                'sisa_tagihan' => 0,
-            ]);
+    //         $sewa->update([
+    //             'status'       => 'lunas',
+    //             'sisa_tagihan' => 0,
+    //         ]);
 
-            $message = 'Pelunasan berhasil dikonfirmasi';
-            if (request()->expectsJson()) {
-                return response()->json(['message' => $message, 'success' => true], 200);
-            }
+    //         $message = 'Pelunasan berhasil dikonfirmasi';
+    //         if (request()->expectsJson()) {
+    //             return response()->json(['message' => $message, 'success' => true], 200);
+    //         }
 
-            Swal::success([
-                'title'             => 'Berhasil',
-                'text'              => 'Konfirmasi Pelunasan Berhasil',
-                'confirmButtonText' => 'OK',
-            ]);
+    //         Swal::success([
+    //             'title'             => 'Berhasil',
+    //             'text'              => 'Konfirmasi Pelunasan Berhasil',
+    //             'confirmButtonText' => 'OK',
+    //         ]);
 
-            return back()->with('success', $message);
-        } catch (\Exception $e) {
-            $message = 'Terjadi kesalahan: ' . $e->getMessage();
-            if (request()->expectsJson()) {
-                return response()->json(['message' => $message], 500);
-            }
-            return back()->with('error', $message);
-        }
-    }
+    //         return back()->with('success', $message);
+    //     } catch (\Exception $e) {
+    //         $message = 'Terjadi kesalahan: ' . $e->getMessage();
+    //         if (request()->expectsJson()) {
+    //             return response()->json(['message' => $message], 500);
+    //         }
+    //         return back()->with('error', $message);
+    //     }
+    // }
 
     public function batal($id)
     {
@@ -184,6 +184,48 @@ class AdminPaymentController extends Controller
 
         return back()->with('success', 'Pesanan berhasil dibatalkan');
     }
+
+public function konfirmasiSopir(Request $request, $id)
+{
+    $request->validate([
+        'biaya_supir' => 'required|numeric|min:0'
+    ]);
+
+    $booking = Sewa::findOrFail($id);
+
+    $total = $booking->sub_total + $request->biaya_supir;
+
+    if ($booking->dp > 0) {
+        $dp = (int) ($total * 0.5);
+        $sisaTagihan = $total - $dp;
+    } else {
+        $dp = 0;
+        $sisaTagihan = 0;
+    }
+
+    $booking->update([
+        'biaya_supir' => $request->biaya_supir,
+        'harga_total' => $total,
+        'dp' => $dp,
+        'sisa_tagihan' => $sisaTagihan,
+        'status' => 'booking'
+    ]);
+
+    $orderId = 'INV-' . $booking->id_tr_sewa . '-' . time();
+
+    Payment::create([
+        'order_id' => $orderId,
+        'id_tr_sewa' => $booking->id_tr_sewa,
+        'dp' => $dp,
+        'sisa_bayar' => $sisaTagihan,
+        'jumlah_bayar' => $dp > 0 ? $dp : $total,
+        'payment_type' => 'pending',
+        'transaction_status' => 'pending',
+        'status_pembayaran' => $dp > 0 ? 'dp' : 'lunas',
+    ]);
+
+    return back()->with('success', 'Biaya sopir berhasil dikonfirmasi.');
+}
 
 
 }

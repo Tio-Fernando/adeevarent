@@ -41,6 +41,14 @@
                             ->where('payment_type', 'cash')
                             ->where('transaction_status', '!=', 'settlement')
                             ->exists();
+                        $pendingPayment = $sewa->payments()
+                        ->where('transaction_status', 'pending')
+                        ->whereIn('status_pembayaran', ['dp', 'lunas'])
+                        ->first();
+                            $sudahUploadJaminan = $sewa->jaminan !== null;
+
+                    $adaPendingPayment = $pendingPayment ? true : false;
+
                         
                         $tgl_sewa = \Carbon\Carbon::parse($sewa->tanggal_sewa);
                         $jadwal_kembali = \Carbon\Carbon::parse($sewa->jadwal_kembali);
@@ -52,7 +60,6 @@
                         $payment_labels = [
                             'qris' => 'QRIS',
                             'bank_transfer' => 'Transfer Bank',
-                            'cash' => 'Cash',
                             'gopay' => 'GoPay',
                             'ovo' => 'OVO',
                             'dana' => 'DANA'
@@ -147,15 +154,6 @@
                                                 Sisa: Rp. {{ number_format($sisa_bayar, 0, ',', '.') }}
                                             </div>
                                         </div>
-                                    @elseif($cashPaymentPending)
-                                        <div class="space-y-2">
-                                            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200 block">
-                                                Menunggu Konfirmasi Admin
-                                            </span>
-                                            <div class="text-xs text-gray-600 font-medium">
-                                                Cash Payment
-                                            </div>
-                                        </div>
                                     @elseif(!$paymentExists)
                                         <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
                                             Menunggu Pembayaran
@@ -166,25 +164,126 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 text-center">
-                                    @if($status == 'batal' || $status == 'cancelled')
-                                    <span class="text-xs text-gray-400 font-medium">Pesanan Dibatalkan</span>
-                                    @elseif($lunas)
+                                <td class="px-6 py-4 text-center align-middle">
+                                    @if($status == 'batal' || $status == 'cancelled' || $status == 'selesai')
                                         <span class="text-xs text-gray-400 font-medium">-</span>
-                                    @elseif($dp)
-                                        <a href="{{ route('pelunasan', $sewa->id_tr_sewa) }}" class="inline-flex items-center gap-2 bg-[#D97706] hover:bg-[#B45309] text-white px-4 py-1.5 rounded-lg font-semibold text-xs transition-colors duration-200 shadow-sm hover:shadow-md whitespace-nowrap">                                            Lunasi
-                                        </a>
-                                    @elseif($cashPaymentPending)
-                                        <span class="text-xs text-gray-400 font-medium">Menunggu</span>
-                                    @elseif(!$paymentExists)
-                                        <a href="{{ route('payment', $sewa->id_tr_sewa) }}" class="inline-flex items-center gap-2 bg-[#1A1916] hover:bg-black text-white px-4 py-1.5 rounded-lg font-semibold text-xs transition-colors duration-200 shadow-sm hover:shadow-md whitespace-nowrap">
-                                            Selesaikan Pembayaran
-                                        </a>
                                     @else
-                                        <span class="text-xs text-gray-400 font-medium">-</span>
-                                    @endif
+                                        <div x-data="{ open: false }" class="relative inline-block text-left">
+                                            <button @click="open = !open" @click.away="open = false" type="button" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#D97706] shadow-sm transition-all">
+                                                Opsi
+                                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </button>
 
-                                
+                                            <div x-show="open" 
+                                                 x-transition:enter="transition ease-out duration-100" 
+                                                 x-transition:enter-start="transform opacity-0 scale-95" 
+                                                 x-transition:enter-end="transform opacity-100 scale-100" 
+                                                 x-transition:leave="transition ease-in duration-75" 
+                                                 x-transition:leave-start="transform opacity-100 scale-100" 
+                                                 x-transition:leave-end="transform opacity-0 scale-95" 
+                                                 class="absolute right-0 z-[60] w-44 mt-2 origin-top-right bg-white border border-gray-100 rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none overflow-hidden" style="display: none;">
+                                                
+                                            
+<div class="py-1">
+
+    @if($lunas)
+        {{-- Tidak ada aksi pembayaran --}}
+
+    @elseif($dp)
+        {{-- DP settlement → Lunasi --}}
+        @if(!$sudahUploadJaminan)
+            {{-- Jaminan belum upload walau sudah DP --}}
+            <a href="{{ route('jaminan.show', $sewa->id_tr_sewa) }}"
+               class="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-purple-600 hover:bg-purple-50 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                Upload Dokumen
+            </a>
+        @else
+            <a href="{{ route('pelunasan', $sewa->id_tr_sewa) }}"
+               class="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-[#FEF0DC] hover:text-[#D97706] transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                Lunasi
+            </a>
+        @endif
+
+    @elseif($adaPendingPayment && $status === 'booking')
+        {{-- Ada payment pending → cek jaminan dulu --}}
+        @if(!$sudahUploadJaminan)
+            <a href="{{ route('jaminan.show', $sewa->id_tr_sewa) }}"
+               class="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-purple-600 hover:bg-purple-50 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                Upload Dokumen
+            </a>
+        @else
+            <a href="{{ route('payment', $sewa->id_tr_sewa) }}"
+               class="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-[#FEF0DC] hover:text-[#D97706] transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                Bayar Sekarang
+            </a>
+        @endif
+@elseif($status === 'pending_konfirmasi')
+    <div class="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-yellow-600">
+        <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Menunggu Konfirmasi Admin
+    </div>
+
+    @elseif(!$paymentExists)
+        {{-- Belum ada payment sama sekali --}}
+        @if(!$sudahUploadJaminan)
+            <a href="{{ route('jaminan.show', $sewa->id_tr_sewa) }}"
+               class="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-purple-600 hover:bg-purple-50 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                Upload Dokumen
+            </a>
+        @else
+            <a href="{{ route('payment', $sewa->id_tr_sewa) }}"
+               class="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-[#FEF0DC] hover:text-[#D97706] transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                Bayar Sekarang
+            </a>
+        @endif
+
+    @endif
+
+    {{-- Divider --}}
+    @if(!$lunas && !$cashPaymentPending)
+        <div class="h-px bg-gray-100 my-1"></div>
+    @endif
+
+    {{-- Batalkan --}}
+    <button type="button"
+            onclick="konfirmasiBatal({{ $sewa->id_tr_sewa }}, '{{ $status }}')"
+            class="flex items-center w-full gap-2 px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors text-left">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+        Batalkan
+    </button>
+
+    <form id="form-batal-{{ $sewa->id_tr_sewa }}" action="{{ route('sewa.cancel', $sewa->id_tr_sewa) }}" method="POST" class="hidden">
+        @csrf
+        @method('PUT')
+    </form>
+</div>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @if($sewa->jaminan)
@@ -334,6 +433,37 @@
                 
                 document.getElementById(`form-edit-${fieldName}`).submit();
             }
+        }
+
+        function konfirmasiBatal(id, statusSewa) {
+            let textWarning = "Apakah Anda yakin ingin membatalkan pesanan ini? Aksi ini tidak dapat diurungkan.";
+            
+            if (statusSewa === 'dp' || statusSewa === 'lunas') {
+                textWarning = "Apakah Anda yakin ingin membatalkan pesanan ini? Uang pembayaran (DP/Lunas) yang sudah masuk akan OTOMATIS HANGUS dan tidak dapat dikembalikan.";
+            }
+
+            Swal.fire({
+                title: 'Batalkan Pesanan?',
+                text: textWarning,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#EF4444', 
+                cancelButtonColor: '#9CA3AF', 
+                confirmButtonText: 'Ya, Batalkan!',
+                cancelButtonText: 'Kembali'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Membatalkan pesanan Anda.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    document.getElementById('form-batal-' + id).submit();
+                }
+            });
         }
 
         function closeDokumenModal() {
